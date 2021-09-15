@@ -5,12 +5,10 @@ import requests
 import json
 import time
 import pytz
-import dateutil
 from django.utils.timezone import make_aware
-from datetime import date, datetime, timedelta
+from datetime import datetime, timedelta
 from addons.integromat import SHORT_NAME, FULL_NAME
 from django.db import transaction
-from django.db.models import Min
 from addons.base import generic_views
 from framework.auth.decorators import must_be_logged_in
 from addons.integromat.serializer import IntegromatSerializer
@@ -18,25 +16,23 @@ from osf.models import ExternalAccount, OSFUser
 from django.core.exceptions import ValidationError
 from framework.exceptions import HTTPError
 from rest_framework import status as http_status
-from osf.utils.tokens import process_token_or_pass
 from osf.utils.permissions import ADMIN, READ
-from website.util import api_url_for
 from website.project.decorators import (
     must_have_addon,
     must_be_valid_project,
-    must_be_addon_authorizer,
     must_have_permission,
 )
 from admin.rdm_addons.decorators import must_be_rdm_addons_allowed
 from website.ember_osf_web.views import use_ember_app
 from addons.integromat import settings
-
 from addons.integromat import models
 from osf.models.rdm_grdmapps import RdmWebMeetingApps, RdmWorkflows
 from django.core import serializers
 from django.core.exceptions import ObjectDoesNotExist
 from framework.auth.core import Auth
 from admin.rdm import utils as rdm_utils
+from framework.database import get_or_http_error
+_load_node_or_fail = lambda pk: get_or_http_error(AbstractNode, pk)
 
 logger = logging.getLogger(__name__)
 
@@ -192,7 +188,7 @@ def grdmapps_get_config_ember(**kwargs):
     nodeWebMeetingsAttendeesRelationJson = serializers.serialize('json', nodeWebMeetingsAttendeesRelation, ensure_ascii=False)
 
     institutionId = rdm_utils.get_institution_id(user)
-    users = OSFUser.objects.filter(affiliated_institutions__id = institutionId)
+    users = OSFUser.objects.filter(affiliated_institutions__id=institutionId)
 
     institutionUsers = makeInstitutionUserList(users)
 
@@ -245,7 +241,7 @@ def grdmapps_set_config_ember(**kwargs):
     nodeWebMeetingsAttendeesRelationJson = serializers.serialize('json', nodeWebMeetingsAttendeesRelation, ensure_ascii=False)
 
     institutionId = rdm_utils.get_institution_id(user)
-    users = OSFUser.objects.filter(affiliated_institutions__id = institutionId)
+    users = OSFUser.objects.filter(affiliated_institutions__id=institutionId)
     institutionUsers = makeInstitutionUserList(users)
 
     return {'data': {'id': node._id, 'type': 'grdmapps-config',
@@ -291,7 +287,7 @@ def integromat_register_meeting(**kwargs):
 
     # User must have permissions
     if not target.has_permission(user, ADMIN):
-        raise HTTPError(http.FORBIDDEN)
+        raise HTTPError(http_status.HTTP_403_FORBIDDEN)
 
     appName = request.get_json().get('appName')
     subject = request.get_json().get('subject')
@@ -308,13 +304,13 @@ def integromat_register_meeting(**kwargs):
 
     try:
         node = models.NodeSettings.objects.get(_id=nodeId)
-    except:
+    except ObjectDoesNotExist:
         logger.error('nodesettings _id is invalid.')
         raise HTTPError(http_status.HTTP_400_BAD_REQUEST)
 
     try:
         webApp = RdmWebMeetingApps.objects.get(app_name=appName)
-    except:
+    except ObjectDoesNotExist:
         logger.error('web app name is invalid.')
         raise HTTPError(http_status.HTTP_400_BAD_REQUEST)
 
@@ -366,7 +362,7 @@ def integromat_register_meeting(**kwargs):
 
             try:
                 meetingInviteesInfoJson = json.loads(meetingInviteesInfo)
-            except:
+            except TypeError:
                 logger.error('meetingInviteesInfo is None')
                 raise HTTPError(http_status.HTTP_400_BAD_REQUEST)
 
@@ -384,8 +380,8 @@ def integromat_register_meeting(**kwargs):
 
                         meetingInviteeInfo = models.AllMeetingInformationAttendeesRelation(
                             attendees_id = attendeeId,
-                            all_meeting_information_id = meetingInfo.id,
-                            webex_meetings_invitee_id = meetingInvitee['id']
+                            all_meeting_information_id=meetingInfo.id,
+                            webex_meetings_invitee_id=meetingInvitee['id']
                         )
                         meetingInviteeInfo.save()
 
@@ -406,7 +402,7 @@ def integromat_update_meeting_registration(**kwargs):
 
     # User must have permissions
     if not target.has_permission(user, ADMIN):
-        raise HTTPError(http.FORBIDDEN)
+        raise HTTPError(http_status.HTTP_403_FORBIDDEN)
 
     nodeId = request.get_json().get('nodeId')
     appName = request.get_json().get('appName')
@@ -429,7 +425,7 @@ def integromat_update_meeting_registration(**kwargs):
 
     try:
         node = models.NodeSettings.objects.get(_id=nodeId)
-    except:
+    except ObjectDoesNotExist:
         logger.error('nodesettings _id is invalid.')
         raise HTTPError(http_status.HTTP_400_BAD_REQUEST)
 
@@ -450,11 +446,10 @@ def integromat_update_meeting_registration(**kwargs):
 
             qsNodeWebMeetingsAttendeesRelation = models.AllMeetingInformationAttendeesRelation.objects.filter(all_meeting_information__meetingid=meetingId)
             nodeWebMeetingsAttendeesRelationJson = serializers.serialize('json', qsNodeWebMeetingsAttendeesRelation, ensure_ascii=False)
-
             try:
                 meetingCreatedInviteesInfoJson = json.loads(meetingCreatedInviteesInfo)
                 meetingDeletedInviteesInfoJson = json.loads(meetingDeletedInviteesInfo)
-            except:
+            except ObjectDoesNotExist:
                 logger.error('meetingInviteesInfo or meetingDeletedInviteesInfoJson is None')
                 raise HTTPError(http_status.HTTP_400_BAD_REQUEST)
 
@@ -472,8 +467,8 @@ def integromat_update_meeting_registration(**kwargs):
 
                 meetingInviteeInfo = models.AllMeetingInformationAttendeesRelation(
                     attendees_id = attendeeId,
-                    all_meeting_information_id = qsUpdateMeetingInfo.id,
-                    webex_meetings_invitee_id = meetingCreateInvitee['body']['id']
+                    all_meeting_information_id=qsUpdateMeetingInfo.id,
+                    webex_meetings_invitee_id=meetingCreateInvitee['body']['id']
                 )
                 meetingInviteeInfo.save()
 
@@ -521,7 +516,7 @@ def integromat_register_web_meeting_apps_email(**kwargs):
 
     requestData = request.get_data()
     requestDataJson = json.loads(requestData)
-    id = requestDataJson['_id']
+    _id = requestDataJson['_id']
     guid = requestDataJson['guid']
     fullname = requestDataJson['fullname']
     appName = requestDataJson['appName']
@@ -566,7 +561,7 @@ def integromat_register_web_meeting_apps_email(**kwargs):
             )
         elif appName == settings.WEBEX_MEETINGS:
 
-                webMeetingAppAttendeeInfo = models.Attendees(
+            webMeetingAppAttendeeInfo = models.Attendees(
                 user_guid=guid,
                 fullname=fullname,
                 is_guest=is_guest,
@@ -592,17 +587,14 @@ def integromat_start_scenario(**kwargs):
     nodeId = requestDataJson['nodeId']
     webhook_url = requestDataJson['webhook_url']
 
-    integromatMsg = ''
-    node = models.NodeSettings.objects.get(_id=nodeId)
-
     response = requests.post(webhook_url, data=request.get_data(), headers={'Content-Type': 'application/json'})
 
     logger.info('integromat_start_scenario end')
 
     return {
-            'nodeId': nodeId,
-            'timestamp': timestamp
-            }
+        'nodeId': nodeId,
+        'timestamp': timestamp
+    }
 
 @must_be_valid_project
 @must_have_permission(ADMIN)
@@ -654,7 +646,6 @@ def integromat_register_alternative_webhook_url(**kwargs):
 
     node = kwargs['node'] or kwargs['project']
     addon = node.get_addon(SHORT_NAME)
-    user = kwargs['auth'].user
 
     requestData = request.get_data()
     requestDataJson = json.loads(requestData)
@@ -665,7 +656,7 @@ def integromat_register_alternative_webhook_url(**kwargs):
     workflows = RdmWorkflows.objects.get(workflow_description=workflowDescription)
 
     with transaction.atomic():
-        nodeWorkflow, created = models.nodeWorkflows.objects.update_or_create(node_settings_id=addon.id, workflow_id=workflows.id, defaults={ 'alternative_webhook_url': alternativeWebhookUrl})
+        nodeWorkflow, created = models.nodeWorkflows.objects.update_or_create(node_settings_id=addon.id, workflow_id=workflows.id, defaults={'alternative_webhook_url': alternativeWebhookUrl})
 
     logger.info('integromat_register_alternative_webhook_url end')
     return {}
@@ -684,7 +675,7 @@ def integromat_info_msg(**kwargs):
 
     # User must have permissions
     if not target.has_permission(user, ADMIN):
-        raise HTTPError(http.FORBIDDEN)
+        raise HTTPError(http_status.HTTP_403_FORBIDDEN)
 
     msg = request.json['notifyType']
     timestamp = request.json['timestamp']
@@ -716,7 +707,7 @@ def integromat_error_msg(**kwargs):
 
     # User must have permissions
     if not target.has_permission(user, ADMIN):
-        raise HTTPError(http.FORBIDDEN)
+        raise HTTPError(http_status.HTTP_403_FORBIDDEN)
 
     msg = request.json['notifyType']
     timestamp = request.json['timestamp']
@@ -756,5 +747,5 @@ def integromat_get_meetings(**kwargs):
     logger.info('integromat_get_meetings end')
 
     return {
-            'recentMeetings': recentMeetingsDict,
-            }
+        'recentMeetings': recentMeetingsDict,
+    }

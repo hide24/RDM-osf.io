@@ -1,10 +1,6 @@
-import logging
 from addons.base.serializer import StorageAddonSerializer
 from addons.integromat import SHORT_NAME
-from addons.integromat import settings
 from website.util import web_url_for
-
-logger = logging.getLogger(__name__)
 
 class IntegromatSerializer(StorageAddonSerializer):
     addon_short_name = SHORT_NAME

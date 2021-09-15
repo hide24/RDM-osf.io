@@ -2,19 +2,14 @@
 import logging
 
 from django.db import models
-from django.contrib.postgres.fields import ArrayField
 from osf.models.base import BaseModel, ObjectIDMixin
 from osf.models.rdm_grdmapps import RdmWorkflows, RdmWebMeetingApps
-from addons.base import exceptions
 from addons.base.models import (BaseOAuthNodeSettings, BaseOAuthUserSettings,
                                 BaseStorageAddon)
 from addons.integromat.serializer import IntegromatSerializer
 from addons.integromat.provider import IntegromatProvider
-from addons.integromat import SHORT_NAME, FULL_NAME
-import addons.integromat.settings as settings
 
 from framework.auth.core import Auth
-from osf.models.files import File, Folder, BaseFileNode
 from osf.utils.fields import EncryptedTextField
 
 logger = logging.getLogger(__name__)
@@ -86,7 +81,7 @@ class Attendees(ObjectIDMixin, BaseModel):
     node_settings = models.ForeignKey(NodeSettings, null=False, blank=False, default=None)
 
     class Meta:
-        unique_together = (('user_guid', 'node_settings'), ('microsoft_teams_mail','node_settings'), ('webex_meetings_mail','node_settings'))
+        unique_together = (('user_guid', 'node_settings'), ('microsoft_teams_mail', 'node_settings'), ('webex_meetings_mail', 'node_settings'))
 
 
 class AllMeetingInformation(ObjectIDMixin, BaseModel):

@@ -95,13 +95,6 @@ api_routes = {
             json_renderer,
         ),
 
-#        Rule(
-#            '/project/<pid>/integromat/delete_web_meeting_attendee',
-#            'post',
-#            views.integromat_delete_web_meeting_attendee,
-#            json_renderer,
-#        ),
-
         Rule(
             '/integromat/register_meeting',
             'post',
