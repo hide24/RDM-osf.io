@@ -70,18 +70,18 @@ class NodeSettings(BaseOAuthNodeSettings, BaseStorageAddon):
 class WorkflowExecutionMessages(ObjectIDMixin, BaseModel):
 
     notified = models.BooleanField(default=False)
-    integromat_msg = models.CharField(max_length=128)
+    integromat_msg = models.CharField(max_length=255)
     timestamp = models.CharField(max_length=128)
     node_settings = models.ForeignKey(NodeSettings, null=False, blank=False, default=None)
 
 class Attendees(ObjectIDMixin, BaseModel):
 
-    user_guid = models.CharField(max_length=128, default=None)
-    fullname = models.CharField(max_length=128)
-    microsoft_teams_mail = models.CharField(max_length=256, blank=True, null=True, default=None)
-    microsoft_teams_user_name = models.CharField(max_length=256, blank=True, null=True)
-    webex_meetings_mail = models.CharField(max_length=256, blank=True, null=True, default=None)
-    webex_meetings_display_name = models.CharField(max_length=256, blank=True, null=True)
+    user_guid = models.CharField(max_length=255, default=None)
+    fullname = models.CharField(max_length=255)
+    microsoft_teams_mail = models.CharField(max_length=254, blank=True, null=True)
+    microsoft_teams_user_name = models.CharField(max_length=255, blank=True, null=True)
+    webex_meetings_mail = models.CharField(max_length=254, blank=True, null=True)
+    webex_meetings_display_name = models.CharField(max_length=255, blank=True, null=True)
     is_guest = models.BooleanField(default=False)
     node_settings = models.ForeignKey(NodeSettings, null=False, blank=False, default=None)
 
@@ -91,14 +91,14 @@ class Attendees(ObjectIDMixin, BaseModel):
 
 class AllMeetingInformation(ObjectIDMixin, BaseModel):
 
-    subject = models.CharField(max_length=254)
-    organizer = models.CharField(max_length=254)
-    organizer_fullname = models.CharField(max_length=254)
+    subject = models.CharField(max_length=255)
+    organizer = models.CharField(max_length=255)
+    organizer_fullname = models.CharField(max_length=255)
     attendees = models.ManyToManyField(Attendees, related_name='attendees_meetings')
     attendees_specific = models.ManyToManyField(Attendees, related_name='attendees_specific_meetings', through='AllMeetingInformationAttendeesRelation')
     start_datetime = models.DateTimeField()
     end_datetime = models.DateTimeField()
-    location = models.CharField(blank=True, null=True, max_length=254)
+    location = models.CharField(blank=True, null=True, max_length=255)
     content = models.TextField(blank=True, null=True, max_length=10000)
     join_url = models.TextField(max_length=512)
     meetingid = models.TextField(max_length=512)
@@ -110,7 +110,7 @@ class AllMeetingInformationAttendeesRelation(ObjectIDMixin, BaseModel):
 
     all_meeting_information = models.ForeignKey(AllMeetingInformation)
     attendees = models.ForeignKey(Attendees)
-    webex_meetings_invitee_id = models.CharField(blank=True, null=True, max_length=512)
+    webex_meetings_invitee_id = models.TextField(blank=True, null=True, max_length=512)
 
 class NodeWorkflows(ObjectIDMixin, BaseModel):
 
