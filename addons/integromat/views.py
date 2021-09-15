@@ -5,7 +5,6 @@ import requests
 import json
 import time
 import pytz
-from django.utils.timezone import make_aware
 from datetime import datetime, timedelta
 from addons.integromat import SHORT_NAME, FULL_NAME
 from django.db import transaction
@@ -31,6 +30,7 @@ from django.core import serializers
 from django.core.exceptions import ObjectDoesNotExist
 from framework.auth.core import Auth
 from admin.rdm import utils as rdm_utils
+from osf.models import AbstractNode
 from framework.database import get_or_http_error
 _load_node_or_fail = lambda pk: get_or_http_error(AbstractNode, pk)
 
@@ -379,7 +379,7 @@ def integromat_register_meeting(**kwargs):
                     if meetingInvitee['email'] == attendeeMail:
 
                         meetingInviteeInfo = models.AllMeetingInformationAttendeesRelation(
-                            attendees_id = attendeeId,
+                            attendees_id=attendeeId,
                             all_meeting_information_id=meetingInfo.id,
                             webex_meetings_invitee_id=meetingInvitee['id']
                         )
@@ -445,7 +445,7 @@ def integromat_update_meeting_registration(**kwargs):
         elif appName == settings.WEBEX_MEETINGS:
 
             qsNodeWebMeetingsAttendeesRelation = models.AllMeetingInformationAttendeesRelation.objects.filter(all_meeting_information__meetingid=meetingId)
-            nodeWebMeetingsAttendeesRelationJson = serializers.serialize('json', qsNodeWebMeetingsAttendeesRelation, ensure_ascii=False)
+
             try:
                 meetingCreatedInviteesInfoJson = json.loads(meetingCreatedInviteesInfo)
                 meetingDeletedInviteesInfoJson = json.loads(meetingDeletedInviteesInfo)
@@ -466,7 +466,7 @@ def integromat_update_meeting_registration(**kwargs):
                 attendeeIdsFormer.append(attendeeId)
 
                 meetingInviteeInfo = models.AllMeetingInformationAttendeesRelation(
-                    attendees_id = attendeeId,
+                    attendees_id=attendeeId,
                     all_meeting_information_id=qsUpdateMeetingInfo.id,
                     webex_meetings_invitee_id=meetingCreateInvitee['body']['id']
                 )
@@ -589,6 +589,7 @@ def integromat_start_scenario(**kwargs):
 
     response = requests.post(webhook_url, data=request.get_data(), headers={'Content-Type': 'application/json'})
 
+    logger.info('webhook response:' + str(response))
     logger.info('integromat_start_scenario end')
 
     return {
