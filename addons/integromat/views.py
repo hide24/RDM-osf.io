@@ -33,7 +33,7 @@ from website.ember_osf_web.views import use_ember_app
 from addons.integromat import settings
 
 from addons.integromat import models
-from osf.models.rdm_integromat import RdmWebMeetingApps, RdmWorkflows
+from osf.models.rdm_grdmapps import RdmWebMeetingApps, RdmWorkflows
 from django.core import serializers
 from django.core.exceptions import ObjectDoesNotExist
 from framework.auth.core import Auth
