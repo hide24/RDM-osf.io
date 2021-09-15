@@ -194,7 +194,7 @@ def grdmapps_get_config_ember(**kwargs):
 
     return {'data': {'id': node._id, 'type': 'grdmapps-config',
                      'attributes': {
-                         'node_settings_id': addon._id, 
+                         'node_settings_id': addon._id,
                          'all_web_meetings': allWebMeetingsJson,
                          'upcoming_web_meetings': upcomingWebMeetingsJson,
                          'previous_web_meetings': previousWebMeetingsJson,
