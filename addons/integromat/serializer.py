@@ -1,3 +1,4 @@
+import logging
 from addons.base.serializer import StorageAddonSerializer
 from addons.integromat import SHORT_NAME
 from addons.integromat import settings
