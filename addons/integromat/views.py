@@ -6,7 +6,6 @@ import json
 import time
 import pytz
 import dateutil
-import httplib
 from django.utils.timezone import make_aware
 from datetime import date, datetime, timedelta
 from addons.integromat import SHORT_NAME, FULL_NAME
@@ -272,7 +271,7 @@ def integromat_api_call(*args, **kwargs):
 
     # User must be logged in
     if user is None:
-        raise HTTPError(httplib.UNAUTHORIZED)
+        raise HTTPError(http_status.HTTP_401_UNAUTHORIZED)
 
     logger.info('Integromat called integromat_api_call by ' + str(user) + '.')
     logger.info('GRDM-Integromat connection test scceeeded.')
@@ -288,7 +287,7 @@ def integromat_register_meeting(**kwargs):
     target = _load_node_or_fail(nodeId)
 
     if not user:
-        raise HTTPError(httplib.UNAUTHORIZED)
+        raise HTTPError(http_status.HTTP_401_UNAUTHORIZED)
 
     # User must have permissions
     if not target.has_permission(user, ADMIN):
@@ -403,7 +402,7 @@ def integromat_update_meeting_registration(**kwargs):
     target = _load_node_or_fail(nodeId)
 
     if not user:
-        raise HTTPError(httplib.UNAUTHORIZED)
+        raise HTTPError(http_status.HTTP_401_UNAUTHORIZED)
 
     # User must have permissions
     if not target.has_permission(user, ADMIN):
@@ -502,7 +501,7 @@ def integromat_delete_meeting_registration(**kwargs):
     user = auth.user
 
     if not user:
-        raise HTTPError(httplib.UNAUTHORIZED)
+        raise HTTPError(http_status.HTTP_401_UNAUTHORIZED)
 
     meetingId = request.get_json().get('meetingId')
 
@@ -681,7 +680,7 @@ def integromat_info_msg(**kwargs):
     target = _load_node_or_fail(nodeId)
 
     if not user:
-        raise HTTPError(httplib.UNAUTHORIZED)
+        raise HTTPError(http_status.HTTP_401_UNAUTHORIZED)
 
     # User must have permissions
     if not target.has_permission(user, ADMIN):
@@ -713,7 +712,7 @@ def integromat_error_msg(**kwargs):
     target = _load_node_or_fail(nodeId)
 
     if not user:
-        raise HTTPError(httplib.UNAUTHORIZED)
+        raise HTTPError(http_status.HTTP_401_UNAUTHORIZED)
 
     # User must have permissions
     if not target.has_permission(user, ADMIN):
