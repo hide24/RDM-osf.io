@@ -93,7 +93,7 @@
                                     % if addons['integromat']['icon'] and addons['integromat']['has_page_icon']:
                                         <img src="${addons['integromat']['icon']}" class="addon-logo"/>
                                     % endif
-                                    ${addons['integromat']['full_name']}
+                                    ${_(addons[addon]['tab_name'])}
                                 </a>
                             </li>
                         % endif

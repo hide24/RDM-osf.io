@@ -232,6 +232,59 @@
                     </div>
                 % endif
 
+                % if addon_name == 'integromat':
+                    <div id="integromat-content" class="scripted">
+                        <!-- ko if: loading -->
+                        <div>${_("Loading")}</div>
+                        <!-- /ko -->
+                        <!-- ko if: loadFailed -->
+                        <div class="text-danger">${_("Error occurred")}</div>
+                        <!-- /ko -->
+                        <!-- ko if: loadCompleted -->
+                        <h5>${_("Application Information")}</h5>
+                        <h5 data-bind="visible: !(todaysMeetings().length)" style="padding-top: 0.2em; padding-left: 1.0em;">${_("No Today's Meeting")}</h5>
+                        <div style="padding-left: 1.0em;" data-bind="if: todaysMeetings().length">
+                        <h5 style="display: inline;">${_("Today's Meeting")}</h5>(<h5 style="display: inline;" data-bind="text: today"></h5>)
+                            <table class="table">
+                                <tbody data-bind="foreach: todaysMeetings">
+                                    <tr>
+                                        <td style="width: 20%; padding: initial;">
+                                            <h5 style="margin-left: 10px"><span data-bind="date: fields.start_datetime, dateFormat: 'HH:mm'"></span><span>-</span><span data-bind="date: fields.end_datetime, dateFormat: 'HH:mm'"></span></h5>
+                                        </td>
+                                        <td style="width: 65%; max-width: 200px; padding: initial;">
+                                            <h5 data-bind="text: fields.subject, tooltip:{title: fields.subject}" style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;"></h5>
+                                        </td>
+                                        <td style="padding: initial;">
+                                            <h5 style="margin-left: 20px"><button class="fa fa-play" data-bind="click: $root.startMeeting.bind($data, fields.join_url)"></button></h5>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div></div>
+                        <h5 data-bind="visible: !(tomorrowsMeetings().length)" style="padding-top: 0.2em; padding-left: 1.0em;">${_("No Tomorrow's Meeting")}</h5>
+                        <div style="padding-left: 1.0em;" data-bind="if: tomorrowsMeetings().length">
+                        <h5 style="display: inline;">${_("Tomorrow's Meeting")}</h5>(<h5 style="display: inline;" data-bind="text: tomorrow"></h5>)
+                            <table class="table">
+                                <tbody data-bind="foreach: tomorrowsMeetings">
+                                    <tr>
+                                        <td style="width: 20%; padding: initial;">
+                                            <h5 style="margin-left: 10px"><span data-bind="date: fields.start_datetime, dateFormat: 'HH:mm'"></span><span>-</span><span data-bind="date: fields.end_datetime, dateFormat: 'HH:mm'"></span></h5>
+                                        </td>
+                                        <td style="width: 65%; max-width: 200px; padding: initial;">
+                                            <h5 data-bind="text: fields.subject, tooltip:{title: fields.subject}" style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;"></h5>
+                                        </td>
+                                        <td style="padding: initial;">
+                                            <h5 style="margin-left: 20px"><button class="fa fa-play" data-bind="click: $root.startMeeting.bind($data, fields.join_url)"></button></h5>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /ko -->
+                    </div>
+                % endif
+
                 </div>
             % else:
                 <div class='addon-config-error p-sm'>
