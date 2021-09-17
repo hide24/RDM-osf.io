@@ -171,7 +171,7 @@ def grdmapps_get_config_ember(**kwargs):
     nodeAttendeesAll = models.Attendees.objects.filter(node_settings_id=addon.id)
     nodeMicrosoftTeamsAttendees = models.Attendees.objects.filter(node_settings_id=addon.id).exclude(microsoft_teams_mail__exact='').exclude(microsoft_teams_mail__isnull=True)
     nodeWebexMeetingsAttendees = models.Attendees.objects.filter(node_settings_id=addon.id).exclude(webex_meetings_mail__exact='').exclude(webex_meetings_mail__isnull=True)
-    nodeWorkflows = models.nodeWorkflows.objects.filter(node_settings_id=addon.id)
+    nodeWorkflows = models.NodeWorkflows.objects.filter(node_settings_id=addon.id)
 
     nodeWebMeetingsAttendeesRelation = models.AllMeetingInformationAttendeesRelation.objects.filter(all_meeting_information__node_settings_id=addon.id)
 
