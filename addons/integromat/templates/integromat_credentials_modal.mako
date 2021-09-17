@@ -12,11 +12,11 @@
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="form-group">
-                                <label for="apiToken">API Token</label>
+                                <label for="apiToken">${ _("API Token")}</label>
                                     <!-- Link to API token generation page -->
                                     <a href="https://apidocs.integromat.com/"
                                        target="_blank" class="text-muted addon-external-link">
-                                        (Get from Integromat <i class="fa fa-external-link-square"></i>)
+                                        ${_('(Get from Integromat  %(externalLinkIcon)s)') % dict(externalLinkIcon='<i class="fa fa-external-link-square"></i>') | n}
                                     </a>
                                 <input class="form-control" data-bind="value: integromatApiToken" id="integromat_api_token" name="integromat_Api_Token" />
                             </div>
@@ -32,10 +32,10 @@
 
                 <div class="modal-footer">
 
-                    <a href="#" class="btn btn-default" data-bind="click: clearModal" data-dismiss="modal">Cancel</a>
+                    <a href="#" class="btn btn-default" data-bind="click: clearModal" data-dismiss="modal">${ _("Cancel")}</a>
 
                     <!-- Save Button -->
-                    <button data-bind="click: connectAccount" class="btn btn-success">Save</button>
+                    <button data-bind="click: connectAccount" class="btn btn-success">${ _("Save")}</button>
 
                 </div><!-- end modal-footer -->
 
