@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  0.6.0\n"
 "Report-Msgid-Bugs-To: rocs-office@nii.ac.jp\n"
-"POT-Creation-Date: 2021-09-17 12:19+0900\n"
+"POT-Creation-Date: 2021-09-17 12:56+0900\n"
 "PO-Revision-Date: 2020-11-10 20:10+0900\n"
 "Last-Translator: Shunta Nishikawa\n"
 "Language: ja\n"
@@ -471,6 +471,10 @@ msgid ""
 " addon credentials                    may no longer be valid. Contact "
 "%(authOsfName)s to verify."
 msgstr "現在、%(addonName)s設定を取得できませんでした。%(addonName)sアドオンの認証情報が無効になる場合があります。%(authOsfName)sに連絡して確認してください。"
+
+#: addons/integromat/templates/integromat_credentials_modal.mako:6
+msgid "Connect an Integromat Account"
+msgstr "Integromatアカウントを接続"
 
 #: addons/integromat/templates/integromat_credentials_modal.mako:19
 #, python-format
@@ -3882,23 +3886,23 @@ msgstr "投稿前画像スキャン依頼"
 
 #: website/templates/util/render_addon_widget.mako:244
 msgid "Application Information"
-msgstr ""
+msgstr "アプリ情報"
 
 #: website/templates/util/render_addon_widget.mako:245
 msgid "No Today's Meeting"
-msgstr ""
+msgstr "今日の会議はありません"
 
 #: website/templates/util/render_addon_widget.mako:247
 msgid "Today's Meeting"
-msgstr ""
+msgstr "今日の会議"
 
 #: website/templates/util/render_addon_widget.mako:265
 msgid "No Tomorrow's Meeting"
-msgstr ""
+msgstr "明日の会議はありません"
 
 #: website/templates/util/render_addon_widget.mako:267
 msgid "Tomorrow's Meeting"
-msgstr ""
+msgstr "明日の会議"
 
 #: website/templates/util/render_node.mako:5
 msgid "component"

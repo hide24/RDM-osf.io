@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2021-09-17 12:19+0900\n"
+"POT-Creation-Date: 2021-09-17 12:56+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -463,6 +463,10 @@ msgid ""
 "Could not retrieve %(addonName)s settings at this time. The %(addonName)s"
 " addon credentials                    may no longer be valid. Contact "
 "%(authOsfName)s to verify."
+msgstr ""
+
+#: addons/integromat/templates/integromat_credentials_modal.mako:6
+msgid "Connect an Integromat Account"
 msgstr ""
 
 #: addons/integromat/templates/integromat_credentials_modal.mako:19
