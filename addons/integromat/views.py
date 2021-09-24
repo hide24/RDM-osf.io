@@ -226,7 +226,7 @@ def grdmapps_set_config_ember(**kwargs):
     nodeAttendeesAll = models.Attendees.objects.filter(node_settings_id=addon.id)
     nodeMicrosoftTeamsAttendees = models.Attendees.objects.filter(node_settings_id=addon.id).exclude(microsoft_teams_mail__exact='').exclude(microsoft_teams_mail__isnull=True)
     nodeWebexMeetingsAttendees = models.Attendees.objects.filter(node_settings_id=addon.id).exclude(webex_meetings_mail__exact='').exclude(webex_meetings_mail__isnull=True)
-    nodeWorkflows = models.nodeWorkflows.objects.filter(node_settings_id=addon.id)
+    nodeWorkflows = models.NodeWorkflows.objects.filter(node_settings_id=addon.id)
 
     nodeWebMeetingsAttendeesRelation = models.AllMeetingInformationAttendeesRelation.objects.filter(all_meeting_information__node_settings_id=addon.id)
 
@@ -657,7 +657,7 @@ def integromat_register_alternative_webhook_url(**kwargs):
     workflows = RdmWorkflows.objects.get(workflow_description=workflowDescription)
 
     with transaction.atomic():
-        nodeWorkflow, created = models.nodeWorkflows.objects.update_or_create(node_settings_id=addon.id, workflow_id=workflows.id, defaults={'alternative_webhook_url': alternativeWebhookUrl})
+        nodeWorkflow, created = models.NodeWorkflows.objects.update_or_create(node_settings_id=addon.id, workflow_id=workflows.id, defaults={'alternative_webhook_url': alternativeWebhookUrl})
 
     logger.info('integromat_register_alternative_webhook_url end')
     return {}
