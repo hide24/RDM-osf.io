@@ -189,8 +189,8 @@ def grdmapps_get_config_ember(**kwargs):
 
     institutionId = rdm_utils.get_institution_id(user)
     users = OSFUser.objects.filter(affiliated_institutions__id=institutionId)
-
     institutionUsers = makeInstitutionUserList(users)
+    institutionUsersJson = serializers.serialize('json', institutionUsers, ensure_ascii=False)
 
     return {'data': {'id': node._id, 'type': 'grdmapps-config',
                      'attributes': {
@@ -207,7 +207,7 @@ def grdmapps_get_config_ember(**kwargs):
                          'web_meeting_apps': webMeetingAppsJson,
                          'app_name_microsoft_teams': settings.MICROSOFT_TEAMS,
                          'app_name_webex_meetings': settings.WEBEX_MEETINGS,
-                         'institution_users': institutionUsers
+                         'institution_users': institutionUsersJson
                      }}}
 
 @must_be_valid_project
