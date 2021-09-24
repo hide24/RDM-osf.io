@@ -147,10 +147,11 @@ def makeInstitutionUserList(users):
 
     institutionUsers = []
     userInfo = {}
-
+    logger.info(str(users))
     for user in users:
         userInfo['guid'] = user._id
         userInfo['fullname'] = user.fullname
+        logger.info(str(userInfo))
         institutionUsers.append(userInfo)
 
     ret = json.dumps(institutionUsers)
