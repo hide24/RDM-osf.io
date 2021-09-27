@@ -547,7 +547,7 @@ def integromat_register_web_meeting_apps_email(**kwargs):
 
             webMeetingAppAttendeeInfo = models.Attendees(
                 user_guid=guid,
-                fullname=OSFUser.objects.get(guids___id=guid).fullname,
+                fullname=fullname,
                 is_guest=is_guest,
                 microsoft_teams_user_name=username,
                 microsoft_teams_mail=email,
