@@ -527,7 +527,7 @@ def integromat_register_web_meeting_apps_email(**kwargs):
         webMeetingAppAttendee = models.Attendees.objects.get(node_settings_id=nodeId, _id=_id)
 
         if not is_guest:
-            webMeetingAppAttendee.fullname = OSFUser.objects.get(guids___id=webMeetingAppAttendee.guid).fullname
+            webMeetingAppAttendee.fullname = OSFUser.objects.get(guids___id=webMeetingAppAttendee.user_guid).fullname
 
         if appName == settings.MICROSOFT_TEAMS:
 
