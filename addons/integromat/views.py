@@ -510,6 +510,7 @@ def integromat_register_web_meeting_apps_email(**kwargs):
 
     requestData = request.get_data()
     requestDataJson = json.loads(requestData)
+    logger.info(str(requestDataJson))
     _id = requestDataJson['_id']
     guid = requestDataJson['guid']
     fullname = requestDataJson['fullname']
