@@ -544,26 +544,68 @@ def integromat_register_web_meeting_apps_email(**kwargs):
         if not is_guest:
             fullname = OSFUser.objects.get(guids___id=guid).fullname
 
-        if appName == settings.MICROSOFT_TEAMS:
+            if appName == settings.MICROSOFT_TEAMS:
 
-            webMeetingAppAttendeeInfo = models.Attendees(
-                user_guid=guid,
-                fullname=fullname,
-                is_guest=is_guest,
-                microsoft_teams_user_name=username,
-                microsoft_teams_mail=email,
-                node_settings=nodeSettings,
-            )
-        elif appName == settings.WEBEX_MEETINGS:
+                if models.Attendees.objects.filter(node_settings_id=nodeId, user_guid=guid).exists():
 
-            webMeetingAppAttendeeInfo = models.Attendees(
-                user_guid=guid,
-                fullname=fullname,
-                is_guest=is_guest,
-                webex_meetings_display_name=username,
-                webex_meetings_mail=email,
-                node_settings=nodeSettings,
-            )
+                    webMeetingAppAttendeeInfo = models.Attendees.objects.get(node_settings_id=nodeId, user_guid=guid)
+                    webMeetingAppAttendeeInfo.fullname = fullname
+                    webMeetingAppAttendeeInfo.microsoft_teams_user_name = username
+                    webMeetingAppAttendeeInfo.microsoft_teams_mail = email
+
+                else:
+
+                    webMeetingAppAttendeeInfo = models.Attendees(
+                        user_guid=guid,
+                        fullname=fullname,
+                        is_guest=is_guest,
+                        microsoft_teams_user_name=username,
+                        microsoft_teams_mail=email,
+                        node_settings=nodeSettings,
+                    )
+
+            elif appName == settings.WEBEX_MEETINGS:
+
+                if models.Attendees.objects.filter(node_settings_id=nodeId, user_guid=guid).exists():
+
+                    webMeetingAppAttendeeInfo = models.Attendees.objects.get(node_settings_id=nodeId, user_guid=guid)
+                    webMeetingAppAttendeeInfo.fullname = fullname
+                    webMeetingAppAttendeeInfo.webex_meetings_display_name = username
+                    webMeetingAppAttendeeInfo.webex_meetings_mail = email
+
+                else:
+
+                    webMeetingAppAttendeeInfo = models.Attendees(
+                        user_guid=guid,
+                        fullname=fullname,
+                        is_guest=is_guest,
+                        webex_meetings_display_name=username,
+                        webex_meetings_mail=email,
+                        node_settings=nodeSettings,
+                    )
+
+        else:
+
+            if appName == settings.MICROSOFT_TEAMS:
+
+                webMeetingAppAttendeeInfo = models.Attendees(
+                    user_guid=guid,
+                    fullname=fullname,
+                    is_guest=is_guest,
+                    microsoft_teams_user_name=username,
+                    microsoft_teams_mail=email,
+                    node_settings=nodeSettings,
+                )
+            elif appName == settings.WEBEX_MEETINGS:
+
+                webMeetingAppAttendeeInfo = models.Attendees(
+                    user_guid=guid,
+                    fullname=fullname,
+                    is_guest=is_guest,
+                    webex_meetings_display_name=username,
+                    webex_meetings_mail=email,
+                    node_settings=nodeSettings,
+                )
 
         webMeetingAppAttendeeInfo.save()
 
