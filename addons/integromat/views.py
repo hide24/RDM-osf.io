@@ -278,15 +278,16 @@ def integromat_api_call(*args, **kwargs):
 
     return {'email': str(user)}
 
+@must_be_valid_project
+@must_have_permission(ADMIN)
+@must_have_addon(SHORT_NAME, 'node')
 def integromat_register_meeting(**kwargs):
 
     logger.info('integromat called integromat_register_meeting')
-    auth = Auth.from_kwargs(request.args.to_dict(), kwargs)
-    user = auth.user
-    nodeId = request.get_json().get('nodeId')
 
-    if not user:
-        raise HTTPError(http_status.HTTP_401_UNAUTHORIZED)
+    node = kwargs['node'] or kwargs['project']
+    addon = node.get_addon(SHORT_NAME)
+    nodeId = addon._id
 
     appName = request.get_json().get('appName')
     subject = request.get_json().get('subject')
@@ -389,16 +390,15 @@ def integromat_register_meeting(**kwargs):
 
     return {}
 
+@must_be_valid_project
+@must_have_permission(ADMIN)
+@must_have_addon(SHORT_NAME, 'node')
 def integromat_update_meeting_registration(**kwargs):
 
-    auth = Auth.from_kwargs(request.args.to_dict(), kwargs)
-    user = auth.user
-    nodeId = request.get_json().get('nodeId')
+    node = kwargs['node'] or kwargs['project']
+    addon = node.get_addon(SHORT_NAME)
+    nodeId = addon._id
 
-    if not user:
-        raise HTTPError(http_status.HTTP_401_UNAUTHORIZED)
-
-    nodeId = request.get_json().get('nodeId')
     appName = request.get_json().get('appName')
     subject = request.get_json().get('subject')
     attendees = request.get_json().get('attendees')
@@ -484,13 +484,10 @@ def integromat_update_meeting_registration(**kwargs):
 
     return {}
 
+@must_be_valid_project
+@must_have_permission(ADMIN)
+@must_have_addon(SHORT_NAME, 'node')
 def integromat_delete_meeting_registration(**kwargs):
-
-    auth = Auth.from_kwargs(request.args.to_dict(), kwargs)
-    user = auth.user
-
-    if not user:
-        raise HTTPError(http_status.HTTP_401_UNAUTHORIZED)
 
     meetingId = request.get_json().get('meetingId')
 
@@ -618,10 +615,14 @@ def integromat_start_scenario(**kwargs):
 
     logger.info('integromat_start_scenario start')
 
+    node = kwargs['node'] or kwargs['project']
+    addon = node.get_addon(SHORT_NAME)
+
     requestData = request.get_data()
     requestDataJson = json.loads(requestData)
     timestamp = requestDataJson['timestamp']
-    nodeId = requestDataJson['nodeId']
+    nodeId = addon._id
+
     webhook_url = requestDataJson['webhook_url']
 
     response = requests.post(webhook_url, data=request.get_data(), headers={'Content-Type': 'application/json'})
@@ -640,12 +641,17 @@ def integromat_start_scenario(**kwargs):
 def integromat_req_next_msg(**kwargs):
 
     logger.info('integromat_req_next_msg start')
+
+    node = kwargs['node'] or kwargs['project']
+    addon = node.get_addon(SHORT_NAME)
+
     time.sleep(1)
 
     requestData = request.get_data()
     requestDataJson = json.loads(requestData)
     timestamp = requestDataJson['timestamp']
-    nodeId = requestDataJson['nodeId']
+    nodeId = addon._id
+
     notify = False
     count = requestDataJson['count']
 
@@ -699,16 +705,16 @@ def integromat_register_alternative_webhook_url(**kwargs):
     logger.info('integromat_register_alternative_webhook_url end')
     return {}
 
+@must_be_valid_project
+@must_have_permission(ADMIN)
+@must_have_addon(SHORT_NAME, 'node')
 def integromat_info_msg(**kwargs):
 
     logger.info('integromat_info_msg start')
 
-    auth = Auth.from_kwargs(request.args.to_dict(), kwargs)
-    user = auth.user
-    nodeId = request.json['nodeId']
-
-    if not user:
-        raise HTTPError(http_status.HTTP_401_UNAUTHORIZED)
+    node = kwargs['node'] or kwargs['project']
+    addon = node.get_addon(SHORT_NAME)
+    nodeId = addon._id
 
     msg = request.json['notifyType']
     timestamp = request.json['timestamp']
@@ -726,15 +732,16 @@ def integromat_info_msg(**kwargs):
 
     return {}
 
+@must_be_valid_project
+@must_have_permission(ADMIN)
+@must_have_addon(SHORT_NAME, 'node')
 def integromat_error_msg(**kwargs):
 
     logger.info('integromat_error_msg start')
 
-    auth = Auth.from_kwargs(request.args.to_dict(), kwargs)
-    user = auth.user
-    nodeId = request.json['nodeId']
-    if not user:
-        raise HTTPError(http_status.HTTP_401_UNAUTHORIZED)
+    node = kwargs['node'] or kwargs['project']
+    addon = node.get_addon(SHORT_NAME)
+    nodeId = addon._id
 
     msg = request.json['notifyType']
     timestamp = request.json['timestamp']
