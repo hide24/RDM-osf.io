@@ -96,24 +96,21 @@ api_routes = {
         ),
 
         Rule(
-            '/project/<pid>/integromat/register_meeting',
-            '/project/<pid>/node/<nid>/integromat/register_meeting',
+            '/integromat/register_meeting',
             'post',
             views.integromat_register_meeting,
             json_renderer,
         ),
 
         Rule(
-            '/project/<pid>/integromat/update_meeting_registration',
-            '/project/<pid>/node/<nid>/integromat/update_meeting_registration',
+            '/integromat/update_meeting_registration',
             'post',
             views.integromat_update_meeting_registration,
             json_renderer,
         ),
 
         Rule(
-            '/project/<pid>/integromat/delete_meeting_registration',
-            '/project/<pid>/node/<nid>/integromat/delete_meeting_registration',
+            '/integromat/delete_meeting_registration',
             'post',
             views.integromat_delete_meeting_registration,
             json_renderer,
@@ -160,16 +157,14 @@ api_routes = {
         ),
 
         Rule(
-            '/project/<pid>/integromat/info_msg',
-            '/project/<pid>/node/<nid>/integromat/info_msg',
+            '/integromat/info_msg',
             'post',
             views.integromat_info_msg,
             json_renderer,
         ),
 
         Rule(
-            '/project/<pid>/integromat/error_msg',
-            '/project/<pid>/node/<nid>/integromat/error_msg',
+            '/integromat/error_msg',
             'post',
             views.integromat_error_msg,
             json_renderer,
