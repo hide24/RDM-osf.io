@@ -615,13 +615,9 @@ def integromat_start_scenario(**kwargs):
 
     logger.info('integromat_start_scenario start')
 
-    node = kwargs['node'] or kwargs['project']
-    addon = node.get_addon(SHORT_NAME)
-
     requestData = request.get_data()
     requestDataJson = json.loads(requestData)
     timestamp = requestDataJson['timestamp']
-    nodeId = addon._id
 
     webhook_url = requestDataJson['webhook_url']
 
@@ -674,11 +670,11 @@ def integromat_req_next_msg(**kwargs):
         notify = True
 
     return {
-            'integromatMsg': integromatMsg,
-            'timestamp': timestamp,
-            'notify': notify,
-            'count': count,
-            }
+        'integromatMsg': integromatMsg,
+        'timestamp': timestamp,
+        'notify': notify,
+        'count': count,
+    }
 
 @must_be_valid_project
 @must_have_permission(ADMIN)
