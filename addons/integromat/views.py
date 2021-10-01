@@ -631,7 +631,6 @@ def integromat_start_scenario(**kwargs):
     logger.info('integromat_start_scenario end')
 
     return {
-        'nodeId': nodeId,
         'timestamp': timestamp
     }
 
@@ -674,7 +673,7 @@ def integromat_req_next_msg(**kwargs):
     if integromatMsg:
         notify = True
 
-    return {'nodeId': nodeId,
+    return {
             'integromatMsg': integromatMsg,
             'timestamp': timestamp,
             'notify': notify,
