@@ -700,6 +700,8 @@ def integromat_register_alternative_webhook_url(**kwargs):
     logger.info('integromat_register_alternative_webhook_url end')
     return {}
 
+@must_be_valid_project
+@must_have_addon(SHORT_NAME, 'node')
 def integromat_info_msg(**kwargs):
 
     logger.info('integromat_info_msg start')
