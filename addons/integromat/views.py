@@ -701,7 +701,6 @@ def integromat_register_alternative_webhook_url(**kwargs):
     return {}
 
 @must_be_valid_project
-@must_have_permission(ADMIN)
 @must_have_addon(SHORT_NAME, 'node')
 def integromat_info_msg(**kwargs):
 
