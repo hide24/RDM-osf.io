@@ -3,10 +3,18 @@
     % if addon_data['complete'] or permissions.WRITE in user['permissions']:
         <div class="panel panel-default" name="${addon_data['short_name']}">
             <div class="panel-heading clearfix">
-                <h3 class="panel-title">${addon_data['full_name']}</h3>
+                % if addon_name != 'integromat':
+                    <h3 class="panel-title">${addon_data['full_name']}</h3>
+                % elif addon_name == 'integromat':
+                    <h3 class="panel-title">${addon_data['tab_name']}</h3>
+                % endif
                 <div class="pull-right">
                     % if addon_data['has_page']:
-                        <a href="${node['url']}${addon_data['short_name']}"><i class="fa fa-external-link"></i></a>
+                        % if addon_name != 'integromat':
+                            <a href="${node['url']}${addon_data['short_name']}"><i class="fa fa-external-link"></i></a>
+                        % elif addon_name == 'integromat':
+                            <a href="${node['url']}${addon_data['tab_path']}"><i class="fa fa-external-link"></i></a>
+                        % endif
                     % endif
                     % if 'can_expand' in addon_data and addon_data['can_expand']:
                         <button class="btn btn-link project-toggle"><i class="fa fa-angle-down"></i></button>

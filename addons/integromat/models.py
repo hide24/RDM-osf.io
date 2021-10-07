@@ -36,7 +36,10 @@ class NodeSettings(BaseOAuthNodeSettings, BaseStorageAddon):
 
     @property
     def complete(self):
-        return self.has_auth and self.folder_id is not None
+        return bool(self.has_auth and self.user_settings.verify_oauth_access(
+            node=self.owner,
+            external_account=self.external_account,
+        ))
 
     def authorize(self, user_settings, save=False):
         self.user_settings = user_settings
