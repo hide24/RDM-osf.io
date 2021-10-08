@@ -14,7 +14,11 @@
                           {"name": "Kanazawa University Cloud(HyperStore)",
                            "host": "s3-kakuma.rdm.kanazawa-u.ac.jp"},
                           {"name": "Rakuten Cloud",
-                           "host": "s3.jp3.objectstorage.rakuten-cloud.net"}
+                           "host": "s3.jp3.objectstorage.rakuten-cloud.net"},
+                          {"name": "mdx S3DS",
+                           "host": "s3ds.mdx.jp",
+                           "bucketLocations": {
+                             "us-east-1": {"name": "us-east-1", "host": "s3ds.mdx.jp"}}}
                            ],
     "encryptUploads": true
 }
