@@ -630,6 +630,7 @@ def integromat_start_scenario(**kwargs):
 
 
     response = requests.post(webhook_url, data=requestDataJson, headers={'Content-Type': 'application/json'})
+    response.raise_for_status()
 
     logger.info('webhook response:' + str(response))
     logger.info('integromat_start_scenario end')
