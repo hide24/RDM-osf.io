@@ -619,9 +619,15 @@ def integromat_start_scenario(**kwargs):
     requestDataJson = json.loads(requestData)
     timestamp = requestDataJson['timestamp']
 
+    logger.info('requestData' + str(requestData))
+    logger.info('requestDataJson' + str(requestDataJson))
+
     webhook_url = requestDataJson['webhook_url']
 
     requestDataJson.pop('webhook_url')
+
+    logger.info('requestDataJson remove webhook' + str(requestDataJson))
+
 
     response = requests.post(webhook_url, data=requestDataJson, headers={'Content-Type': 'application/json'})
 
