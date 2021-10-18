@@ -164,6 +164,10 @@ def makeInstitutionUserList(users):
 def grdmapps_get_config_ember(**kwargs):
     node = kwargs['node'] or kwargs['project']
     addon = node.get_addon(SHORT_NAME)
+
+    if not addon.complete:
+        raise HTTPError(http_status.HTTP_403_FORBIDDEN)
+
     auth = kwargs['auth']
     user = auth.user
 
