@@ -202,18 +202,19 @@ def grdmapps_get_config_ember(**kwargs):
 
     return {'data': {'id': node._id, 'type': 'grdmapps-config',
                      'attributes': {
+                         'node_settings_id': addon._id,
                          'all_web_meetings': allWebMeetingsJson,
-                         'upcomingWebMeetings': upcomingWebMeetingsJson,
-                         'previousWebMeetings': previousWebMeetingsJson,
-                         'nodeAttendeesAll': nodeAttendeesAllJson,
-                         'nodeMicrosoftTeamsAttendees': nodeMicrosoftTeamsAttendeesJson,
-                         'nodeWebexMeetingsAttendees': nodeWebexMeetingsAttendeesJson,
-                         'nodeWebMeetingsAttendeesRelation': nodeWebMeetingsAttendeesRelationJson,
+                         'upcoming_web_meetings': upcomingWebMeetingsJson,
+                         'previous_web_meetings': previousWebMeetingsJson,
+                         'node_attendees_all': nodeAttendeesAllJson,
+                         'node_microsoft_teams_attendees': nodeMicrosoftTeamsAttendeesJson,
+                         'node_webex_meetings_attendees': nodeWebexMeetingsAttendeesJson,
+                         'node_web_meetings_attendees_relation': nodeWebMeetingsAttendeesRelationJson,
                          'workflows': workflowsJson,
-                         'nodeWorkflows': nodeWorkflowsJson,
-                         'webMeetingApps': webMeetingAppsJson,
-                         'appNameMicrosoftTeams': settings.MICROSOFT_TEAMS,
-                         'appNameWebexMeetings': settings.WEBEX_MEETINGS,
+                         'node_workflows': nodeWorkflowsJson,
+                         'web_meeting_apps': webMeetingAppsJson,
+                         'app_name_microsoft_teams': settings.MICROSOFT_TEAMS,
+                         'app_name_webex_meetings': settings.WEBEX_MEETINGS,
                          'institution_users': institutionUsers
                      }}}
 
@@ -253,14 +254,14 @@ def grdmapps_set_config_ember(**kwargs):
 
     return {'data': {'id': node._id, 'type': 'grdmapps-config',
                      'attributes': {
-                         'allWebMeetings': allWebMeetingsJson,
-                         'upcomingWebMeetings': upcomingWebMeetingsJson,
-                         'previousWebMeetings': previousWebMeetingsJson,
-                         'nodeAttendeesAll': nodeAttendeesAllJson,
-                         'nodeMicrosoftTeamsAttendees': nodeMicrosoftTeamsAttendeesJson,
-                         'nodeWebexMeetingsAttendees': nodeWebexMeetingsAttendeesJson,
-                         'nodeWebMeetingsAttendeesRelation': nodeWebMeetingsAttendeesRelationJson,
-                         'nodeWorkflows': nodeWorkflowsJson,
+                         'all_web_meetings': allWebMeetingsJson,
+                         'upcoming_web_meetings': upcomingWebMeetingsJson,
+                         'previous_web_meetings': previousWebMeetingsJson,
+                         'node_attendees_all': nodeAttendeesAllJson,
+                         'node_microsoft_teams_attendees': nodeMicrosoftTeamsAttendeesJson,
+                         'node_webex_meetings_attendees': nodeWebexMeetingsAttendeesJson,
+                         'node_web_meetings_attendees_relation': nodeWebMeetingsAttendeesRelationJson,
+                         'node_workflows': nodeWorkflowsJson,
                          'institution_users': institutionUsers
                      }}}
 
@@ -503,7 +504,7 @@ def integromat_delete_meeting_registration(**kwargs):
 @must_be_valid_project
 @must_have_permission(ADMIN)
 @must_have_addon(SHORT_NAME, 'node')
-def integromat_register_webMeetingApps_email(**kwargs):
+def integromat_register_web_meeting_apps_email(**kwargs):
 
     node = kwargs['node'] or kwargs['project']
     addon = node.get_addon(SHORT_NAME)
