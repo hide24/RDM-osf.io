@@ -503,7 +503,7 @@ def integromat_delete_meeting_registration(**kwargs):
 @must_be_valid_project
 @must_have_permission(ADMIN)
 @must_have_addon(SHORT_NAME, 'node')
-def integromat_register_web_meeting_apps_email(**kwargs):
+def integromat_register_webMeetingApps_email(**kwargs):
 
     node = kwargs['node'] or kwargs['project']
     addon = node.get_addon(SHORT_NAME)
