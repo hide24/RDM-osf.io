@@ -60,31 +60,16 @@ class NodeSettings(BaseOAuthNodeSettings, BaseStorageAddon):
         self.folder_id = str(folder_id)
         host = self.external_account.provider_id.split('\t')[0]
 
-        api_support = None
-        default_location = None
-        bucket_location = ''
-
-        try:
-            service = find_service_by_host(host)
-            api_support = service['apiSupport']
-            default_location = default_location if api_support else service['defaultLocation']
-        except KeyError:
-            # apiSupport is not set, set to True as default.
-            pass
-        if api_support is None or api_support == '':
-            api_support = True
-
-        if api_support:
-            bucket_location = get_bucket_location_or_error(
-                host,
-                self.external_account.oauth_key,
-                self.external_account.oauth_secret,
-                folder_id
-            )
-
+        bucket_location = get_bucket_location_or_error(
+            host,
+            self.external_account.oauth_key,
+            self.external_account.oauth_secret,
+            folder_id
+        )
         self.folder_location = bucket_location
         try:
-             bucket_location = service['bucketLocations'][bucket_location]['name'] if api_support else default_location
+            service = find_service_by_host(host)
+            bucket_location = service['bucketLocations'][bucket_location]['name']
         except KeyError:
             # Unlisted location, Default to the key.
             pass
