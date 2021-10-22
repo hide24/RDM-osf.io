@@ -84,7 +84,7 @@ class NodeSettings(BaseOAuthNodeSettings, BaseStorageAddon):
 
         self.folder_location = bucket_location
         try:
-            bucket_location = service['bucketLocations'][bucket_location]['name'] if api_support else default_location
+             bucket_location = service['bucketLocations'][bucket_location]['name'] if api_support else default_location
         except KeyError:
             # Unlisted location, Default to the key.
             pass
