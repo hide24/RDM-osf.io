@@ -163,6 +163,10 @@ script:
     # Testmon will run for PRs, but will be disabled when merging into master or develop
     - export TESTMON=`if [[ "$TRAVIS_PULL_REQUEST_BRANCH" == "" && "$TRAVIS_BRANCH" == "nii-mergework-202007-travisci" || "$TRAVIS_PULL_REQUEST_BRANCH" == "" && "$TRAVIS_BRANCH" == "master" ]]; then echo ""; else  echo "--testmon"; fi`
     - export TESTMON_DATAFILE=$HOME/.cache/testmon/.testmondata_$TEST_BUILD
+    - echo "THIS01"
+    - echo $TRAVIS_PULL_REQUEST_BRANCH
+    - echo TRAVIS_BRANCH
+    - echo $TESTMON
     - rm $TESTMON_DATAFILE
     - invoke test_travis_$TEST_BUILD -n 1 $COVERAGE
 
