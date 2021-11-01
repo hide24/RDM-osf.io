@@ -168,7 +168,7 @@ script:
     - echo TRAVIS_BRANCH
     - echo $TESTMON
     - rm $TESTMON_DATAFILE
-    - invoke test_travis_$TEST_BUILD -n 1 $COVERAGE
+    - invoke test_travis_$TEST_BUILD -n 1 $COVERAGE $TESTMON
 
 after_success:
     - if [[ $(echo "$TRAVIS_BRANCH"|grep -e "feature/") ]]; then coveralls; fi
