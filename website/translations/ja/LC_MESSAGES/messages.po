@@ -7,16 +7,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  0.6.0\n"
 "Report-Msgid-Bugs-To: rocs-office@nii.ac.jp\n"
-"POT-Creation-Date: 2021-03-12 18:15+0900\n"
+"POT-Creation-Date: 2021-09-17 12:56+0900\n"
 "PO-Revision-Date: 2020-11-10 20:10+0900\n"
-"Last-Translator: Hiroki Ohashi\n"
+"Last-Translator: Shunta Nishikawa\n"
 "Language: ja\n"
 "Language-Team: RCOS <rocs-office@nii.ac.jp>\n"
 "Plural-Forms: nplurals=1; plural=0\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.5.1\n"
+"Generated-By: Babel 2.7.0\n"
 
 #: addons/azureblobstorage/templates/azureblobstorage_credentials_modal.mako:6
 msgid "Connect an Azure Blob Storage Account"
@@ -34,6 +34,7 @@ msgstr "アカウントキー"
 #: addons/azureblobstorage/templates/azureblobstorage_node_settings.mako:77
 #: addons/dataverse/templates/dataverse_credentials_modal.mako:75
 #: addons/gitlab/templates/gitlab_credentials_modal.mako:55
+#: addons/integromat/templates/integromat_credentials_modal.mako:35
 #: addons/jupyterhub/templates/jupyterhub_node_settings.mako:99
 #: addons/nextcloud/templates/nextcloud_credentials_modal.mako:71
 #: addons/nextcloud/templates/nextcloud_node_settings.mako:72
@@ -83,6 +84,7 @@ msgstr "キャンセル"
 #: addons/github/templates/github_node_settings.mako:54
 #: addons/gitlab/templates/gitlab_credentials_modal.mako:57
 #: addons/gitlab/templates/gitlab_node_settings.mako:64
+#: addons/integromat/templates/integromat_credentials_modal.mako:38
 #: addons/jupyterhub/templates/jupyterhub_node_settings.mako:18
 #: addons/nextcloud/templates/nextcloud_credentials_modal.mako:74
 #: addons/nextcloud/templates/nextcloud_node_settings.mako:74
@@ -127,6 +129,8 @@ msgstr "保存"
 #: addons/github/templates/github_node_settings.mako:15
 #: addons/gitlab/templates/gitlab_node_settings.mako:18
 #: addons/gitlab/templates/gitlab_user_settings.mako:18
+#: addons/integromat/templates/integromat_node_settings.mako:14
+#: addons/integromat/templates/integromat_user_settings.mako:18
 #: addons/nextcloud/templates/nextcloud_node_settings.mako:15
 #: addons/nextcloud/templates/nextcloud_user_settings.mako:18
 #: addons/owncloud/templates/owncloud_node_settings.mako:15
@@ -152,6 +156,7 @@ msgstr "アカウントを切断"
 #: addons/dataverse/templates/dataverse_node_settings.mako:22
 #: addons/github/templates/github_node_settings.mako:21
 #: addons/gitlab/templates/gitlab_node_settings.mako:24
+#: addons/integromat/templates/integromat_node_settings.mako:21
 #: addons/nextcloud/templates/nextcloud_node_settings.mako:22
 #: addons/owncloud/templates/owncloud_node_settings.mako:22
 #: addons/s3/templates/s3_node_settings.mako:21
@@ -165,6 +170,7 @@ msgid "Import Account from Profile"
 msgstr "プロフィールからアカウントをインポート"
 
 #: addons/azureblobstorage/templates/azureblobstorage_node_settings.mako:28
+#: addons/integromat/templates/integromat_node_settings.mako:28
 #: addons/s3/templates/s3_node_settings.mako:28
 #: addons/s3compat/templates/s3compat_node_settings.mako:28
 #: addons/s3compatb3/templates/s3compatb3_node_settings.mako:28
@@ -176,6 +182,7 @@ msgstr "ロード中..."
 
 #: addons/azureblobstorage/templates/azureblobstorage_node_settings.mako:35
 #: addons/dataverse/templates/dataverse_node_settings.mako:29
+#: addons/integromat/templates/integromat_node_settings.mako:35
 #: addons/nextcloud/templates/nextcloud_node_settings.mako:29
 #: addons/owncloud/templates/owncloud_node_settings.mako:29
 #: addons/s3/templates/s3_node_settings.mako:35
@@ -229,6 +236,7 @@ msgstr "%(folderName)sに接続しますか？"
 #: addons/azureblobstorage/templates/azureblobstorage_user_settings.mako:12
 #: addons/dataverse/templates/dataverse_user_settings.mako:12
 #: addons/gitlab/templates/gitlab_user_settings.mako:12
+#: addons/integromat/templates/integromat_user_settings.mako:12
 #: addons/nextcloud/templates/nextcloud_user_settings.mako:12
 #: addons/owncloud/templates/owncloud_user_settings.mako:12
 #: addons/s3/templates/s3_user_settings.mako:12
@@ -248,6 +256,7 @@ msgstr "承認者：%(userName)s"
 #: addons/azureblobstorage/templates/azureblobstorage_user_settings.mako:32
 #: addons/dataverse/templates/dataverse_user_settings.mako:31
 #: addons/gitlab/templates/gitlab_user_settings.mako:31
+#: addons/integromat/templates/integromat_user_settings.mako:31
 #: addons/nextcloud/templates/nextcloud_user_settings.mako:31
 #: addons/owncloud/templates/owncloud_user_settings.mako:31
 #: addons/s3/templates/s3_user_settings.mako:32
@@ -268,6 +277,28 @@ msgstr "非公開プロジェクト"
 #: website/templates/profile/user_settings_default.mako:32
 msgid "disconnect Project"
 msgstr "プロジェクトを切断する"
+
+#: addons/base/models.py:466
+msgid ""
+"Because you have not configured the {addon} add-on, your authentication "
+"will not be transferred to the forked {category}. You may authorize and "
+"configure the {addon} add-on in the new fork on the settings page."
+msgstr ""
+
+#: addons/base/models.py:474
+msgid ""
+"Because you have authorized the {addon} add-on for this {category}, "
+"forking it will also transfer your authentication to the forked "
+"{category}."
+msgstr ""
+
+#: addons/base/models.py:481
+msgid ""
+"Because the {addon} add-on has been authorized by a different user, "
+"forking it will not transfer authentication to the forked {category}. You"
+" may authorize and configure the {addon} add-on in the new fork on the "
+"settings page."
+msgstr ""
 
 #: addons/bitbucket/templates/bitbucket_node_settings.mako:25
 #: addons/github/templates/github_node_settings.mako:25
@@ -317,6 +348,7 @@ msgid "Only Dataverse repositories v4.0 or higher are supported."
 msgstr "Dataverseリポジトリv4.0以降のみがサポートされています。"
 
 #: addons/dataverse/templates/dataverse_credentials_modal.mako:46
+#: addons/integromat/templates/integromat_credentials_modal.mako:15
 msgid "API Token"
 msgstr "APIトークン"
 
@@ -439,6 +471,31 @@ msgid ""
 " addon credentials                    may no longer be valid. Contact "
 "%(authOsfName)s to verify."
 msgstr "現在、%(addonName)s設定を取得できませんでした。%(addonName)sアドオンの認証情報が無効になる場合があります。%(authOsfName)sに連絡して確認してください。"
+
+#: addons/integromat/templates/integromat_credentials_modal.mako:6
+msgid "Connect an Integromat Account"
+msgstr "Integromatアカウントを接続"
+
+#: addons/integromat/templates/integromat_credentials_modal.mako:19
+#, python-format
+msgid "(Get from Integromat  %(externalLinkIcon)s)"
+msgstr "(Integromat%(externalLinkIcon)sから取得)"
+
+#: addons/integromat/templates/integromat_node_settings.mako:11
+#: website/templates/project/addon/node_settings_default.mako:7
+#, python-format
+msgid "authorized by %(ownerName)s"
+msgstr "は%(ownerName)sによって認証済みです"
+
+#: addons/integromat/templates/integromat_user_settings.mako:23
+#: addons/s3/templates/s3_user_settings.mako:24
+#: addons/s3compat/templates/s3compat_user_settings.mako:24
+#: addons/s3compatb3/templates/s3compatb3_user_settings.mako:24
+#: addons/swift/templates/swift_user_settings.mako:24
+#: addons/weko/templates/weko_user_settings.mako:23
+#: website/templates/profile/user_settings_default.mako:20
+msgid "Authorized by "
+msgstr "認証者:"
 
 #: addons/jupyterhub/templates/jupyterhub_node_settings.mako:13
 #: addons/wiki/templates/edit.mako:34
@@ -604,15 +661,6 @@ msgstr "bucketを作成"
 #: addons/s3/templates/s3_node_settings.mako:63
 msgid "Loading buckets..."
 msgstr "bucketをロード中..."
-
-#: addons/s3/templates/s3_user_settings.mako:24
-#: addons/s3compat/templates/s3compat_user_settings.mako:24
-#: addons/s3compatb3/templates/s3compatb3_user_settings.mako:24
-#: addons/swift/templates/swift_user_settings.mako:24
-#: addons/weko/templates/weko_user_settings.mako:23
-#: website/templates/profile/user_settings_default.mako:20
-msgid "Authorized by "
-msgstr "認証者:"
 
 #: addons/s3compat/templates/s3compat_credentials_modal.mako:6
 #: addons/s3compatb3/templates/s3compatb3_credentials_modal.mako:6
@@ -1055,56 +1103,46 @@ msgid ""
 "performance, please switch to another browser."
 msgstr "OSFはInternet Explorerの使用をサポートしていません。 最適なパフォーマンスを得るには、別のブラウザに切り替えてください。"
 
-#: website/templates/base.mako:148 website/templates/base.mako:161
+#: website/templates/base.mako:148 website/templates/base.mako:162
 msgid "Accept"
 msgstr "同意する"
 
 #: website/templates/base.mako:154
 #, python-format
 msgid ""
-"GakuNin RDM is a service provided by National Institute of Informatics "
-"(NII) with its user organizations’ consent,                  and the "
-"rules set by each user organization shall apply to the individual users. "
-"                 GakuNin RDM uses cookies to operate its services and "
-"improve the user experience. Users of GakuNin RDM are requested to read "
-"the information on our <a href='https://meatwiki.nii.ac.jp/confluence/display/gakuninrdmusers/GakuNin+RDM+Privacy+Policy'>privacy policy</a>. "
-"                 By clicking \"I agree\" button on the right or continuing "
-"to use this site, you agree to our use of cookies. If you do not agree, "
-"                 please disable cookies in your browser settings or "
-"discontinue using this site. Please note that by not using cookies, "
-"you may not be able to use some of the functions of this site. "
-"                 Please refer to <a target='_blank' href='https://meatwiki.nii.ac.jp/confluence/pages/viewpage.action?pageId=32676419'>the Terms of Use</a> "
-"for the details on the agreement between the user organizations and NII."
+"GakuNin RDM is a service provided by the National Institute of "
+"Informatics (NII) on trust from user organizations,                  and "
+"the <a %(meatwikiTermsOfUse)s>terms of use</a> and <a "
+"%(meatwikiPrivacyPolicy)s>privacy policy</a> of each user organization "
+"are applied.                  GakuNin RDM uses cookies to operate the "
+"service and improve the user experience. Users of GakuNin RDM are "
+"requested to read the information on our privacy policy."
+"                  By clicking \"I agree\" or continuing to use this site,"
+" you agree to our use of cookies. If you disagree, please disable cookies"
+" in your browser settings or discontinue using this site."
+"                  Please note that by not using cookies, you may not be "
+"able to use some of this website's functions."
 msgstr ""
-"GakuNin RDMは、利用機関の同意を受けて国立情報学研究所（NII）がサービスを提供しているものであり、"
-"利用者については、利用機関が定めた規程が適用されます。また、GakuNin RDMではサービスの運営および"
-"ユーザ体験の向上を目的にクッキーを利用しております。GakuNin RDMをご利用されるお客様は、"
-"<a href='https://meatwiki.nii.ac.jp/confluence/pages/viewpage.action?pageId=32676422'>プライバシーポリシー</a>に関する情報をご覧ください。"
-"右側の「同意する」ボタンをクリックまたは当サイトの利用を継続されることで、"
-"弊所がクッキーを使用することにご同意いただいたものとさせていただきます。"
-"ご同意いただけない場合には、お客様のブラウザ設定でクッキーを無効化していただくか、または当サイトの利用を中止して下さい。"
-"クッキーを利用しないことで、当サイトの一部の機能がご利用いただけない可能性がございますがご了承ください。"
-"尚、利用機関とNIIの間で同意している事項につきましては、<a target='_blank' href='https://meatwiki.nii.ac.jp/confluence/pages/viewpage.action?pageId=32676419'>規約サイト</a>で確認ができます。"
 
-#: website/templates/base.mako:172
+#: website/templates/base.mako:173
 msgid "Start managing your projects on the GakuNin RDM today."
 msgstr "GakuNin RDMでプロジェクトの管理を今すぐ始めましょう。"
 
-#: website/templates/base.mako:173
+#: website/templates/base.mako:174
 msgid ""
 "Free and easy to use, the GakuNin RDM supports the entire research "
 "lifecycle: planning, execution, reporting, archiving, and discovery."
 msgstr "使いやすいGakuNin RDMは、計画、実行、レポート、アーカイブ、および発見という研究ライフサイクル全体をサポートします。"
 
-#: website/templates/base.mako:175
+#: website/templates/base.mako:176
 msgid "Create an Account"
 msgstr "アカウント作成"
 
-#: website/templates/base.mako:177
+#: website/templates/base.mako:178
 msgid "Learn More"
 msgstr "もっと詳しく知る"
 
-#: website/templates/base.mako:178
+#: website/templates/base.mako:179
 msgid "Hide this message"
 msgstr "このメッセージを非表示"
 
@@ -1175,7 +1213,7 @@ msgstr "私は<em>%(username)s</em>では<strong>ありません</strong>。"
 
 #: website/templates/claim_account_eppn.mako:29
 #: website/templates/claim_account_registered.mako:25
-#: website/templates/prereg_landing_page.mako:24
+#: website/templates/prereg_landing_page.mako:20
 #: website/templates/project/modal_remove_contributor.mako:97
 msgid "Continue"
 msgstr "続ける"
@@ -1227,7 +1265,7 @@ msgid "Reproducibility&nbsp;Project: Cancer Biology"
 msgstr "再現性&nbsp;プロジェクト：がん生物学"
 
 #: website/templates/institution.mako:8
-#: website/templates/project/project_header.mako:200
+#: website/templates/project/project_header.mako:222
 msgid ""
 "<strong>NOTICE: </strong>Forks, registrations, and uploads will be "
 "temporarily disabled while the GakuNin RDM undergoes a hardware upgrade. "
@@ -1329,7 +1367,7 @@ msgid ""
 "<h4>We've updated our <a target=\"_blank\" "
 "href=\"https://meatwiki.nii.ac.jp/confluence/pages/viewpage.action?pageId=32676419\">Terms"
 " of Use</a> and <a target=\"_blank\" "
-"href=\"https://meatwiki.nii.ac.jp/confluence/display/gakuninrdmusers/GakuNin+RDM+Privacy+Policy\">Privacy"
+"href=\"https://meatwiki.nii.ac.jp/confluence/pages/viewpage.action?pageId=32676422\">Privacy"
 " Policy</a>. Please read them carefully.</h4>"
 msgstr ""
 "\n"
@@ -1359,6 +1397,10 @@ msgstr ""
 "<button class=\"btn btn-primary\" data-dismiss=\"alert\" id=\"continue\" "
 "disabled>続ける</button>\n"
 "</div>"
+
+#: website/templates/messages.mako:30
+msgid "Web Apps"
+msgstr "アプリ"
 
 #: website/templates/my_projects.mako:2 website/templates/nav.mako:51
 msgid "My Projects"
@@ -1429,7 +1471,7 @@ msgstr "プロフィール"
 #: website/templates/profile/personal_tokens_list.mako:4
 #: website/templates/profile/settings.mako:2
 #: website/templates/profile/settings.mako:9
-#: website/templates/project/project_header.mako:80
+#: website/templates/project/project_header.mako:102
 #: website/templates/project/settings.mako:2
 #: website/templates/project/settings.mako:5
 #: website/templates/util/render_node.mako:67
@@ -1470,34 +1512,30 @@ msgstr "<span id=\"maintenanceTime\"></span>の間メンテナスが行われま
 msgid "Thank you for your patience."
 msgstr "お待たせしてすみません。"
 
-#: website/templates/prereg_landing_page.mako:5
+#: website/templates/prereg_landing_page.mako:4
 msgid "GakuNin RDM Preregistration"
 msgstr "GakuNin RDM 事前登録"
 
-#: website/templates/prereg_landing_page.mako:7
-msgid "GakuNin RDM Prereg Challenge"
-msgstr "GakuNin RDM プレレグチャレンジ"
-
-#: website/templates/prereg_landing_page.mako:22
+#: website/templates/prereg_landing_page.mako:18
 msgid "Please provide a title for your project:"
 msgstr "プロジェクトのタイトルを入力してください:"
 
-#: website/templates/prereg_landing_page.mako:30
+#: website/templates/prereg_landing_page.mako:26
 msgid "Go to an existing preregistration:"
 msgstr "既存の事前登録に移動します:"
 
-#: website/templates/prereg_landing_page.mako:32
-#: website/templates/prereg_landing_page.mako:41
-#: website/templates/prereg_landing_page.mako:71
-#: website/templates/prereg_landing_page.mako:115
+#: website/templates/prereg_landing_page.mako:28
+#: website/templates/prereg_landing_page.mako:37
+#: website/templates/prereg_landing_page.mako:58
+#: website/templates/prereg_landing_page.mako:102
 msgid "Preregister"
 msgstr "事前登録"
 
-#: website/templates/prereg_landing_page.mako:39
+#: website/templates/prereg_landing_page.mako:35
 msgid "Preregister an existing project:"
 msgstr "既存のプロジェクトを事前登録する"
 
-#: website/templates/prereg_landing_page.mako:55
+#: website/templates/prereg_landing_page.mako:46
 #, python-format
 msgid ""
 "<p>Improve your research with <a %(cosPreregUrl)s>preregistration</a>. By"
@@ -1509,49 +1547,25 @@ msgstr ""
 "<p><a "
 "%(cosPreregUrl)s>事前登録</a>により研究を改善します。データ収集方法、分析計画、データ除外ルールなどの特定の詳細を記述することにより、重要な決定を早期に行い、これらの選択を明確に記録できます。これにより、データが目の前にあるときに発生するバイアスを減らすことができます。</p>"
 
-#: website/templates/prereg_landing_page.mako:56
+#: website/templates/prereg_landing_page.mako:47
 #, python-format
 msgid ""
 "<p>Use <a %(osfRegistriesUrl)s>OSF Registries</a> to discover previously "
 "registered work.</p>"
 msgstr "<p><a %(osfRegistriesUrl)s>OSFレジストリ</a>を使用して、以前に登録した作品を発見します。</p>"
 
-#: website/templates/prereg_landing_page.mako:58
-#, python-format
-msgid ""
-"<p><strong> Articles must be published by an <a "
-"%(preregMoreInfoUrl)s>approved</a> journal by December 31, 2018, to be "
-"eligible for a prize. Please use this this helpful workflow to "
-"preregister, even if you are not seeking a prize. </strong></p>"
-msgstr ""
-"<p><strong>賞品を獲得するには、2018年12月31日までに<a "
-"%(preregMoreInfoUrl)s>承認済み</a>ジャーナルで記事を公開する必要があります。賞品を探していない場合でも、この便利なワークフローを使用して事前登録してください。</strong></p>"
-
-#: website/templates/prereg_landing_page.mako:59
-#, python-format
-msgid ""
-"<p> Improve your research with preregistration. The process of creating a"
-" <a %(cosPreregUrl)s> preregistration</a> is beneficial to both the "
-"scientific field and to you, the scientist. By writing out detailed data "
-"collection methods, analysis plans, and rules for excluding or missing "
-"data, you can make important decisions that affect your workflow earlier,"
-" without the biases that occur once the data are in front of you.</p>"
-msgstr ""
-"<p>事前登録により研究を改善します。 <a "
-"%(cosPreregUrl)s>事前登録</a>を作成するプロセスは、科学分野と科学者の両方にとって有益です。詳細なデータ収集方法、分析計画、およびデータの除外または欠落に関するルールを記述することにより、データが目の前に発生するような偏りを生じることなく、ワークフローに影響を与える重要な決定を早期に行うことができます。</p>"
-
-#: website/templates/prereg_landing_page.mako:64
-#: website/templates/prereg_landing_page.mako:110
+#: website/templates/prereg_landing_page.mako:51
+#: website/templates/prereg_landing_page.mako:97
 msgid "Start a new preregistration"
 msgstr "新しい事前登録を開始する"
 
-#: website/templates/prereg_landing_page.mako:76
-#: website/templates/prereg_landing_page.mako:121
+#: website/templates/prereg_landing_page.mako:63
+#: website/templates/prereg_landing_page.mako:108
 msgid "Continue working on an existing draft preregistration"
 msgstr "既存の事前登録ドラフトの作業を続行します"
 
-#: website/templates/prereg_landing_page.mako:84
-#: website/templates/prereg_landing_page.mako:126
+#: website/templates/prereg_landing_page.mako:71
+#: website/templates/prereg_landing_page.mako:113
 msgid "Preregister a project you already have on the GakuNin RDM"
 msgstr "GakuNin RDMに既にあるプロジェクトを事前登録する"
 
@@ -1734,7 +1748,7 @@ msgstr "説明"
 #: website/templates/project/contributors.mako:8
 #: website/templates/project/contributors.mako:54
 #: website/templates/project/project.mako:163
-#: website/templates/project/project_header.mako:72
+#: website/templates/project/project_header.mako:83
 #: website/templates/search.mako:295 website/templates/search.mako:352
 #: website/templates/search_grdm.mako:438
 #: website/templates/search_grdm.mako:499
@@ -1834,7 +1848,7 @@ msgid "Page"
 msgstr "ページ"
 
 #: website/templates/include/comment_pane_template.mako:3
-#: website/templates/project/project_header.mako:86
+#: website/templates/project/project_header.mako:108
 msgid "Comments"
 msgstr "コメント"
 
@@ -3333,30 +3347,34 @@ msgstr "コンポーネント"
 msgid "Navigation"
 msgstr "ナビゲーション"
 
-#: website/templates/project/project_header.mako:61
+#: website/templates/project/project_header.mako:72
 msgid "Analytics"
 msgstr "分析"
 
-#: website/templates/project/project_header.mako:67
+#: website/templates/project/project_header.mako:78
 msgid "Registrations"
 msgstr "登録"
 
-#: website/templates/project/project_header.mako:76
+#: website/templates/project/project_header.mako:87
 msgid "Add-ons"
 msgstr "アドオン"
 
 #: website/templates/project/project_header.mako:96
+msgid "integromattab_name"
+msgstr ""
+
+#: website/templates/project/project_header.mako:118
 #: website/templates/project/timestamp.mako:2
 msgid "Timestamp"
 msgstr "証跡管理"
 
-#: website/templates/project/project_header.mako:128
+#: website/templates/project/project_header.mako:150
 msgid ""
 "This file is part of a registration and is being shown in its archived "
 "version (and cannot be altered)."
 msgstr "このファイルは登録の一部であり、アーカイブバージョンで表示されています（変更できません）。"
 
-#: website/templates/project/project_header.mako:129
+#: website/templates/project/project_header.mako:151
 #, python-format
 msgid ""
 "The <a %(archivedFromUrl)s>active file</a> is viewable from within the <a"
@@ -3365,14 +3383,14 @@ msgstr ""
 "<a %(archivedFromUrl)s>アクティブなファイル</a>は、<a "
 "%(registeredFromUrl)s>ライブ%(nodeType)s</a>内から表示できます。"
 
-#: website/templates/project/project_header.mako:131
+#: website/templates/project/project_header.mako:153
 #, python-format
 msgid ""
 "This registration is a frozen, non-editable version of <a "
 "%(registeredFromUrl)s>this %(nodeType)s</a>"
 msgstr "この登録は、<a %(registeredFromUrl)s>この%(nodeType)s</a>の凍結された編集不可バージョンです"
 
-#: website/templates/project/project_header.mako:135
+#: website/templates/project/project_header.mako:157
 #, python-format
 msgid ""
 "This is a pending registration of <a %(registeredFromUrl)s>this "
@@ -3383,17 +3401,17 @@ msgstr ""
 "これは<a "
 "%(registeredFromUrl)s>この%(nodeType)s</a>の保留中の登録であり、プロジェクト管理者からの承認を待っています。この登録は、すべてのプロジェクト管理者が登録または48時間のパスのいずれか早い方を承認したときに最終となります。"
 
-#: website/templates/project/project_header.mako:141
-#: website/templates/project/project_header.mako:173
+#: website/templates/project/project_header.mako:163
+#: website/templates/project/project_header.mako:195
 msgid "Cancel registration"
 msgstr "登録をキャンセル"
 
-#: website/templates/project/project_header.mako:159
+#: website/templates/project/project_header.mako:181
 #, python-format
 msgid "This %(nodeType)s is currently pending withdrawal."
 msgstr "この%(nodeType)sは現在、保留中です。"
 
-#: website/templates/project/project_header.mako:163
+#: website/templates/project/project_header.mako:185
 #, python-format
 msgid ""
 "This %(nodeType)s is a withdrawn registration of <a "
@@ -3403,7 +3421,7 @@ msgstr ""
 "この%(nodeType)sは、<a "
 "%(registeredFromUrl)s>この%(nodeType)s</a>の登録の撤回です。%(nodeType)sのコンテンツは、下記の理由により削除されました。"
 
-#: website/templates/project/project_header.mako:168
+#: website/templates/project/project_header.mako:190
 #, python-format
 msgid ""
 "This %(nodeType)s is currently pending registration, awaiting approval "
@@ -3413,14 +3431,14 @@ msgid ""
 "keep the registration private until the embargo period ends."
 msgstr "この%(nodeType)sは現在登録を保留しており、プロジェクト管理者からの承認を待っています。この登録は最終的なものであり、すべてのプロジェクト管理者が登録を承認するか、48時間のパスのいずれか早いほうを承認した時点で禁止期間に入ります。禁止措置は、禁止期間が終了するまで登録を非公開にします。"
 
-#: website/templates/project/project_header.mako:182
+#: website/templates/project/project_header.mako:204
 #, python-format
 msgid ""
 "This registration is currently embargoed. It will remain private until "
 "its embargo end date, %(embargoEndDate)s."
 msgstr "現在、この登録は禁止されています。 禁止終了日(%(embargoEndDate)s)まで非公開のままです。"
 
-#: website/templates/project/project_header.mako:188
+#: website/templates/project/project_header.mako:210
 #, python-format
 msgid ""
 "This %(nodeType)s contains supplemental materials for a preprint, but has"
@@ -3428,7 +3446,7 @@ msgid ""
 "making this %(nodeType)s Public."
 msgstr "この%(nodeType)sにはプレプリントの補足資料が含まれていますが、非公開になっています。この%(nodeType)sを公開することで、補足資料を見つけやすくします。"
 
-#: website/templates/project/project_header.mako:192
+#: website/templates/project/project_header.mako:214
 #, python-format
 msgid ""
 "This %(nodeType)s is being viewed through an anonymized, view-only link. "
@@ -3438,7 +3456,7 @@ msgstr ""
 "この%(nodeType)sは、匿名化された参照専用リンクを介して表示されています。メンバーとして表示する場合は、<a "
 "%(redirectUrl)s>こちら</a>をクリックしてください。"
 
-#: website/templates/project/project_header.mako:196
+#: website/templates/project/project_header.mako:218
 #, python-format
 msgid ""
 "This %(nodeType)s is being viewed through a private, view-only link. "
@@ -3556,9 +3574,11 @@ msgstr "<b>%(title)s</b>内のWikiを編集できるユーザーを制御しま�
 #: website/templates/project/settings.mako:288
 #, python-format
 msgid ""
-"Control who can edit your wiki"
+"Control who can edit your wiki. To allow all GakuNin RDM users to edit "
+"the wiki, <b>%(title)s</b> must be public."
 msgstr ""
-"Wikiを編集できるユーザーを制御します"
+"Wikiを編集できるユーザーを制御します。 すべてのGakuNin "
+"RDMユーザーがwikiを編集できるようにするには、<b>%(title)s</b>を公開する必要があります。"
 
 #: website/templates/project/settings.mako:298
 msgid "Loading wiki settings..."
@@ -3762,11 +3782,6 @@ msgstr "共有ファイル編集は現在利用できません。 引き続き�
 msgid "Submit"
 msgstr "提出"
 
-#: website/templates/project/addon/node_settings_default.mako:7
-#, python-format
-msgid "authorized by %(ownerName)s"
-msgstr "は%(ownerName)sによって認証済みです"
-
 #: website/templates/project/addon/page.mako:4
 msgid "Add-on"
 msgstr "アドオン"
@@ -3779,7 +3794,7 @@ msgstr "%(fullname)sアドオンが正しく構成されていません。"
 
 #: website/templates/project/addon/page.mako:23
 #: website/templates/project/addon/widget.mako:19
-#: website/templates/util/render_addon_widget.mako:240
+#: website/templates/util/render_addon_widget.mako:293
 #, python-format
 msgid "Configure this add-on on the <a href=%(nodeUrl)s>add-ons</a> page."
 msgstr "<a href=%(nodeUrl)s>アドオン</a>ページでこのアドオンを構成します。"
@@ -3831,11 +3846,13 @@ msgstr "このプロジェクトには、<a %(textLinkDisplay)s></a>への転送
 
 #: website/templates/util/render_addon_widget.mako:144
 #: website/templates/util/render_addon_widget.mako:175
+#: website/templates/util/render_addon_widget.mako:238
 msgid "Loading"
 msgstr "ロード中"
 
 #: website/templates/util/render_addon_widget.mako:147
 #: website/templates/util/render_addon_widget.mako:178
+#: website/templates/util/render_addon_widget.mako:241
 msgid "Error occurred"
 msgstr "エラーが発生しました。"
 
@@ -3868,6 +3885,26 @@ msgstr "論文登録申請"
 #: website/templates/util/render_addon_widget.mako:225
 msgid "Image Scan only"
 msgstr "投稿前画像スキャン依頼"
+
+#: website/templates/util/render_addon_widget.mako:244
+msgid "Application Information"
+msgstr "アプリ情報"
+
+#: website/templates/util/render_addon_widget.mako:245
+msgid "No Today's Meeting"
+msgstr "今日の会議はありません"
+
+#: website/templates/util/render_addon_widget.mako:247
+msgid "Today's Meeting"
+msgstr "今日の会議"
+
+#: website/templates/util/render_addon_widget.mako:265
+msgid "No Tomorrow's Meeting"
+msgstr "明日の会議はありません"
+
+#: website/templates/util/render_addon_widget.mako:267
+msgid "Tomorrow's Meeting"
+msgstr "明日の会議"
 
 #: website/templates/util/render_node.mako:5
 msgid "component"
@@ -3920,4 +3957,89 @@ msgstr "メンバー管理"
 #~ "{addon} add-on in the new fork "
 #~ "on the settings page."
 #~ msgstr "{addon}アドオンは別のユーザーによって承認されているため、フォークすると、認証がフォークされた{category}に転送されません。設定ページの新しいフォークで{addon}アドオンを承認して設定できます。"
+
+#~ msgid ""
+#~ "GakuNin RDM is a service provided "
+#~ "by the National Institute of Informatics"
+#~ " (NII) on trust from user "
+#~ "organizations,                  and the <a "
+#~ "%(meatwikiTermsOfUse)s>terms of use</a> and <a"
+#~ " %(meatwikiPrivacyPolicy)s>privacy policy</a> of "
+#~ "each user organization are applied."
+#~ "                  GakuNin RDM uses cookies "
+#~ "to operate the service and improve "
+#~ "the user experience. Users of GakuNin"
+#~ " RDM are requested to read the "
+#~ "information on our privacy policy."
+#~ "                  By clicking \"I agree\" "
+#~ "or continuing to use this site, "
+#~ "you agree to our use of cookies."
+#~ " If you disagree, please disable "
+#~ "cookies in your browser settings or "
+#~ "discontinue using this site.                  "
+#~ "Please note that by not using "
+#~ "cookies, you may not be able to"
+#~ " use some of this website's "
+#~ "functions."
+#~ msgstr ""
+#~ "GakuNin "
+#~ "RDMは、利用機関の委託を受けて国立情報学研究所（NII）がサービスを提供しているものであり、利用にあたっての<a "
+#~ "%(meatwikiTermsOfUse)s>利用規約</a>や<a "
+#~ "%(meatwikiPrivacyPolicy)s>プライバシーポリシー</a>等については、利用機関が定めた規程が適用されます。また、GakuNin"
+#~ " RDMではサービスの運営およびユーザ体験の向上を目的にクッキーを利用しております。GakuNin "
+#~ "RDMをご利用されるお客様は、プライバシーポリシーに関する情報をご覧ください。「同意する」をクリックまたは当サイトの利用を継続されることで、弊所がクッキーを使用することにご同意いただいたものとさせていただきます。ご同意いただけない場合には、お客様のブラウザ設定でクッキーを無効化していただくか、または当サイトの利用を中止して下さい。クッキーを利用しないことで、当サイトの一部の機能がご利用いただけない可能性がございますがご了承ください。"
+
+#~ msgid ""
+#~ "The National Institute of Informatics "
+#~ "(NII) uses cookies to operate the "
+#~ "NII Research Data Cloud service and "
+#~ "to improve your user experience."
+#~ "                  If you intend to use "
+#~ "the GakuNin RDM, please read our "
+#~ "<a %(meatwikiUrl)s>Privacy Policy</a> and "
+#~ "information on <a %(meatwikiUrl)s>NII use "
+#~ "of cookies</a>.                  By clicking "
+#~ "Accept or continuing to use our "
+#~ "website, you consent to the cookies "
+#~ "use on this site.                  If "
+#~ "you do not agree with the cookies"
+#~ " use, please change your browser "
+#~ "settings to disable cookies or stop "
+#~ "using our website.                  Please be"
+#~ " aware that you may not be able"
+#~ " to use some functions on our "
+#~ "website when you have cookies disabled."
+#~ msgstr ""
+
+#~ msgid "GakuNin RDM Prereg Challenge"
+#~ msgstr "GakuNin RDM プレレグチャレンジ"
+
+#~ msgid ""
+#~ "<p><strong> Articles must be published "
+#~ "by an <a %(preregMoreInfoUrl)s>approved</a> "
+#~ "journal by December 31, 2018, to "
+#~ "be eligible for a prize. Please "
+#~ "use this this helpful workflow to "
+#~ "preregister, even if you are not "
+#~ "seeking a prize. </strong></p>"
+#~ msgstr ""
+#~ "<p><strong>賞品を獲得するには、2018年12月31日までに<a "
+#~ "%(preregMoreInfoUrl)s>承認済み</a>ジャーナルで記事を公開する必要があります。賞品を探していない場合でも、この便利なワークフローを使用して事前登録してください。</strong></p>"
+
+#~ msgid ""
+#~ "<p> Improve your research with "
+#~ "preregistration. The process of creating "
+#~ "a <a %(cosPreregUrl)s> preregistration</a> is"
+#~ " beneficial to both the scientific "
+#~ "field and to you, the scientist. "
+#~ "By writing out detailed data collection"
+#~ " methods, analysis plans, and rules "
+#~ "for excluding or missing data, you "
+#~ "can make important decisions that affect"
+#~ " your workflow earlier, without the "
+#~ "biases that occur once the data "
+#~ "are in front of you.</p>"
+#~ msgstr ""
+#~ "<p>事前登録により研究を改善します。 <a "
+#~ "%(cosPreregUrl)s>事前登録</a>を作成するプロセスは、科学分野と科学者の両方にとって有益です。詳細なデータ収集方法、分析計画、およびデータの除外または欠落に関するルールを記述することにより、データが目の前に発生するような偏りを生じることなく、ワークフローに影響を与える重要な決定を早期に行うことができます。</p>"
 
