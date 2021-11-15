@@ -23,7 +23,8 @@
                            "host": "s3ds.mdx.jp",
                            "bucketLocations": {
                              "us-east-1": {"name": "us-east-1", "host": "s3ds.mdx.jp"}},
-                           "defaultLocation": "us-east-1"},
+                           "defaultLocation": "us-east-1",
+                           "serverSideEncryption": False},
                           {"name": "RIKEN HSS S3 Service",
                            "host": "hssgws3.riken.jp:443",
                            "bucketLocations": {

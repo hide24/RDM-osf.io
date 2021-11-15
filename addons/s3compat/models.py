@@ -76,7 +76,14 @@ class NodeSettings(BaseOAuthNodeSettings, BaseStorageAddon):
         if bucket_location is None or bucket_location == '':
             bucket_location = 'Default'
 
+        try:
+            server_side_encryption = service['serverSideEncryption']
+        except KeyError:
+            # Not set, True to the key.
+            server_side_encryption = True
+
         self.folder_name = '{} ({})'.format(folder_id, bucket_location)
+        if self.encrypt_uploads and not server_side_encryption: self.encrypt_uploads = False
         self.save()
 
         self.nodelogger.log(action='bucket_linked', extra={'bucket': str(folder_id)}, save=True)
