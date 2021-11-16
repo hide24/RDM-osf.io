@@ -14,7 +14,7 @@
                              "ap-northeast-1": {"name": "Tokyo", "host": "s3.ap-northeast-1.wasabisys.com"},
                              "ap-northeast-2": {"name": "Osaka", "host": "s3.ap-northeast-2.wasabisys.com"},
                              "eu-central-1": {"name": "Amsterdam", "host": "s3.eu-central-1.wasabisys.com"},
-                             "": {"name": "Northern Virginia"}}},
+                             "": {"name": "Northern Virginia 1"}}},
                           {"name": "Kanazawa University Cloud(HyperStore)",
                            "host": "s3-kakuma.rdm.kanazawa-u.ac.jp"},
                           {"name": "Rakuten Cloud",
