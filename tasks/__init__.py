@@ -342,6 +342,7 @@ def test_module(ctx, module=None, numprocesses=None, nocapture=False, params=Non
     args = []
     if coverage:
         args.extend([
+#            '--cov-report', 'term-missing',
             '--cov', 'admin',
             '--cov', 'addons',
             '--cov', 'api',
