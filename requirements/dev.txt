@@ -9,6 +9,7 @@ pytest-xdist==1.15.0
 pytest-django==3.10.0
 python-coveralls==2.9.3
 pytest-testmon==1.0.3
+pytest-cov==3.0.0
 nose
 factory-boy==2.10.0
 webtest-plus==0.3.3
