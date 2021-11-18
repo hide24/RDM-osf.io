@@ -350,7 +350,7 @@ def test_module(ctx, module=None, numprocesses=None, nocapture=False, params=Non
             '--cov', 'osf',
             '--cov', 'website',
         ])
-    print('args1::' + str(args))
+    logger.info('args1::' + str(args))
     if not nocapture:
         args += ['-s']
     if numprocesses > 1:
@@ -363,7 +363,7 @@ def test_module(ctx, module=None, numprocesses=None, nocapture=False, params=Non
     if params:
         params = [params] if isinstance(params, basestring) else params
         args.extend(params)
-    print('args2::' + str(args))
+    logger.info('args2::' + str(args))
     retcode = pytest.main(args)
 
     # exit code 5 is all tests skipped which is the same as passing with testmon
