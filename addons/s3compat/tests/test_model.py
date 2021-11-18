@@ -201,7 +201,7 @@ class TestNodeSettings(OAuthAddonNodeSettingsTestSuiteMixin, unittest.TestCase):
         mock_exists.return_value = True
         mock_service.return_value = {'name': 'Dummy',
                                      'host': 'dummy.example.com',
-                                     'serverSideEncryption': false}
+                                     'serverSideEncryption': False}
         folder_id = '1234567890'
         self.node_settings.set_folder(folder_id, auth=Auth(self.user))
         self.node_settings.save()
