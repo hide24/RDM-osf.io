@@ -196,9 +196,11 @@ class TestNodeSettings(OAuthAddonNodeSettingsTestSuiteMixin, unittest.TestCase):
         assert_equal(last_log.action, '{0}_bucket_linked'.format(self.short_name))
 
     @mock.patch('addons.s3compat.models.bucket_exists')
+    @mock.patch('addons.s3compat.models.get_bucket_location_or_error')
     @mock.patch('addons.s3compat.models.find_service_by_host')
-    def test_set_folder_change_encrypt_uploads_with_encryption_setting(self, mock_service, mock_exists):
+    def test_set_folder_change_encrypt_uploads_with_encryption_setting(self, mock_service, mock_location, mock_exists):
         mock_exists.return_value = True
+        mock_location.return_value = 'dummy-3'
         mock_service.return_value = {'name': 'Dummy',
                                      'host': 'dummy.example.com',
                                      'serverSideEncryption': False}
@@ -213,9 +215,11 @@ class TestNodeSettings(OAuthAddonNodeSettingsTestSuiteMixin, unittest.TestCase):
         assert_equal(last_log.action, '{0}_bucket_linked'.format(self.short_name))
 
     @mock.patch('addons.s3compat.models.bucket_exists')
+    @mock.patch('addons.s3compat.models.get_bucket_location_or_error')
     @mock.patch('addons.s3compat.models.find_service_by_host')
-    def test_set_folder_change_encrypt_uploads_with_no_encryption_setting(self, mock_service, mock_exists):
+    def test_set_folder_change_encrypt_uploads_with_no_encryption_setting(self, mock_service, mock_location, mock_exists):
         mock_exists.return_value = True
+        mock_location.return_value = 'dummy-3'
         mock_service.return_value = {'name': 'Dummy',
                                      'host': 'dummy.example.com',}
         folder_id = '1234567890'
