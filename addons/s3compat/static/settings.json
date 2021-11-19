@@ -28,7 +28,9 @@
                           {"name": "RIKEN HSS S3 Service",
                            "host": "hssgws3.riken.jp:443",
                            "bucketLocations": {
-                             "": {"name": "sailingship", "host": "hssgws3.riken.jp:443"}}}
+                             "sailingship": {"name": "sailingship", "host": "hssgws3.riken.jp:443"}},
+                             "defaultLocation": "sailingship",
+                             "serverSideEncryption": false},
                            ],
     "encryptUploads": true
 }
