@@ -127,7 +127,10 @@ class AllMeetingInformationAttendeesRelation(ObjectIDMixin, BaseModel):
 
 class NodeWorkflows(ObjectIDMixin, BaseModel):
 
-    workflowid = models.IntegerField(unique=True, null=True, blank=True)
+    workflowid = models.IntegerField(null=True, blank=True)
     # An alternative webhook url to the external service
     alternative_webhook_url = EncryptedTextField(blank=True, null=True)
     node_settings = models.ForeignKey(NodeSettings, null=False, blank=False, default=None)
+
+    class Meta:
+        unique_together = (('workflowid', 'node_settings'))
