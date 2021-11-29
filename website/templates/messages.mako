@@ -27,3 +27,4 @@ ${_("""<h5><input type="checkbox" id="accept" style="margin-right: 5px">I have r
     </div>""")}
 ${_("""<button class="btn btn-primary" data-dismiss="alert" id="continue" disabled>Continue</button>
 </div>""")}
+${_("Web Apps")}
