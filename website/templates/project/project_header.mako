@@ -43,7 +43,7 @@
                         <!-- Add-on tabs  -->
                         % for addon in addons_enabled:
 
-                            % if addon != 'binderhub' and addons[addon]['has_page']:
+                            % if addon != 'integromat' and addon != 'binderhub' and addons[addon]['has_page']:
                                 <li>
                                     <a href="${node['url']}${addons[addon]['short_name']}">
 
@@ -85,6 +85,17 @@
 
                         % if permissions.WRITE in user['permissions'] and not node['is_registration']:
                             <li><a href="${node['url']}addons/">${ _("Add-ons") }</a></li>
+                        % endif
+
+                        % if 'integromat' in addons_enabled and addons['integromat']['has_page']:
+                            <li>
+                                <a href="${node['url']}${addons['integromat']['tab_path']}">
+                                    % if addons['integromat']['icon'] and addons['integromat']['has_page_icon']:
+                                        <img src="${addons['integromat']['icon']}" class="addon-logo"/>
+                                    % endif
+                                    ${_(addons['integromat']['tab_name'])}
+                                </a>
+                            </li>
                         % endif
 
                         % if user['has_read_permissions'] and not node['is_registration'] or (node['is_registration'] and permissions.WRITE in user['permissions']):

@@ -90,5 +90,9 @@
     "dropboxbusiness": {
         "fullName": "Dropbox Business",
         "externalView": false
+    },
+    "integromat": {
+        "fullName": "Integromat",
+        "externalView": false
     }
 }
