@@ -17,6 +17,8 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
+        ('osf', '0216_rdmwebmeetingapps_rdmworkflows'),
+        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
