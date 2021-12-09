@@ -3,7 +3,6 @@ import logging
 
 from django.db import models
 from osf.models.base import BaseModel, ObjectIDMixin
-from osf.models.rdm_grdmapps import RdmWorkflows, RdmWebMeetingApps
 from addons.base.models import (BaseOAuthNodeSettings, BaseOAuthUserSettings,
                                 BaseStorageAddon)
 from addons.integromat.serializer import IntegromatSerializer
