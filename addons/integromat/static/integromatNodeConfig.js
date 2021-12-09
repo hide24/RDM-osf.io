@@ -9,6 +9,8 @@ var m = require('mithril');
 var bootbox = require('bootbox');
 var $osf = require('js/osfHelpers');
 var OauthAddonFolderPicker = require('js/oauthAddonNodeConfig')._OauthAddonNodeConfigViewModel;
+var _ = require('js/rdmGettext')._;
+var sprintf = require('agh.sprintf').sprintf;
 
 var IntegromatFolderPickerViewModel = oop.extend(OauthAddonFolderPicker, {
     constructor: function(addonName, url, selector, folderPicker, opts, tbOpts) {
@@ -31,7 +33,7 @@ var IntegromatFolderPickerViewModel = oop.extend(OauthAddonFolderPicker, {
     connectAccount: function() {
         var self = this;
         if (!self.integromatApiToken() ){
-            self.changeMessage('Please enter an API token.', 'text-danger');
+            self.changeMessage(_('Please enter an API token.'), 'text-danger');
             return;
         }
         $osf.block();
@@ -44,7 +46,7 @@ var IntegromatFolderPickerViewModel = oop.extend(OauthAddonFolderPicker, {
             $osf.unblock();
             self.clearModal();
             $('#integromatCredentialsModal').modal('hide');
-            self.changeMessage('Successfully added Integromat credentials.', 'text-success', null, true);
+            self.changeMessage(_('Successfully added Integromat credentials.'), 'text-success', null, true);
             self.updateFromData(response);
             self.importAuth();
         }).fail(function(xhr, status, error) {
@@ -55,7 +57,7 @@ var IntegromatFolderPickerViewModel = oop.extend(OauthAddonFolderPicker, {
                 message = response.message;
             }
             self.changeMessage(message, 'text-danger');
-            Raven.captureMessage('Could not add Integromat credentials', {
+            Raven.captureMessage(_('Could not add Integromat credentials'), {
                 extra: {
                     url: self.urls().importAuth,
                     textStatus: status,

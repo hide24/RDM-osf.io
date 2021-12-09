@@ -15,6 +15,9 @@ var addonSettings = require('js/addonSettings');
 var ChangeMessageMixin = require('js/changeMessage');
 var ExternalAccount = addonSettings.ExternalAccount;
 
+var _ = require('js/rdmGettext')._;
+var sprintf = require('agh.sprintf').sprintf;
+
 var $modal = $('#integromatCredentialsModal');
 
 function ViewModel(url) {
@@ -101,11 +104,8 @@ function ViewModel(url) {
     self.askDisconnect = function(account) {
         var self = this;
         bootbox.confirm({
-            title: 'Disconnect Integromat Account?',
-            message: '<p class="overflow">' +
-                'Are you sure you want to disconnect the Integromat account <strong>' +
-                osfHelpers.htmlEscape(account.name) + '</strong>? This will revoke access to Integromat for all projects associated with this account.' +
-                '</p>',
+            title: _('Disconnect Integromat Account?'),
+            message: sprintf(_('<p class="overflow">Are you sure you want to disconnect the Integromat account <strong>%1$s</strong>? This will revoke access to Integromat for all projects associated with this account.</p>'), osfHelpers.htmlEscape(account.name)),
             callback: function (confirm) {
                 if (confirm) {
                     self.disconnectAccount(account);
@@ -113,7 +113,7 @@ function ViewModel(url) {
             },
             buttons:{
                 confirm:{
-                    label:'Disconnect',
+                    label:_('Disconnect'),
                     className:'btn-danger'
                 }
             }
