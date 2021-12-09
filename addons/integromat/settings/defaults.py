@@ -4,13 +4,13 @@ INTEGROMAT_API_WHOAMI = 'https://api.integromat.com/v1/whoami'
 TIME_LIMIT_START_SCENARIO = 15
 
 #APPS
-MICROSOFT_TEAMS = 'MicrosoftTeams'
-WEBEX_MEETINGS = 'WebexMeetings'
+MICROSOFT_TEAMS = "MicrosoftTeams"
+WEBEX_MEETINGS = "WebexMeetings"
 
 #WORKFLOWS
 #Make sure the values match the ember-osf-web translation key.
-WEB_MEETING_DESC = 'integromat.workflows.web_meeting.description'
-WEB_MEETING_APPS = 'integromat.workflows.web_meeting.apps'
+WEB_MEETING_DESC = "integromat.workflows.web_meeting.description"
+WEB_MEETING_APPS = "integromat.workflows.web_meeting.apps"
 
 ### The id is registered in databaselike a foreign key###
 ### DO NOT MODIFY APP ID ################################
