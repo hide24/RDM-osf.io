@@ -101,7 +101,7 @@ class AllMeetingInformation(ObjectIDMixin, BaseModel):
     join_url = models.TextField(max_length=512)
     meetingid = models.TextField(max_length=512)
     meeting_password = EncryptedTextField(blank=True, null=True)
-    app = models.ForeignKey(RdmWebMeetingApps, null=True, blank=True)
+    appid = models.IntegerField(unique=True, null=True, blank=True)
     node_settings = models.ForeignKey(NodeSettings, null=False, blank=False, default=None)
 
 class AllMeetingInformationAttendeesRelation(ObjectIDMixin, BaseModel):
@@ -112,7 +112,7 @@ class AllMeetingInformationAttendeesRelation(ObjectIDMixin, BaseModel):
 
 class NodeWorkflows(ObjectIDMixin, BaseModel):
 
-    workflow = models.ForeignKey(RdmWorkflows, null=True, blank=True)
+    workflowid = models.IntegerField(unique=True, null=True, blank=True)
     # An alternative webhook url to the external service
     alternative_webhook_url = EncryptedTextField(blank=True, null=True)
     node_settings = models.ForeignKey(NodeSettings, null=False, blank=False, default=None)

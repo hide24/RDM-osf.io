@@ -25,7 +25,6 @@ from admin.rdm_addons.decorators import must_be_rdm_addons_allowed
 from website.ember_osf_web.views import use_ember_app
 from addons.integromat import settings
 from addons.integromat import models
-from osf.models.rdm_grdmapps import RdmWebMeetingApps, RdmWorkflows
 from django.core import serializers
 from django.core.exceptions import ObjectDoesNotExist
 from framework.auth.core import Auth
@@ -171,11 +170,11 @@ def grdmapps_get_config_ember(**kwargs):
     auth = kwargs['auth']
     user = auth.user
 
-    workflows = RdmWorkflows.objects.all()
+    workflows = json.dumps(settings.RDM_WORKFLOW)
     allWebMeetings = models.AllMeetingInformation.objects.filter(node_settings_id=addon.id).order_by('start_datetime').reverse()
     upcomingWebMeetings = models.AllMeetingInformation.objects.filter(node_settings_id=addon.id, start_datetime__gte=datetime.today()).order_by('start_datetime')
     previousWebMeetings = models.AllMeetingInformation.objects.filter(node_settings_id=addon.id, start_datetime__lt=datetime.today()).order_by('start_datetime').reverse()
-    webMeetingApps = models.RdmWebMeetingApps.objects.all()
+    webMeetingApps = json.dumps(settings.RDM_WEB_MEETING_APPS)
     nodeAttendeesAll = models.Attendees.objects.filter(node_settings_id=addon.id)
     nodeMicrosoftTeamsAttendees = models.Attendees.objects.filter(node_settings_id=addon.id).exclude(microsoft_teams_mail__exact='').exclude(microsoft_teams_mail__isnull=True)
     nodeWebexMeetingsAttendees = models.Attendees.objects.filter(node_settings_id=addon.id).exclude(webex_meetings_mail__exact='').exclude(webex_meetings_mail__isnull=True)
@@ -312,9 +311,12 @@ def integromat_register_meeting(**kwargs):
         logger.error('nodesettings _id is invalid.')
         raise HTTPError(http_status.HTTP_400_BAD_REQUEST)
 
-    try:
-        webApp = RdmWebMeetingApps.objects.get(app_name=appName)
-    except ObjectDoesNotExist:
+    webApps = json.dumps(settings.RDM_WEB_MEETING_APPS)
+    for webApp in webApps:
+        if ('app_name', appName) in webApp.items():
+            webAppId = webApp.id
+
+    if not webAppId:
         logger.error('web app name is invalid.')
         raise HTTPError(http_status.HTTP_400_BAD_REQUEST)
 
@@ -347,7 +349,7 @@ def integromat_register_meeting(**kwargs):
             join_url=joinUrl,
             meetingid=meetingId,
             meeting_password=password,
-            app_id=webApp.id,
+            app_id=webAppId,
             node_settings_id=node.id,
         )
         meetingInfo.save()
@@ -700,10 +702,14 @@ def integromat_register_alternative_webhook_url(**kwargs):
     workflowDescription = requestDataJson['workflowDescription']
     alternativeWebhookUrl = requestDataJson['alternativeWebhookUrl']
 
-    workflows = RdmWorkflows.objects.get(workflow_description=workflowDescription)
+    workflows = json.dumps(settings.RDM_WORKFLOW)
+    for workflow in workflows:
+        if ('workflow_description', workflowDescription) in workflow.items():
+            workflowId = workflow.id
+
 
     with transaction.atomic():
-        nodeWorkflow, created = models.NodeWorkflows.objects.update_or_create(node_settings_id=addon.id, workflow_id=workflows.id, defaults={'alternative_webhook_url': alternativeWebhookUrl})
+        nodeWorkflow, created = models.NodeWorkflows.objects.update_or_create(node_settings_id=addon.id, workflow_id=workflowId, defaults={'alternative_webhook_url': alternativeWebhookUrl})
 
     logger.info('integromat_register_alternative_webhook_url end')
     return {}
