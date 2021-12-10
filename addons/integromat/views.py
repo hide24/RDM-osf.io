@@ -170,11 +170,11 @@ def grdmapps_get_config_ember(**kwargs):
     auth = kwargs['auth']
     user = auth.user
 
-    workflows = json.dumps(settings.RDM_WORKFLOW)
+    workflowsJson = json.dumps(settings.RDM_WORKFLOW)
     allWebMeetings = models.AllMeetingInformation.objects.filter(node_settings_id=addon.id).order_by('start_datetime').reverse()
     upcomingWebMeetings = models.AllMeetingInformation.objects.filter(node_settings_id=addon.id, start_datetime__gte=datetime.today()).order_by('start_datetime')
     previousWebMeetings = models.AllMeetingInformation.objects.filter(node_settings_id=addon.id, start_datetime__lt=datetime.today()).order_by('start_datetime').reverse()
-    webMeetingApps = json.dumps(settings.RDM_WEB_MEETING_APPS)
+    webMeetingAppsJson = json.dumps(settings.RDM_WEB_MEETING_APPS)
     nodeAttendeesAll = models.Attendees.objects.filter(node_settings_id=addon.id)
     nodeMicrosoftTeamsAttendees = models.Attendees.objects.filter(node_settings_id=addon.id).exclude(microsoft_teams_mail__exact='').exclude(microsoft_teams_mail__isnull=True)
     nodeWebexMeetingsAttendees = models.Attendees.objects.filter(node_settings_id=addon.id).exclude(webex_meetings_mail__exact='').exclude(webex_meetings_mail__isnull=True)
@@ -182,11 +182,9 @@ def grdmapps_get_config_ember(**kwargs):
 
     nodeWebMeetingsAttendeesRelation = models.AllMeetingInformationAttendeesRelation.objects.filter(all_meeting_information__node_settings_id=addon.id)
 
-    workflowsJson = serializers.serialize('json', workflows, ensure_ascii=False)
     allWebMeetingsJson = serializers.serialize('json', allWebMeetings, ensure_ascii=False)
     upcomingWebMeetingsJson = serializers.serialize('json', upcomingWebMeetings, ensure_ascii=False)
     previousWebMeetingsJson = serializers.serialize('json', previousWebMeetings, ensure_ascii=False)
-    webMeetingAppsJson = serializers.serialize('json', webMeetingApps, ensure_ascii=False)
     nodeAttendeesAllJson = serializers.serialize('json', nodeAttendeesAll, ensure_ascii=False)
     nodeMicrosoftTeamsAttendeesJson = serializers.serialize('json', nodeMicrosoftTeamsAttendees, ensure_ascii=False)
     nodeWebexMeetingsAttendeesJson = serializers.serialize('json', nodeWebexMeetingsAttendees, ensure_ascii=False)
