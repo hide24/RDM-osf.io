@@ -17,8 +17,6 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('osf', '0215_auto_20211001_0611'),
-        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
