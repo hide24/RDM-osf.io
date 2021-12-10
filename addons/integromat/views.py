@@ -309,10 +309,10 @@ def integromat_register_meeting(**kwargs):
         logger.error('nodesettings _id is invalid.')
         raise HTTPError(http_status.HTTP_400_BAD_REQUEST)
 
-    webApps = json.dumps(settings.RDM_WEB_MEETING_APPS)
+    webApps = settings.RDM_WEB_MEETING_APPS
     for webApp in webApps:
         if ('app_name', appName) in webApp.items():
-            webAppId = webApp.id
+            webAppId = webApp['id']
 
     if not webAppId:
         logger.error('web app name is invalid.')
@@ -347,7 +347,7 @@ def integromat_register_meeting(**kwargs):
             join_url=joinUrl,
             meetingid=meetingId,
             meeting_password=password,
-            app_id=webAppId,
+            appid=webAppId,
             node_settings_id=node.id,
         )
         meetingInfo.save()
@@ -706,7 +706,7 @@ def integromat_register_alternative_webhook_url(**kwargs):
             workflowId = workflow['id']
 
     with transaction.atomic():
-        nodeWorkflow, created = models.NodeWorkflows.objects.update_or_create(node_settings_id=addon.id, workflow_id=workflowId, defaults={'alternative_webhook_url': alternativeWebhookUrl})
+        nodeWorkflow, created = models.NodeWorkflows.objects.update_or_create(node_settings_id=addon.id, workflowid=workflowId, defaults={'alternative_webhook_url': alternativeWebhookUrl})
 
     logger.info('integromat_register_alternative_webhook_url end')
     return {}
