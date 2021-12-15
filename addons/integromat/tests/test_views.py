@@ -254,6 +254,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         expected_fullname = ''
 
         rv = self.app.post_json(url, {
+            '_id': _id,
             'appName': appName,
             'guid': expected_guid,
             'email': expected_email,
