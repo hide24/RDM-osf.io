@@ -22,7 +22,6 @@ class IntegromatAccountFactory(ExternalAccountFactory):
     provider = SHORT_NAME
     provider_id = factory.Sequence(lambda n: 'id-{0}'.format(n))
     oauth_key = factory.Sequence(lambda n: 'key-{0}'.format(n))
-    webhook_url = factory.Sequence(lambda n: 'webhook-{0}'.format(n))
     display_name = 'Integromat Fake User'
 
 
