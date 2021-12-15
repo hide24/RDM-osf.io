@@ -15,25 +15,8 @@ from addons.integromat.models import (
     AllMeetingInformationAttendeesRelation,
     NodeWorkflows
 )
-from osf.models.rdm_grdmapps import (
-    RdmWorkflows,
-    RdmWebMeetingApps
-)
 
-from osf_tests.factories import UserFactory, ProjectFactory, ExternalAccountFactory, RdmWorkflowsFactory, RdmWebMeetingAppsFactory
-
-class IntegromatRdmWebMeetingAppsFactory(RdmWebMeetingAppsFactory):
-    class Meta:
-        model = RdmWebMeetingApps
-
-    app_name = 'MicrosoftTeams'
-
-class IntegromatRdmWorkflowsFactory(RdmWorkflowsFactory):
-    class Meta:
-        model = RdmWorkflows
-
-    workflow_description = 'integromat.test.workflows.web_meeting.description'
-    workflow_apps = 'integromat.test.workflows.web_meeting.apps'
+from osf_tests.factories import UserFactory, ProjectFactory, ExternalAccountFactory
 
 class IntegromatAccountFactory(ExternalAccountFactory):
     provider = SHORT_NAME
