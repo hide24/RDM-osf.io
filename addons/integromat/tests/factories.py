@@ -80,7 +80,7 @@ class IntegromatAllMeetingInformationFactory(DjangoModelFactory):
     join_url = 'teams/microsoft.com/321'
     meetingid = 'qwertyuiopasdfghjklzxcvbnm'
     meeting_password = ''
-    app = factory.SubFactory(IntegromatRdmWebMeetingAppsFactory)
+    app = 1639
     node_settings = factory.SubFactory(IntegromatNodeSettingsFactory)
 #    attendees = attendees(True, ['testUser1@test.onmicrosoft.com'])
 
