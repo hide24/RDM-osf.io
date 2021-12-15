@@ -80,7 +80,7 @@ class IntegromatAllMeetingInformationFactory(DjangoModelFactory):
     join_url = 'teams/microsoft.com/321'
     meetingid = 'qwertyuiopasdfghjklzxcvbnm'
     meeting_password = ''
-    app = 1639
+    appid = 1639
     node_settings = factory.SubFactory(IntegromatNodeSettingsFactory)
 #    attendees = attendees(True, ['testUser1@test.onmicrosoft.com'])
 
@@ -108,7 +108,7 @@ class IntegromatNodeWorkflowsFactory(DjangoModelFactory):
     class Meta:
         model = NodeWorkflows
 
-    workflow = factory.SubFactory(IntegromatRdmWorkflowsFactory)
+    workflowid = 7895
     # An alternative webhook url to the external service
     alternative_webhook_url = 'hook/integromat/com'
     node_settings = factory.SubFactory(IntegromatNodeSettingsFactory)
