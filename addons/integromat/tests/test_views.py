@@ -245,16 +245,19 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
     def test_integromat_register_web_meeting_apps_email_register(self):
         url = self.project.api_url_for('integromat_register_web_meeting_apps_email')
 
+        _id = None
         expected_guid = '123as'
         appName = 'MicrosoftTeams'
         expected_email = 'testUser4@test.onmicrosoft.com'
         expected_username = 'Teams User4'
         expected_is_guest = False
+        expected_fullname = ''
 
         rv = self.app.post_json(url, {
             'appName': appName,
             'guid': expected_guid,
             'email': expected_email,
+            'fullname': expected_fullname,
             'username': expected_username,
             'is_guest': expected_is_guest,
         }, auth=self.user.auth)
@@ -278,12 +281,14 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         expected_email = 'testUser4update@test.onmicrosoft.com'
         expected_username = 'Teams User4 update'
         expected_is_guest = False
+        expected_fullname = ''
 
         rv = self.app.post_json(url, {
             '_id': _id,
             'appName': appName,
             'guid': expected_guid,
             'email': expected_email,
+            'fullname': expected_fullname,
             'username': expected_username,
             'is_guest': expected_is_guest,
         }, auth=self.user.auth)
@@ -307,6 +312,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         origin_email = 'testUser5@guest.com'
         origin_username = 'Teams Guest User5'
         origin_is_guest = True
+        expected_fullname = ''
 
         IntegromatAttendeesFactory(_id='0987654321poiuytrewq', fullname=fullname, microsoft_teams_mail=origin_email, microsoft_teams_user_name=origin_username, is_guest=is_guest)
 
@@ -319,6 +325,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
             'appName': appName,
             'guid': None,
             'email': expected_email,
+            'fullname': expected_fullname,
             'username': expected_username,
             'is_guest': expected_is_guest,
         }, auth=self.user.auth)
@@ -343,7 +350,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         rv = self.app.post_json(url, {
             'node_id': 'qwe',
             'timestamp': expected_timestamp,
-            'webhook_url': expected_webhook_url,
+            'webhookUrl': expected_webhook_url,
         }, auth=self.user.auth)
 
         assert_equals(rv.timestamp, expected_timestamp)
