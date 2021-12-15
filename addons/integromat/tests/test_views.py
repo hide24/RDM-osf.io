@@ -220,19 +220,6 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         rResult = AllMeetingInformationAttendeesRelation.objects.all()
         assert_equals(rResult.len, 0)
 
-    def test_integromat_delete_meeting_registration(self):
-        url = self.project.api_url_for('integromat_delete_meeting_registration')
-
-        expected_meetingId = 'qwertyuiopasdfghjklzxcvbnm'
-
-        rv = self.app.post_json(url, {
-            'meetingId': expected_meetingId,
-        }, auth=self.user.auth)
-
-        result = AllMeetingInformation.objects.filter(meetingId='qwertyuiopasdfghjklzxcvbnm')
-
-        assert_equals(result.count(), 0)
-
     def test_integromat_get_meetings(self):
         url = self.project.api_url_for('integromat_get_meetings')
 
@@ -241,120 +228,6 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         expectedJson = serializers.serialize('json', expectedQuery, ensure_ascii=False)
 
         assert_equals(resJson.recentMeetings, expectedJson)
-
-    def test_integromat_register_web_meeting_apps_email_register(self):
-        url = self.project.api_url_for('integromat_register_web_meeting_apps_email')
-
-        _id = None
-        expected_guid = '123as'
-        appName = 'MicrosoftTeams'
-        expected_email = 'testUser4@test.onmicrosoft.com'
-        expected_username = 'Teams User4'
-        expected_is_guest = False
-        expected_fullname = ''
-
-        rv = self.app.post_json(url, {
-            '_id': _id,
-            'appName': appName,
-            'guid': expected_guid,
-            'email': expected_email,
-            'fullname': expected_fullname,
-            'username': expected_username,
-            'is_guest': expected_is_guest,
-        }, auth=self.user.auth)
-
-        result = Attendees.objects.get(user_guid='123as')
-        expected_fullname = Attendees.objects.get(user_guid='123as').fullname
-
-        assert_equals(result.fullname, expected_fullname)
-        assert_equals(result.microsoft_teams_mail, expected_email)
-        assert_equals(result.microsoft_teams_user_name, expected_username)
-        assert_equals(result.webex_meetings_mail, None)
-        assert_equals(result.webex_meetings_display_name, None)
-        assert_equals(result.is_guest, expected_is_guest)
-
-    def test_integromat_register_web_meeting_apps_email_update(self):
-        url = self.project.api_url_for('integromat_register_web_meeting_apps_email')
-
-        _id = '1234567890qwertyuiop'
-        expected_guid = 'testuser'
-        appName = 'MicrosoftTeams'
-        expected_email = 'testUser4update@test.onmicrosoft.com'
-        expected_username = 'Teams User4 update'
-        expected_is_guest = False
-        expected_fullname = ''
-
-        rv = self.app.post_json(url, {
-            '_id': _id,
-            'appName': appName,
-            'guid': expected_guid,
-            'email': expected_email,
-            'fullname': expected_fullname,
-            'username': expected_username,
-            'is_guest': expected_is_guest,
-        }, auth=self.user.auth)
-
-        result = Attendees.objects.get(user_guid='testuser')
-        expected_fullname = Attendees.objects.get(user_guid='testuser').fullname
-
-        assert_equals(result.fullname, expected_fullname)
-        assert_equals(result.microsoft_teams_mail, expected_email)
-        assert_equals(result.microsoft_teams_user_name, expected_username)
-        assert_equals(result.webex_meetings_mail, None)
-        assert_equals(result.webex_meetings_display_name, None)
-        assert_equals(result.is_guest, expected_is_guest)
-
-    def test_integromat_register_web_meeting_apps_email_guest_update(self):
-        url = self.project.api_url_for('integromat_register_web_meeting_apps_email')
-
-        _id = '0987654321poiuytrewq'
-        appName = 'MicrosoftTeams'
-        fullname = 'Guest User2'
-        origin_email = 'testUser5@guest.com'
-        origin_username = 'Teams Guest User5'
-        origin_is_guest = True
-        expected_fullname = ''
-
-        IntegromatAttendeesFactory(_id='0987654321poiuytrewq', fullname=fullname, microsoft_teams_mail=origin_email, microsoft_teams_user_name=origin_username, is_guest=is_guest)
-
-        expected_email = 'testUser5Update@guest.com'
-        expected_username = 'Teams Guest User5 Update'
-        expected_is_guest = True
-
-        rv = self.app.post_json(url, {
-            '_id': _id,
-            'appName': appName,
-            'guid': None,
-            'email': expected_email,
-            'fullname': expected_fullname,
-            'username': expected_username,
-            'is_guest': expected_is_guest,
-        }, auth=self.user.auth)
-
-        result = Attendees.objects.get(_id=_id)
-        expected_fullname = Attendees.objects.get(_id=_id).fullname
-
-        assert_equals(result.fullname, expected_fullname)
-        assert_equals(result.microsoft_teams_mail, expected_email)
-        assert_equals(result.microsoft_teams_user_name, expected_username)
-        assert_equals(result.webex_meetings_mail, None)
-        assert_equals(result.webex_meetings_display_name, None)
-        assert_equals(result.is_guest, expected_is_guest)
-
-    def test_integromat_start_scenario(self):
-        url = self.project.api_url_for('integromat_start_scenario')
-
-        node_id = 'qwe'
-        expected_timestamp = '1234567890123'
-        expected_webhook_url = 'https://hook.integromat.com/xyz'
-
-        rv = self.app.post_json(url, {
-            'node_id': 'qwe',
-            'timestamp': expected_timestamp,
-            'webhookUrl': expected_webhook_url,
-        }, auth=self.user.auth)
-
-        assert_equals(rv.timestamp, expected_timestamp)
 
     def test_integromat_req_next_msg(self):
         url = self.project.api_url_for('integromat_req_next_msg')
@@ -421,18 +294,3 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
 
         assert_equals(result.integromat_msg, expected_notifyType)
         assert_equals(result.timestamp, expected_timestamp)
-
-    def test_integromat_register_alternative_webhook_url(self):
-        url = self.project.api_url_for('integromat_register_alternative_webhook_url')
-
-        workflowDescription = 'integromat.test.workflows.web_meeting.description'
-        expected_alternativeWebhookUrl = 'hook/integromat/com/test'
-
-        rv = self.app.post_json(url, {
-            'workflowDescription': workflowDescription,
-            'alternativeWebhookUrl': expected_alternativeWebhookUrl,
-        }, auth=self.user.auth)
-        workflowId = 7895
-        result = workflowExecutionMessages.objects.get(node_settings_id=nodeId, workflowid=workflowId)
-
-        assert_equals(result.alternative_webhook_url, expected_alternativeWebhookUrl)
