@@ -33,6 +33,10 @@ class NodeSettings(BaseOAuthNodeSettings, BaseStorageAddon):
     def display_name(self):
         return u'{0}: {1}'.format(self.config.full_name, self.folder_id)
 
+    def set_folder(self, folder_id, auth):
+        # required by superclass, not actually used
+        pass
+
     @property
     def complete(self):
         return bool(self.has_auth and self.user_settings.verify_oauth_access(
@@ -60,6 +64,18 @@ class NodeSettings(BaseOAuthNodeSettings, BaseStorageAddon):
     def delete(self, save=True):
         self.deauthorize(log=False)
         super(NodeSettings, self).delete(save=save)
+
+    def serialize_waterbutler_credentials(self):
+        # required by superclass, not actually used
+        pass
+
+    def serialize_waterbutler_settings(self):
+        # required by superclass, not actually used
+        pass
+
+    def create_waterbutler_log(self, auth, action, metadata):
+        # required by superclass, not actually used
+        pass
 
     def after_delete(self, user):
         self.deauthorize(Auth(user=user), log=True)
