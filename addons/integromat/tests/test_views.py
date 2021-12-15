@@ -19,10 +19,6 @@ import addons.integromat.settings as integromat_settings
 from website.util import api_url_for
 from admin.rdm_addons.utils import get_rdm_addon_option
 from datetime import date, datetime, timedelta
-from osf.models.rdm_grdmapps import (
-    RdmWebMeetingApps,
-    RdmWorkflows
-)
 from addons.integromat.models import (
     UserSettings,
     NodeSettings,
@@ -160,10 +156,10 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         assert_equals(result.meetingid, expected_meetingId)
         assert_equals(result.password, expected_password)
 
-        expected_appId = RdmWebMeetingApps.objects.get(app_name=app_name).id
+        expected_appId = 1639
         expected_nodeId = NodeSettings.objects.get(_id=node_id).id
 
-        assert_equals(result.app_id, expected_appId)
+        assert_equals(result.appid, expected_appId)
         assert_equals(result.node_settings_id, expected_nodeId)
 
         rResult = AllMeetingInformationAttendeesRelation.objects.all()
@@ -215,10 +211,10 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         assert_equals(result.meetingid, expected_meetingId)
         assert_equals(result.password, expected_password)
 
-        expected_appId = RdmWebMeetingApps.objects.get(app_name=app_name).id
+        expected_appId = 1639
         expected_nodeId = NodeSettings.objects.get(_id=node_id).id
 
-        assert_equals(result.app_id, expected_appId)
+        assert_equals(result.appid, expected_appId)
         assert_equals(result.node_settings_id, expected_nodeId)
 
         rResult = AllMeetingInformationAttendeesRelation.objects.all()
@@ -428,7 +424,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
             'workflowDescription': workflowDescription,
             'alternativeWebhookUrl': expected_alternativeWebhookUrl,
         }, auth=self.user.auth)
-        workflow = RdmWorkflows.objects.get(workflow_description=workflowDescription)
-        result = workflowExecutionMessages.objects.get(node_settings_id=nodeId, workflow_id=workflow.id)
+        workflowId = 7895
+        result = workflowExecutionMessages.objects.get(node_settings_id=nodeId, workflowid=workflowId)
 
         assert_equals(result.alternative_webhook_url, expected_alternativeWebhookUrl)
