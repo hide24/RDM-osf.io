@@ -70,6 +70,26 @@ def test_default_guest_user_guid():
     expected_user_guid = None
     expected_microsoft_teams_mail = None
     expected_webex_meetings_mail = None
-    assert_equals(result.user_guid, expected_user_guid)
-    assert_equals(result.microsoft_teams_user_name, expected_webex_meetings_mail)
-    assert_equals(result.expected_webex_meetings_mail, expected_webex_meetings_mail)
+    assert_equal(result.user_guid, expected_user_guid)
+    assert_equal(result.microsoft_teams_user_name, expected_webex_meetings_mail)
+    assert_equal(result.expected_webex_meetings_mail, expected_webex_meetings_mail)
+
+    ## Overrides ##
+
+    def test_set_folder(self):
+        pass
+
+    def test_serialize_credentials(self):
+        pass
+
+    def test_serialize_credentials_not_authorized(self):
+        pass
+
+    def test_serialize_settings(self):
+        pass
+
+    def test_serialize_settings_not_configured(self):
+        pass
+
+    def test_create_log(self):
+        pass
