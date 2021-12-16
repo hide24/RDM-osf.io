@@ -119,7 +119,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         expected_organizer_fullname = 'TEST USER3'
         expected_attendees = ['testUser1@test.onmicrosoft.com']
         expected_startDatetime = datetime.now().isoformat()
-        expected_endDatetime = datetime.now().isoformat() + timedelta(hours=1)
+        expected_endDatetime = (datetime.now() + timedelta(hours=1)).isoformat()
         expected_location = 'Location Test'
         expected_content = 'Content Test'
         expected_joinUrl = 'teams/microsoft.com/asd'
@@ -176,7 +176,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         expected_organizer_fullname = 'TEST USER'
         expected_attendees = []
         expected_startDatetime = datetime.now().isoformat()
-        expected_endDatetime = datetime.now().isoformat() + timedelta(hours=1)
+        expected_endDatetime = (datetime.now() + timedelta(hours=1)).isoformat()
         expected_location = 'Location Test Update'
         expected_content = 'Content Test Update'
         expected_meetingId = 'qwertyuiopasdfghjklzxcvbnm'
@@ -294,3 +294,8 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
 
         assert_equals(result.integromat_msg, expected_notifyType)
         assert_equals(result.timestamp, expected_timestamp)
+
+    ## Overrides ##
+
+    def test_folder_list(self):
+        pass

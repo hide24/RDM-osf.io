@@ -18,7 +18,6 @@ class IntegromatSerializer(StorageAddonSerializer):
             'importAuth': node.api_url_for('{}_import_auth'.format(SHORT_NAME)),
             'create': node.api_url_for('{}_add_user_account'.format(SHORT_NAME)),
             'deauthorize': node.api_url_for('{}_deauthorize_node'.format(SHORT_NAME)),
-            'config': node.api_url_for('{}_set_config'.format(SHORT_NAME)),
         }
         if user_settings:
             result['owner'] = web_url_for('profile_view_id',
