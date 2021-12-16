@@ -108,7 +108,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         url = self.project.api_url_for('integromat_api_call')
 
         res = self.app.get(url, auth=self.user.auth)
-        resBodyJson = json.loads(res.body) 
+        resBodyJson = json.loads(res.body)
         logger.info('res::' + str(res))
         logger.info('res.body::' + str(res.body))
         assert_equals(self.user, resBodyJson['email'])
@@ -269,7 +269,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
             'count': count,
         }, auth=self.user.auth)
 
-        rvBodyJson = json.loads(rv.body) 
+        rvBodyJson = json.loads(rv.body)
 
         assert_equals(rvBodyJson['integromatMsg'], expected_integromatMsg)
         assert_equals(rvBodyJson['timestamp'], expected_timestamp)
@@ -288,7 +288,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
             'count': count,
         }, auth=self.user.auth)
 
-        rvBodyJson = json.loads(rv.body) 
+        rvBodyJson = json.loads(rv.body)
 
         assert_equals(rvBodyJson['integromatMsg'], expected_integromatMsg)
         assert_equals(rvBodyJson['body.timestamp'], expected_timestamp)
