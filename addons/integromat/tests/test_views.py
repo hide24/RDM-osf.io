@@ -108,9 +108,10 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         url = self.project.api_url_for('integromat_api_call')
 
         res = self.app.get(url, auth=self.user.auth)
+        resBodyJson = json.loads(res.body) 
         logger.info('res::' + str(res))
         logger.info('res.body::' + str(res.body))
-        assert_equals(self.user, res.body.email)
+        assert_equals(self.user, resBodyJson['email'])
 
     def test_integromat_register_meeting_microsoft_teams(self):
         url = self.project.api_url_for('integromat_register_meeting')
@@ -130,6 +131,26 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         expected_meetingId = '1234567890qwertyuiopasdfghjkl'
         expected_password = ''
         expected_meetingInviteesInfo = ''
+
+        logAttendee = Attendees.objects.all()
+        logAttendeeJson = serializers.serialize('json', logAttendee, ensure_ascii=False)
+        logger.info('logUserSettingsJson:::' + str(logAttendeeJson))
+
+        logUserSettings = UserSettings.objects.all()
+        logUserSettingsJson = serializers.serialize('json', logUserSettings, ensure_ascii=False)
+        logger.info('logUserSettingsJson:::' + str(logUserSettingsJson))
+
+        logNodeSettings = NodeSettings.objects.all()
+        logNodeSettingsJson = serializers.serialize('json', logNodeSettings, ensure_ascii=False)
+        logger.info('logNodeSettingsJson:::' + str(logNodeSettingsJson))
+
+        logAllMeetingInformation = AllMeetingInformation.objects.all()
+        logAllMeetingInformationJson = serializers.serialize('json', AllMeetingInformation, ensure_ascii=False)
+        logger.info('logAllMeetingInformationJson:::' + str(logAllMeetingInformationJson))
+
+        logAllMeetingInformationAttendeesRelation = AllMeetingInformationAttendeesRelation.objects.all()
+        logAllMeetingInformationAttendeesRelationJson = serializers.serialize('json', logAllMeetingInformationAttendeesRelation, ensure_ascii=False)
+        logger.info('logAllMeetingInformationAttendeesRelationJson:::' + str(logAllMeetingInformationAttendeesRelationJson))
 
         rv = self.app.post_json(url, {
             'nodeId': node_id,
@@ -229,11 +250,12 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
     def test_integromat_get_meetings(self):
         url = self.project.api_url_for('integromat_get_meetings')
 
-        resJson = self.app.get(url, auth=self.user.auth)
+        res = self.app.get(url, auth=self.user.auth)
+        resBodyJson = json.loads(res.body)
         expectedQuery = AllMeetingInformation.objects.all()
         expectedJson = serializers.serialize('json', expectedQuery, ensure_ascii=False)
 
-        assert_equals(resJson.body.recentMeetings, expectedJson)
+        assert_equals(resBodyJson['recentMeetings'], expectedJson)
 
     def test_integromat_req_next_msg(self):
         url = self.project.api_url_for('integromat_req_next_msg')
@@ -247,10 +269,12 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
             'count': count,
         }, auth=self.user.auth)
 
-        assert_equals(rv.body.integromatMsg, expected_integromatMsg)
-        assert_equals(rv.body.timestamp, expected_timestamp)
-        assert_equals(rv.body.notify, True)
-        assert_equals(rv.body.count, count)
+        rvBodyJson = json.loads(rv.body) 
+
+        assert_equals(rvBodyJson['integromatMsg'], expected_integromatMsg)
+        assert_equals(rvBodyJson['timestamp'], expected_timestamp)
+        assert_equals(rvBodyJson['notify'], True)
+        assert_equals(rvBodyJson['count'], count)
 
     def test_integromat_req_next_msg_scenario_did_not_start(self):
         url = self.project.api_url_for('integromat_req_next_msg')
@@ -264,10 +288,12 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
             'count': count,
         }, auth=self.user.auth)
 
-        assert_equals(rv.body.integromatMsg, expected_integromatMsg)
-        assert_equals(rv.body.timestamp, expected_timestamp)
-        assert_equals(rv.body.notify, True)
-        assert_equals(rv.body.count, count)
+        rvBodyJson = json.loads(rv.body) 
+
+        assert_equals(rvBodyJson['integromatMsg'], expected_integromatMsg)
+        assert_equals(rvBodyJson['body.timestamp'], expected_timestamp)
+        assert_equals(rvBodyJson['body.notify'], True)
+        assert_equals(rvBodyJson['body.count'], count)
 
     def test_integromat_info_msg(self):
         url = self.project.api_url_for('integromat_info_msg')
