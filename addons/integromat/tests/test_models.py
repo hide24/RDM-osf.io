@@ -22,7 +22,7 @@ from addons.integromat.tests.factories import (
 from framework.auth import Auth
 from osf_tests.factories import ProjectFactory, DraftRegistrationFactory
 from tests.base import get_default_metaschema
-
+from django.core import serializers
 pytestmark = pytest.mark.django_db
 
 
@@ -63,17 +63,6 @@ class TestNodeSettings(OAuthAddonNodeSettingsTestSuiteMixin, unittest.TestCase):
         message = self.node_settings.before_register(self.node, self.user)
         assert_true(message)
 
-@pytest.mark.django_db
-def test_default_guest_user_guid():
-    inst = IntegromatAttendeesFactory(fullname='TEST USER', is_guest=True)
-    result = Attendees.objects.filter(fullname='TEST USER')
-    expected_user_guid = None
-    expected_microsoft_teams_mail = None
-    expected_webex_meetings_mail = None
-    assert_equal(result.user_guid, expected_user_guid)
-    assert_equal(result.microsoft_teams_user_name, expected_webex_meetings_mail)
-    assert_equal(result.expected_webex_meetings_mail, expected_webex_meetings_mail)
-
     ## Overrides ##
 
     def test_set_folder(self):
@@ -93,3 +82,18 @@ def test_default_guest_user_guid():
 
     def test_create_log(self):
         pass
+
+
+
+@pytest.mark.django_db
+def test_default_guest_user_guid():
+    inst = IntegromatAttendeesFactory(fullname='TEST USER', is_guest=True)
+    result = Attendees.objects.filter(fullname='TEST USER')
+    rJson = serializers.serialize('json', result, ensure_ascii=False)
+
+    expected_user_guid = None
+    expected_microsoft_teams_mail = None
+    expected_webex_meetings_mail = None
+    assert_equal(rJson.fields.user_guid, expected_user_guid)
+    assert_equal(rJson.fields.microsoft_teams_user_name, expected_webex_meetings_mail)
+    assert_equal(rJson.fields.webex_meetings_mail, expected_webex_meetings_mail)
