@@ -106,7 +106,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
 
         res = self.app.get(url, auth=self.user.auth)
 
-        assert_equals(self.user, res.email)
+        assert_equals(self.user, res.body.email)
 
     def test_integromat_register_meeting_microsoft_teams(self):
         url = self.project.api_url_for('integromat_register_meeting')
@@ -227,7 +227,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         expectedQuery = AllMeetingInformation.objects.all()
         expectedJson = serializers.serialize('json', expectedQuery, ensure_ascii=False)
 
-        assert_equals(resJson.recentMeetings, expectedJson)
+        assert_equals(resJson.body.recentMeetings, expectedJson)
 
     def test_integromat_req_next_msg(self):
         url = self.project.api_url_for('integromat_req_next_msg')
@@ -241,10 +241,10 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
             'count': count,
         }, auth=self.user.auth)
 
-        assert_equals(rv.integromatMsg, expected_integromatMsg)
-        assert_equals(rv.timestamp, expected_timestamp)
-        assert_equals(rv.notify, True)
-        assert_equals(rv.count, count)
+        assert_equals(rv.body.integromatMsg, expected_integromatMsg)
+        assert_equals(rv.body.timestamp, expected_timestamp)
+        assert_equals(rv.body.notify, True)
+        assert_equals(rv.body.count, count)
 
     def test_integromat_req_next_msg_scenario_did_not_start(self):
         url = self.project.api_url_for('integromat_req_next_msg')
@@ -258,10 +258,10 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
             'count': count,
         }, auth=self.user.auth)
 
-        assert_equals(rv.integromatMsg, expected_integromatMsg)
-        assert_equals(rv.timestamp, expected_timestamp)
-        assert_equals(rv.notify, True)
-        assert_equals(rv.count, count)
+        assert_equals(rv.body.integromatMsg, expected_integromatMsg)
+        assert_equals(rv.body.timestamp, expected_timestamp)
+        assert_equals(rv.body.notify, True)
+        assert_equals(rv.body.count, count)
 
     def test_integromat_info_msg(self):
         url = self.project.api_url_for('integromat_info_msg')
@@ -298,4 +298,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
     ## Overrides ##
 
     def test_folder_list(self):
+        pass
+
+    def test_set_config(self):
         pass
