@@ -60,16 +60,6 @@ api_routes = {
 
         Rule(
             [
-                '/project/<pid>/integromat/settings/',
-                '/project/<pid>/node/<nid>/integromat/settings/'
-            ],
-            'put',
-            views.integromat_set_config,
-            json_renderer,
-        ),
-
-        Rule(
-            [
                 '/project/<pid>/integromat/user_auth/',
                 '/project/<pid>/node/<nid>/integromat/user_auth/'
             ],
