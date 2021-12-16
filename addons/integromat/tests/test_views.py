@@ -117,7 +117,13 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
 
         res = self.app.get(url, auth=self.user.auth)
         resBodyJson = json.loads(res.body)
+<<<<<<< HEAD
         assert_equals(self.user.username, resBodyJson['email'])
+=======
+        logger.info('res::' + str(res))
+        logger.info('res.body::' + str(res.body))
+        assert_equals(self.user, resBodyJson['email'])
+>>>>>>> 9a83416dc8 (resolve trailing-whitespace)
 
     def test_integromat_register_meeting_microsoft_teams(self):
 
