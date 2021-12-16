@@ -54,13 +54,6 @@ integromat_deauthorize_node = generic_views.deauthorize_node(
     SHORT_NAME
 )
 
-integromat_set_config = generic_views.set_config(
-    SHORT_NAME,
-    FULL_NAME,
-    IntegromatSerializer,
-    ''
-)
-
 @must_be_logged_in
 @must_be_rdm_addons_allowed(SHORT_NAME)
 def integromat_add_user_account(auth, **kwargs):
