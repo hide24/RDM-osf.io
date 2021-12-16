@@ -39,6 +39,9 @@ from django.core import serializers
 
 pytestmark = pytest.mark.django_db
 
+import logging
+logger = logging.getLogger(__name__)
+
 class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCaseMixin, OsfTestCase):
     def setUp(self):
         self.mock_uid = mock.patch('addons.integromat.views.authIntegromat')
@@ -53,7 +56,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
     def test_integromat_settings_input_empty_access_key(self):
         url = self.project.api_url_for('integromat_add_user_account')
         rv = self.app.post_json(url, {
-            'access_token': '',
+            'integromat_api_token': '',
         }, auth=self.user.auth, expect_errors=True)
         assert_equals(rv.status_int, http_status.HTTP_400_BAD_REQUEST)
         assert_in('All the fields above are required.', rv.body.decode())
@@ -67,7 +70,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         rdm_addon_option.save()
         url = self.project.api_url_for('integromat_add_user_account')
         rv = self.app.post_json(url,{
-            'access_token': 'aldkjf',
+            'integromat_api_token': 'aldkjf',
         }, auth=self.user.auth, expect_errors=True)
         assert_equal(rv.status_int, http_status.HTTP_403_FORBIDDEN)
         assert_in('You are prohibited from using this add-on.', rv.body.decode())
@@ -105,7 +108,8 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         url = self.project.api_url_for('integromat_api_call')
 
         res = self.app.get(url, auth=self.user.auth)
-
+        logger.info('res::' + str(res))
+        logger.info('res.body::' + str(res.body))
         assert_equals(self.user, res.body.email)
 
     def test_integromat_register_meeting_microsoft_teams(self):
@@ -125,6 +129,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         expected_joinUrl = 'teams/microsoft.com/asd'
         expected_meetingId = '1234567890qwertyuiopasdfghjkl'
         expected_password = ''
+        expected_meetingInviteesInfo = ''
 
         rv = self.app.post_json(url, {
             'nodeId': node_id,
@@ -182,6 +187,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         expected_meetingId = 'qwertyuiopasdfghjklzxcvbnm'
         expected_meetingCreatedInviteesInfo = ''
         expected_meetingDeletedInviteesInfo = ''
+        expected_password = ''
 
         rv = self.app.post_json(url, {
             'nodeId': node_id,
