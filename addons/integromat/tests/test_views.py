@@ -34,7 +34,10 @@ from addons.integromat.tests.factories import (
     IntegromatNodeSettingsFactory,
     IntegromatAccountFactory,
     IntegromatAttendeesFactory,
-    IntegromatWorkflowExecutionMessagesFactory
+    IntegromatWorkflowExecutionMessagesFactory,
+    IntegromatAllMeetingInformationFactory,
+    IntegromatAllMeetingInformationAttendeesRelationFactory,
+    IntegromatNodeWorkflowsFactory
 )
 from django.core import serializers
 
