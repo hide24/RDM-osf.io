@@ -25,6 +25,15 @@ from tests.base import get_default_metaschema
 from django.core import serializers
 pytestmark = pytest.mark.django_db
 
+from addons.integromat.models import (
+    UserSettings,
+    NodeSettings,
+    WorkflowExecutionMessages,
+    Attendees,
+    AllMeetingInformation,
+    AllMeetingInformationAttendeesRelation,
+    NodeWorkflows
+)
 
 class TestUserSettings(OAuthAddonUserSettingTestSuiteMixin, unittest.TestCase):
 
@@ -89,6 +98,11 @@ class TestNodeSettings(OAuthAddonNodeSettingsTestSuiteMixin, unittest.TestCase):
 def test_default_guest_user_guid():
     inst = IntegromatAttendeesFactory(fullname='TEST GUEST USER', is_guest=True)
     result = Attendees.objects.filter(fullname='TEST GUEST USER')
+
+    logAttendee = Attendees.objects.all()
+    logAttendeeJson = serializers.serialize('json', logAttendee, ensure_ascii=False)
+    logger.info('logAttendeeJson:guest_suer_guid::' + str(logAttendeeJson))
+
     rJson = serializers.serialize('json', result, ensure_ascii=False)
     rDict = json.loads(rJson)
     expected_user_guid = None
