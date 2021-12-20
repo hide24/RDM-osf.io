@@ -112,7 +112,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         resBodyJson = json.loads(res.body)
         logger.info('res::' + str(res))
         logger.info('res.body::' + str(res.body))
-        assert_equals(self.user, resBodyJson['email'])
+        assert_equals(self.user.user, resBodyJson['email'])
 
     def test_integromat_register_meeting_microsoft_teams(self):
         url = self.project.api_url_for('integromat_register_meeting')
@@ -195,7 +195,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         assert_equals(result.node_settings_id, expected_nodeId)
 
         rResult = AllMeetingInformationAttendeesRelation.objects.all()
-        assert_equals(rResult.len, 0)
+        assert_equals(len(rResult), 0)
 
     def test_integromat_update_meeting_registration_microsoft_teams(self):
         url = self.project.api_url_for('integromat_update_meeting_registration')
@@ -255,7 +255,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         assert_equals(result.node_settings_id, expected_nodeId)
 
         rResult = AllMeetingInformationAttendeesRelation.objects.all()
-        assert_equals(rResult.len, 0)
+        assert_equals(len(rResult), 0)
 
     def test_integromat_get_meetings(self):
         url = self.project.api_url_for('integromat_get_meetings')
@@ -263,8 +263,9 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         res = self.app.get(url, auth=self.user.auth)
         resBodyJson = json.loads(res.body)
         expectedQuery = AllMeetingInformation.objects.all()
-        expectedJson = serializers.serialize('json', expectedQuery, ensure_ascii=False)
+        expectedJson = json.loads(serializers.serialize('json', expectedQuery, ensure_ascii=False))
 
+        assert_equals(len(resBodyJson), 1)
         assert_equals(resBodyJson['recentMeetings'], expectedJson)
 
     def test_integromat_req_next_msg(self):
@@ -301,9 +302,9 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         rvBodyJson = json.loads(rv.body)
 
         assert_equals(rvBodyJson['integromatMsg'], expected_integromatMsg)
-        assert_equals(rvBodyJson['body.timestamp'], expected_timestamp)
-        assert_equals(rvBodyJson['body.notify'], True)
-        assert_equals(rvBodyJson['body.count'], count)
+        assert_equals(rvBodyJson['timestamp'], expected_timestamp)
+        assert_equals(rvBodyJson['notify'], True)
+        assert_equals(rvBodyJson['count'], count)
 
     def test_integromat_info_msg(self):
         url = self.project.api_url_for('integromat_info_msg')
