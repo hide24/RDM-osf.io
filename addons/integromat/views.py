@@ -351,6 +351,8 @@ def integromat_register_meeting(**kwargs):
 
             for attendeeMail in attendees:
 
+                logger.info('node.id - attendeeMail::' + str(node.id) + str(attendeeMail))
+
                 qsAttendee = models.Attendees.objects.get(node_settings_id=node.id, microsoft_teams_mail=attendeeMail)
                 attendeeId = qsAttendee.id
                 attendeeIds.append(attendeeId)
