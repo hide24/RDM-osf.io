@@ -45,6 +45,11 @@ logger = logging.getLogger(__name__)
 
 class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCaseMixin, OsfTestCase):
     def setUp(self):
+        WorkflowExecutionMessage = IntegromatWorkflowExecutionMessagesFactory()
+        AttendeesFactory = IntegromatAttendeesFactory()
+        AllMeetingInformationFactory = IntegromatAllMeetingInformationFactory()
+        AllMeetingInformationAttendeesRelationFactory = IntegromatAllMeetingInformationAttendeesRelationFactory()
+        NodeWorkflowsFactory = IntegromatNodeWorkflowsFactory()
         self.mock_uid = mock.patch('addons.integromat.views.authIntegromat')
         self.mock_uid.return_value = {'id': '1234567890', 'name': 'integromat.user'}
         self.mock_uid.start()
@@ -112,7 +117,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         resBodyJson = json.loads(res.body)
         logger.info('res::' + str(res))
         logger.info('res.body::' + str(res.body))
-        assert_equals(self.user.user, resBodyJson['email'])
+        assert_equals(self.user.username, resBodyJson['email'])
 
     def test_integromat_register_meeting_microsoft_teams(self):
         url = self.project.api_url_for('integromat_register_meeting')
