@@ -1,8 +1,16 @@
 # -*- coding: utf-8 -*-
 from addons.base.tests.base import OAuthAddonTestCaseMixin, AddonTestCase
-from addons.integromat.tests.factories import IntegromatAccountFactory
 from addons.integromat.provider import IntegromatProvider
 from addons.integromat.serializer import IntegromatSerializer
+from addons.integromat.tests.factories import (
+    IntegromatAccountFactory,
+    IntegromatAttendeesFactory,
+    IntegromatWorkflowExecutionMessagesFactory,
+    IntegromatAllMeetingInformationFactory,
+    IntegromatAllMeetingInformationAttendeesRelationFactory,
+    IntegromatNodeWorkflowsFactory
+)
+
 
 class IntegromatAddonTestCase(OAuthAddonTestCaseMixin, AddonTestCase):
 
