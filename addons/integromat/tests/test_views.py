@@ -28,6 +28,7 @@ from addons.integromat.models import (
     AllMeetingInformationAttendeesRelation,
     NodeWorkflows
 )
+from osf.models import ExternalAccount
 from addons.integromat.tests.factories import (
     IntegromatUserSettingsFactory,
     IntegromatNodeSettingsFactory,
@@ -38,7 +39,7 @@ from addons.integromat.tests.factories import (
 from django.core import serializers
 
 pytestmark = pytest.mark.django_db
-
+import json
 import logging
 logger = logging.getLogger(__name__)
 
@@ -132,9 +133,9 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         expected_password = ''
         expected_meetingInviteesInfo = ''
 
-        logAttendee = Attendees.objects.all()
-        logAttendeeJson = serializers.serialize('json', logAttendee, ensure_ascii=False)
-        logger.info('logUserSettingsJson:::' + str(logAttendeeJson))
+        logExternalAccount = ExternalAccount.objects.all()
+        logExternalAccountJson = serializers.serialize('json', logExternalAccount, ensure_ascii=False)
+        logger.info('logExternalAccountJson:::' + str(logExternalAccountJson))
 
         logUserSettings = UserSettings.objects.all()
         logUserSettingsJson = serializers.serialize('json', logUserSettings, ensure_ascii=False)
@@ -145,8 +146,12 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         logger.info('logNodeSettingsJson:::' + str(logNodeSettingsJson))
 
         logAllMeetingInformation = AllMeetingInformation.objects.all()
-        logAllMeetingInformationJson = serializers.serialize('json', AllMeetingInformation, ensure_ascii=False)
+        logAllMeetingInformationJson = serializers.serialize('json', logAllMeetingInformation, ensure_ascii=False)
         logger.info('logAllMeetingInformationJson:::' + str(logAllMeetingInformationJson))
+
+        logAttendee = Attendees.objects.all()
+        logAttendeeJson = serializers.serialize('json', logAttendee, ensure_ascii=False)
+        logger.info('logAttendeeJson:::' + str(logAttendeeJson))
 
         logAllMeetingInformationAttendeesRelation = AllMeetingInformationAttendeesRelation.objects.all()
         logAllMeetingInformationAttendeesRelationJson = serializers.serialize('json', logAllMeetingInformationAttendeesRelation, ensure_ascii=False)
@@ -225,6 +230,10 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
             'meetingCreatedInviteesInfo': expected_meetingCreatedInviteesInfo,
             'meetingDeletedInviteesInfo': expected_meetingDeletedInviteesInfo,
         }, auth=self.user.auth)
+
+        logAllMeetingInformation = AllMeetingInformation.objects.all()
+        logAllMeetingInformationJson = serializers.serialize('json', logAllMeetingInformation, ensure_ascii=False)
+        logger.info('logAllMeetingInformationJson:::' + str(logAllMeetingInformationJson))
 
         result = AllMeetingInformation.objects.get(meetingId='qwertyuiopasdfghjklzxcvbnm')
         assert_equals(result.subject, expected_subject)

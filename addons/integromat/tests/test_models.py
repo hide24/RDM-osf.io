@@ -1,6 +1,6 @@
 # from nose.tools import *  # noqa
 import unittest
-
+import json
 import mock
 import pytest
 from nose.tools import (assert_false, assert_true,
@@ -90,10 +90,10 @@ def test_default_guest_user_guid():
     inst = IntegromatAttendeesFactory(fullname='TEST USER', is_guest=True)
     result = Attendees.objects.filter(fullname='TEST USER')
     rJson = serializers.serialize('json', result, ensure_ascii=False)
-
+    rDict = json.loads(rJson)
     expected_user_guid = None
     expected_microsoft_teams_mail = None
     expected_webex_meetings_mail = None
-    assert_equal(rJson['fields']['user_guid'], expected_user_guid)
-    assert_equal(rJson['fields']['microsoft_teams_user_name'], expected_webex_meetings_mail)
-    assert_equal(rJson['fields']['webex_meetings_mail'], expected_webex_meetings_mail)
+    assert_equal(rDict['fields']['user_guid'], expected_user_guid)
+    assert_equal(rDict['fields']['microsoft_teams_user_name'], expected_webex_meetings_mail)
+    assert_equal(rDict['fields']['webex_meetings_mail'], expected_webex_meetings_mail)
