@@ -16,3 +16,9 @@ class IntegromatAddonTestCase(OAuthAddonTestCaseMixin, AddonTestCase):
         'name': 'bucket',
         'id': 'bucket'
     }
+
+    WorkflowExecutionMessage = IntegromatWorkflowExecutionMessagesFactory
+    AttendeesFactory = IntegromatAttendeesFactory
+    AllMeetingInformationFactory = IntegromatAllMeetingInformationFactory
+    AllMeetingInformationAttendeesRelationFactory = IntegromatAllMeetingInformationAttendeesRelationFactory
+    NodeWorkflowsFactory = IntegromatNodeWorkflowsFactory
