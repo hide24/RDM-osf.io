@@ -94,6 +94,6 @@ def test_default_guest_user_guid():
     expected_user_guid = None
     expected_microsoft_teams_mail = None
     expected_webex_meetings_mail = None
-    assert_equal(rDict['fields']['user_guid'], expected_user_guid)
-    assert_equal(rDict['fields']['microsoft_teams_user_name'], expected_webex_meetings_mail)
-    assert_equal(rDict['fields']['webex_meetings_mail'], expected_webex_meetings_mail)
+    assert_equal(rDict[0]['fields']['user_guid'], expected_user_guid)
+    assert_equal(rDict[0]['fields']['microsoft_teams_user_name'], expected_webex_meetings_mail)
+    assert_equal(rDict[0]['fields']['webex_meetings_mail'], expected_webex_meetings_mail)
