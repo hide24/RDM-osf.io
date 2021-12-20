@@ -59,6 +59,11 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         super(TestIntegromatViews, self).setUp()
 
     def tearDown(self):
+        WorkflowExecutionMessages.objects.all().delete()
+        Attendees.objects.all().delete()
+        AllMeetingInformation.objects.all().delete()
+        AllMeetingInformationAttendeesRelation.objects.all().delete()
+        NodeWorkflows.objects.all().delete()
         self.mock_uid.stop()
         super(TestIntegromatViews, self).tearDown()
 
@@ -272,6 +277,9 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         resBodyJson = json.loads(res.body)
         expectedQuery = AllMeetingInformation.objects.all()
         expectedJson = json.loads(serializers.serialize('json', expectedQuery, ensure_ascii=False))
+
+        logger.info('resBodyJson:::' + str(resBodyJson))
+        logger.info('expectedJson:::' + str(expectedJson))
 
         assert_equals(len(resBodyJson), 1)
         assert_equals(resBodyJson['recentMeetings'], expectedJson)

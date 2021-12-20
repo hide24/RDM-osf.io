@@ -25,6 +25,9 @@ from tests.base import get_default_metaschema
 from django.core import serializers
 pytestmark = pytest.mark.django_db
 
+import logging
+logger = logging.getLogger(__name__)
+
 from addons.integromat.models import (
     UserSettings,
     NodeSettings,
