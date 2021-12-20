@@ -87,8 +87,8 @@ class TestNodeSettings(OAuthAddonNodeSettingsTestSuiteMixin, unittest.TestCase):
 
 @pytest.mark.django_db
 def test_default_guest_user_guid():
-    inst = IntegromatAttendeesFactory(fullname='TEST USER', is_guest=True)
-    result = Attendees.objects.filter(fullname='TEST USER')
+    inst = IntegromatAttendeesFactory(fullname='TEST GUEST USER', is_guest=True)
+    result = Attendees.objects.filter(fullname='TEST GUEST USER')
     rJson = serializers.serialize('json', result, ensure_ascii=False)
     rDict = json.loads(rJson)
     expected_user_guid = None
