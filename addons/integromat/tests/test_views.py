@@ -170,6 +170,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
 
         result = AllMeetingInformation.objects.get(meetingId='1234567890qwertyuiopasdfghjkl')
         expected_attendees_id = Attendees.objects.get(microsoft_teams_mail=expected_attendees[0])
+        assert_equals(rv, {})
         assert_equals(result.subject, expected_subject)
         assert_equals(result.organizer, expected_organizer)
         assert_equals(result.organizer_fullname, expected_organizer_fullname)
