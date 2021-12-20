@@ -95,22 +95,3 @@ class TestNodeSettings(OAuthAddonNodeSettingsTestSuiteMixin, unittest.TestCase):
     def test_create_log(self):
         pass
 
-
-
-@pytest.mark.django_db
-def test_default_guest_user_guid():
-    inst = IntegromatAttendeesFactory(fullname='TEST GUEST USER', is_guest=True)
-    result = Attendees.objects.filter(fullname='TEST GUEST USER')
-
-    logAttendee = Attendees.objects.all()
-    logAttendeeJson = serializers.serialize('json', logAttendee, ensure_ascii=False)
-    logger.info('logAttendeeJson:guest_suer_guid::' + str(logAttendeeJson))
-
-    rJson = serializers.serialize('json', result, ensure_ascii=False)
-    rDict = json.loads(rJson)
-    expected_user_guid = None
-    expected_microsoft_teams_mail = None
-    expected_webex_meetings_mail = None
-    assert_equal(rDict[0]['fields']['user_guid'], expected_user_guid)
-    assert_equal(rDict[0]['fields']['microsoft_teams_user_name'], expected_webex_meetings_mail)
-    assert_equal(rDict[0]['fields']['webex_meetings_mail'], expected_webex_meetings_mail)

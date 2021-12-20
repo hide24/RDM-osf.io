@@ -48,22 +48,12 @@ logger = logging.getLogger(__name__)
 
 class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCaseMixin, OsfTestCase):
     def setUp(self):
-        WorkflowExecutionMessage = IntegromatWorkflowExecutionMessagesFactory()
-        AttendeesFactory = IntegromatAttendeesFactory()
-        AllMeetingInformationFactory = IntegromatAllMeetingInformationFactory()
-        AllMeetingInformationAttendeesRelationFactory = IntegromatAllMeetingInformationAttendeesRelationFactory()
-        NodeWorkflowsFactory = IntegromatNodeWorkflowsFactory()
         self.mock_uid = mock.patch('addons.integromat.views.authIntegromat')
         self.mock_uid.return_value = {'id': '1234567890', 'name': 'integromat.user'}
         self.mock_uid.start()
         super(TestIntegromatViews, self).setUp()
 
     def tearDown(self):
-        WorkflowExecutionMessages.objects.all().delete()
-        Attendees.objects.all().delete()
-        AllMeetingInformation.objects.all().delete()
-        AllMeetingInformationAttendeesRelation.objects.all().delete()
-        NodeWorkflows.objects.all().delete()
         self.mock_uid.stop()
         super(TestIntegromatViews, self).tearDown()
 
@@ -123,11 +113,11 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
 
         res = self.app.get(url, auth=self.user.auth)
         resBodyJson = json.loads(res.body)
-        logger.info('res::' + str(res))
-        logger.info('res.body::' + str(res.body))
         assert_equals(self.user.username, resBodyJson['email'])
 
     def test_integromat_register_meeting_microsoft_teams(self):
+
+        AttendeesFactory = IntegromatAttendeesFactory()
         url = self.project.api_url_for('integromat_register_meeting')
 
         node_id = 'qwe'
@@ -209,8 +199,13 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
 
         rResult = AllMeetingInformationAttendeesRelation.objects.all()
         assert_equals(len(rResult), 0)
+        #Attendees table clean
+        Attendees.objects.all().delete()
 
     def test_integromat_update_meeting_registration_microsoft_teams(self):
+
+        AttendeesFactory = IntegromatAttendeesFactory()
+        AllMeetingInformationFactory = IntegromatAllMeetingInformationFactory()
         url = self.project.api_url_for('integromat_update_meeting_registration')
 
         node_id = 'qwe'
@@ -269,8 +264,12 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
 
         rResult = AllMeetingInformationAttendeesRelation.objects.all()
         assert_equals(len(rResult), 0)
+        #clear
+        Attendees.objects.all().delete()
+        AllMeetingInformation.objects.all().delete()
 
     def test_integromat_get_meetings(self):
+        AllMeetingInformationFactory = IntegromatAllMeetingInformationFactory()
         url = self.project.api_url_for('integromat_get_meetings')
 
         res = self.app.get(url, auth=self.user.auth)
@@ -283,8 +282,12 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
 
         assert_equals(len(resBodyJson), 1)
         assert_equals(resBodyJson['recentMeetings'], expectedJson)
+        #clear
+        AllMeetingInformation.objects.all().delete()
+
 
     def test_integromat_req_next_msg(self):
+        WorkflowExecutionMessage = IntegromatWorkflowExecutionMessagesFactory()
         url = self.project.api_url_for('integromat_req_next_msg')
 
         expected_timestamp = '1234567890123'
@@ -302,6 +305,8 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         assert_equals(rvBodyJson['timestamp'], expected_timestamp)
         assert_equals(rvBodyJson['notify'], True)
         assert_equals(rvBodyJson['count'], count)
+        #clear
+        WorkflowExecutionMessages.objects.all().delete()
 
     def test_integromat_req_next_msg_scenario_did_not_start(self):
         url = self.project.api_url_for('integromat_req_next_msg')
@@ -323,6 +328,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         assert_equals(rvBodyJson['count'], count)
 
     def test_integromat_info_msg(self):
+        WorkflowExecutionMessage = IntegromatWorkflowExecutionMessagesFactory()
         url = self.project.api_url_for('integromat_info_msg')
 
         expected_notifyType = 'integromat.info.notify'
@@ -337,8 +343,11 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
 
         assert_equals(result.integromat_msg, expected_notifyType)
         assert_equals(result.timestamp, expected_timestamp)
+        #clear
+        WorkflowExecutionMessages.objects.all().delete()
 
     def test_integromat_error_msg(self):
+        WorkflowExecutionMessage = IntegromatWorkflowExecutionMessagesFactory()
         url = self.project.api_url_for('integromat_error_msg')
 
         expected_notifyType = 'integromat.error.notify'
@@ -353,6 +362,8 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
 
         assert_equals(result.integromat_msg, expected_notifyType)
         assert_equals(result.timestamp, expected_timestamp)
+        #clear
+        WorkflowExecutionMessages.objects.all().delete()
 
     ## Overrides ##
 
