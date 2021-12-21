@@ -10,7 +10,6 @@ import pytest
 from framework.auth import Auth
 from tests.base import OsfTestCase, get_default_metaschema
 from osf_tests.factories import ProjectFactory, AuthUserFactory, DraftRegistrationFactory, InstitutionFactory
-
 from addons.base.tests.views import (
     OAuthAddonConfigViewsTestCaseMixin
 )
@@ -28,7 +27,7 @@ from addons.integromat.models import (
     AllMeetingInformationAttendeesRelation,
     NodeWorkflows
 )
-from osf.models import ExternalAccount
+from osf.models import ExternalAccount, OSFUser
 from addons.integromat.tests.factories import (
     IntegromatUserSettingsFactory,
     IntegromatNodeSettingsFactory,
@@ -178,9 +177,9 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
             'meetingInviteesInfo': expected_meetingInviteesInfo,
         }, auth=self.user.auth)
 
-        result = AllMeetingInformation.objects.get(meetingId='1234567890qwertyuiopasdfghjkl')
+        result = AllMeetingInformation.objects.get(meetingid='1234567890qwertyuiopasdfghjkl')
         expected_attendees_id = Attendees.objects.get(microsoft_teams_mail=expected_attendees[0])
-        assert_equals(rv, {})
+
         assert_equals(result.subject, expected_subject)
         assert_equals(result.organizer, expected_organizer)
         assert_equals(result.organizer_fullname, expected_organizer_fullname)
@@ -192,6 +191,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         assert_equals(result.join_url, expected_joinUrl)
         assert_equals(result.meetingid, expected_meetingId)
         assert_equals(result.password, expected_password)
+        assert_equals(rv, {})
 
         expected_appId = 1639
         expected_nodeId = NodeSettings.objects.get(_id=node_id).pk
@@ -249,7 +249,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         logAllMeetingInformationJson = serializers.serialize('json', logAllMeetingInformation, ensure_ascii=False)
         logger.info('logAllMeetingInformationJson:::' + str(logAllMeetingInformationJson))
 
-        result = AllMeetingInformation.objects.get(meetingId='qwertyuiopasdfghjklzxcvbnm')
+        result = AllMeetingInformation.objects.get(meetingid='qwertyuiopasdfghjklzxcvbnm')
         assert_equals(result.subject, expected_subject)
         assert_equals(result.organizer, expected_organizer)
         assert_equals(result.organizer_fullname, expected_organizer_fullname)
@@ -261,6 +261,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         assert_equals(result.join_url, expected_joinUrl)
         assert_equals(result.meetingid, expected_meetingId)
         assert_equals(result.password, expected_password)
+        assert_equals(rv, {})
 
         expected_appId = 1639
         expected_nodeId = NodeSettings.objects.get(_id=node_id).id
@@ -272,6 +273,29 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         assert_equals(len(rResult), 0)
         #clear
         Attendees.objects.all().delete()
+        AllMeetingInformation.objects.all().delete()
+
+    def test_integromat_delete_meeting_registration(self):
+
+        logger.info('self.node_settings:::' + str(self.node_settings))
+        logNodeSettings = NodeSettings.objects.all()
+        logNodeSettingsJson = serializers.serialize('json', logNodeSettings, ensure_ascii=False)
+        logger.info('logNodeSettingsJson:::' + str(logNodeSettingsJson))
+        AllMeetingInformationFactory = IntegromatAllMeetingInformationFactory(node_settings=self.node_settings)
+
+        url = self.project.api_url_for('integromat_delete_meeting_registration')
+
+        meetingId = 'qwertyuiopasdfghjklzxcvbnm'
+
+        rv = self.app.post_json(url, {
+            'meetingId': meetingId,
+        }, auth=self.user.auth)
+
+        result = AllMeetingInformation.objects.filter(meetingId='qwertyuiopasdfghjklzxcvbnm')
+
+        assert_equals(result.count(), 0)
+        assert_equals(rv, {})
+        #clear
         AllMeetingInformation.objects.all().delete()
 
     def test_integromat_get_meetings(self):
@@ -300,13 +324,136 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         #clear
         AllMeetingInformation.objects.all().delete()
 
+    def test_integromat_register_web_meeting_apps_email_register(self):
+
+        logger.info('self.node_settings:::' + str(self.node_settings))
+        logNodeSettings = NodeSettings.objects.all()
+        logNodeSettingsJson = serializers.serialize('json', logNodeSettings, ensure_ascii=False)
+        logger.info('logNodeSettingsJson:::' + str(logNodeSettingsJson))
+        logOSFUser = OSFUser.objects.all()
+        logOSFUserJson = serializers.serialize('json', logOSFUser, ensure_ascii=False)
+        logger.info('logOSFUserJson:::' + str(logOSFUserJson))
+        AllMeetingInformationFactory = IntegromatAllMeetingInformationFactory(node_settings=self.node_settings)
+
+        url = self.project.api_url_for('integromat_register_web_meeting_apps_email')
+
+        _id = None
+        expected_guid = self.user._prefetched_objects_cache['guids'].only()
+        appName = 'MicrosoftTeams'
+        expected_email = 'testUser4@test.onmicrosoft.com'
+        expected_username = 'Teams User4'
+        expected_is_guest = False
+        expected_fullname = ''
+
+        rv = self.app.post_json(url, {
+            '_id': _id,
+            'appName': appName,
+            'guid': expected_guid,
+            'email': expected_email,
+            'fullname': expected_fullname,
+            'username': expected_username,
+            'is_guest': expected_is_guest,
+        }, auth=self.user.auth)
+
+        result = Attendees.objects.get(user_guid='123as')
+        expected_fullname = Attendees.objects.get(user_guid='123as').fullname
+
+        assert_equals(result.fullname, expected_fullname)
+        assert_equals(result.microsoft_teams_mail, expected_email)
+        assert_equals(result.microsoft_teams_user_name, expected_username)
+        assert_equals(result.webex_meetings_mail, None)
+        assert_equals(result.webex_meetings_display_name, None)
+        assert_equals(result.is_guest, expected_is_guest)
+        #clear
+        OSFUser.objects.all().delete()
+        AllMeetingInformation.objects.all().delete()
+
+    def test_integromat_register_web_meeting_apps_email_update(self):
+        logger.info('self.node_settings:::' + str(self.node_settings))
+        logNodeSettings = NodeSettings.objects.all()
+        logNodeSettingsJson = serializers.serialize('json', logNodeSettings, ensure_ascii=False)
+        logger.info('logNodeSettingsJson:::' + str(logNodeSettingsJson))
+        logOSFUser = OSFUser.objects.all()
+        logOSFUserJson = serializers.serialize('json', logOSFUser, ensure_ascii=False)
+        logger.info('logOSFUserJson:::' + str(logOSFUserJson))
+        AllMeetingInformationFactory = IntegromatAllMeetingInformationFactory(node_settings=self.node_settings)
+
+        url = self.project.api_url_for('integromat_register_web_meeting_apps_email')
+
+        _id = '1234567890qwertyuiop'
+        expected_guid = self.user._prefetched_objects_cache['guids'].only()
+        appName = 'MicrosoftTeams'
+        expected_email = 'testUser4update@test.onmicrosoft.com'
+        expected_username = 'Teams User4 update'
+        expected_is_guest = False
+        expected_fullname = ''
+
+        rv = self.app.post_json(url, {
+            '_id': _id,
+            'appName': appName,
+            'guid': expected_guid,
+            'email': expected_email,
+            'fullname': expected_fullname,
+            'username': expected_username,
+            'is_guest': expected_is_guest,
+        }, auth=self.user.auth)
+
+        result = Attendees.objects.get(user_guid='testuser')
+        expected_fullname = Attendees.objects.get(user_guid='testuser').fullname
+
+        assert_equals(result.fullname, expected_fullname)
+        assert_equals(result.microsoft_teams_mail, expected_email)
+        assert_equals(result.microsoft_teams_user_name, expected_username)
+        assert_equals(result.webex_meetings_mail, None)
+        assert_equals(result.webex_meetings_display_name, None)
+        assert_equals(result.is_guest, expected_is_guest)
+        #clear
+        OSFUser.objects.all().delete()
+        AllMeetingInformation.objects.all().delete()
+
+    def test_integromat_register_web_meeting_apps_email_guest_update(self):
+        url = self.project.api_url_for('integromat_register_web_meeting_apps_email')
+
+        _id = '0987654321poiuytrewq'
+        appName = 'MicrosoftTeams'
+        fullname = 'Guest User2'
+        origin_email = 'testUser5@guest.com'
+        origin_username = 'Teams Guest User5'
+        origin_is_guest = True
+        expected_fullname = ''
+
+        AttendeesFactory = IntegromatAttendeesFactory(_id='0987654321poiuytrewq', fullname=fullname, microsoft_teams_mail=origin_email, microsoft_teams_user_name=origin_username, is_guest=is_guest)
+
+        expected_email = 'testUser5Update@guest.com'
+        expected_username = 'Teams Guest User5 Update'
+        expected_is_guest = True
+
+        rv = self.app.post_json(url, {
+            '_id': _id,
+            'appName': appName,
+            'guid': None,
+            'email': expected_email,
+            'fullname': expected_fullname,
+            'username': expected_username,
+            'is_guest': expected_is_guest,
+        }, auth=self.user.auth)
+
+        result = Attendees.objects.get(_id=_id)
+        expected_fullname = Attendees.objects.get(_id=_id).fullname
+
+        assert_equals(result.fullname, expected_fullname)
+        assert_equals(result.microsoft_teams_mail, expected_email)
+        assert_equals(result.microsoft_teams_user_name, expected_username)
+        assert_equals(result.webex_meetings_mail, None)
+        assert_equals(result.webex_meetings_display_name, None)
+        assert_equals(result.is_guest, expected_is_guest)
 
     def test_integromat_req_next_msg(self):
         logger.info('self.node_settings:::' + str(self.node_settings))
         logNodeSettings = NodeSettings.objects.all()
         logNodeSettingsJson = serializers.serialize('json', logNodeSettings, ensure_ascii=False)
         logger.info('logNodeSettingsJson:::' + str(logNodeSettingsJson))
-        WorkflowExecutionMessage = IntegromatWorkflowExecutionMessagesFactory(self.node_settings)
+        WorkflowExecutionMessage = IntegromatWorkflowExecutionMessagesFactory(node_settings=self.node_settings)
 
         url = self.project.api_url_for('integromat_req_next_msg')
 
@@ -384,6 +531,28 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         assert_equals(result.timestamp, expected_timestamp)
         #clear
         WorkflowExecutionMessages.objects.all().delete()
+
+    def test_integromat_register_alternative_webhook_url(self):
+
+        logger.info('self.node_settings:::' + str(self.node_settings))
+        logNodeSettings = NodeSettings.objects.all()
+        logNodeSettingsJson = serializers.serialize('json', logNodeSettings, ensure_ascii=False)
+        logger.info('logNodeSettingsJson:::' + str(logNodeSettingsJson))
+
+        url = self.project.api_url_for('integromat_register_alternative_webhook_url')
+
+        workflowDescription = 'integromat.test.workflows.web_meeting.description'
+        expected_alternativeWebhookUrl = 'hook/integromat/com/test'
+
+        rv = self.app.post_json(url, {
+            'workflowDescription': workflowDescription,
+            'alternativeWebhookUrl': expected_alternativeWebhookUrl,
+        }, auth=self.user.auth)
+        workflowId = 7895
+        result = NodeWorkflows.objects.get(node_settings_id=self.node_settings.id, workflowid=workflowId)
+        logger.info('self.node_settings.id:::' + str(self.node_settings.id))
+
+        assert_equals(result.alternative_webhook_url, expected_alternativeWebhookUrl)
 
     ## Overrides ##
 
