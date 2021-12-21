@@ -180,13 +180,14 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
 
         result = AllMeetingInformation.objects.get(meetingid='1234567890qwertyuiopasdfghjkl')
 
-        logger.info('Attendee.id:::' + str(result.attendees) + str(expected_attendees_id))
+        logger.info('Attendee.id:::' + str(result.attendees) + ':::' + str(expected_attendees_id))
+        logger.info('result:::' + str(result))
 
         assert_equals(result.subject, expected_subject)
         assert_equals(result.organizer, expected_organizer)
         assert_equals(result.organizer_fullname, expected_organizer)
-        assert_equals(result.start_datetime, expected_startDatetime)
-        assert_equals(result.end_datetime, expected_endDatetime)
+        assert_equals(result.start_datetime.isoformat(), expected_startDatetime)
+        assert_equals(result.end_datetime.isoformat(), expected_endDatetime)
         assert_equals(result.location, expected_location)
         assert_equals(result.content, expected_content)
         assert_equals(result.join_url, expected_joinUrl)
@@ -256,14 +257,17 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         logAllMeetingInformation = AllMeetingInformation.objects.all()
         logAllMeetingInformationJson = serializers.serialize('json', logAllMeetingInformation, ensure_ascii=False)
         logger.info('logAllMeetingInformationJson:::' + str(logAllMeetingInformationJson))
-        logger.info('Attendee.id:::' + str(result.attendees) + str(expected_attendees_id))
 
         result = AllMeetingInformation.objects.get(meetingid='qwertyuiopasdfghjklzxcvbnm')
+
+        logger.info('Attendee.id:::' + str(result.attendees) + ':::' + str(expected_attendees_id))
+        logger.info('result:::' + str(result))
+
         assert_equals(result.subject, expected_subject)
         assert_equals(result.organizer, expected_organizer)
         assert_equals(result.organizer_fullname, expected_organizer_fullname)
-        assert_equals(result.start_datetime, expected_startDatetime)
-        assert_equals(result.end_datetime, expected_endDatetime)
+        assert_equals(result.start_datetime.isoformat(), expected_startDatetime)
+        assert_equals(result.end_datetime.isoformat(), expected_endDatetime)
         assert_equals(result.location, expected_location)
         assert_equals(result.content, expected_content)
         assert_equals(result.join_url, expected_joinUrl)
@@ -357,7 +361,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         expected_email = 'testUser4@test.onmicrosoft.com'
         expected_username = 'Teams User4'
         expected_is_guest = False
-        expected_fullname = ''
+        expected_fullname = osfUser.fullnamme
 
         rv = self.app.post_json(url, {
             '_id': _id,
@@ -371,8 +375,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
 
         rvBodyJson = json.loads(rv.body)
 
-        result = Attendees.objects.get(user_guid='123as')
-        expected_fullname = Attendees.objects.get(user_guid='123as').fullname
+        result = Attendees.objects.get(user_guid=osfUserGuid)
 
         assert_equals(result.fullname, expected_fullname)
         assert_equals(result.microsoft_teams_mail, expected_email)
@@ -407,7 +410,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         expected_email = 'testUser4update@test.onmicrosoft.com'
         expected_username = 'Teams User4 update'
         expected_is_guest = False
-        expected_fullname = ''
+        expected_fullname = osfUser.fullnamme
 
         rv = self.app.post_json(url, {
             '_id': _id,
@@ -419,8 +422,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
             'is_guest': expected_is_guest,
         }, auth=self.user.auth)
 
-        result = Attendees.objects.get(user_guid='testuser')
-        expected_fullname = Attendees.objects.get(user_guid='testuser').fullname
+        result = Attendees.objects.get(user_guid=osfUserGuid)
 
         assert_equals(result.fullname, expected_fullname)
         assert_equals(result.microsoft_teams_mail, expected_email)
@@ -572,7 +574,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
 
         url = self.project.api_url_for('integromat_register_alternative_webhook_url')
 
-        workflowDescription = 'workflow_description'
+        workflowDescription = 'integromat.workflows.web_meeting.description'
         expected_alternativeWebhookUrl = 'hook/integromat/com/test'
 
         rv = self.app.post_json(url, {
