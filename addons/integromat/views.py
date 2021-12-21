@@ -430,7 +430,7 @@ def integromat_update_meeting_registration(**kwargs):
         if appName == settings.MICROSOFT_TEAMS:
 
             for attendeeMail in attendees:
-
+                logger.info('node.id - attendeeMail::' + str(node.id) + str(attendeeMail))
                 qsAttendee = models.Attendees.objects.get(node_settings_id=node.id, microsoft_teams_mail=attendeeMail)
                 attendeeId = qsAttendee.id
                 attendeeIds.append(attendeeId)
@@ -656,6 +656,8 @@ def integromat_req_next_msg(**kwargs):
     integromatMsg = ''
     node = models.NodeSettings.objects.get(_id=nodeId)
 
+    logger.info('node.id::' + str(node.id) + str(timestamp))
+
     if count == settings.TIME_LIMIT_START_SCENARIO:
         notifyCnt = models.WorkflowExecutionMessages.objects.filter(node_settings_id=node.id, timestamp=timestamp).count()
         if not notifyCnt:
@@ -775,6 +777,12 @@ def integromat_get_meetings(**kwargs):
     sToday = datetime.now(tz).replace(hour=0, minute=0, second=0, microsecond=0)
     sYesterday = sToday + timedelta(days=-1)
     sTomorrow = sToday + timedelta(days=1)
+
+    logger.info('node.id::' + str(node.id) + str(sYesterday) + str(sTomorrow))
+
+    logAllMeetingInformation = models.AllMeetingInformation.objects.all()
+    logAllMeetingInformationJson = serializers.serialize('json', logAllMeetingInformation, ensure_ascii=False)
+    logger.info('views.py::logAllMeetingInformationJson:::' + str(logAllMeetingInformationJson))
 
     recentMeetings = models.AllMeetingInformation.objects.filter(node_settings_id=addon.id, start_datetime__gte=sYesterday, start_datetime__lt=sTomorrow + timedelta(days=1)).order_by('start_datetime')
     recentMeetingsJson = serializers.serialize('json', recentMeetings, ensure_ascii=False)
