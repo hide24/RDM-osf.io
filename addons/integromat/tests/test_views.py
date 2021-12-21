@@ -126,7 +126,6 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
 
         expected_subject = 'Subject Test'
         expected_organizer = 'testUser3@test.onmicrosoft.com'
-        expected_organizer_fullname = 'TEST USER3'
         expected_attendees = ['testUser1@test.onmicrosoft.com']
         expected_startDatetime = datetime.now().isoformat()
         expected_endDatetime = (datetime.now() + timedelta(hours=1)).isoformat()
@@ -182,7 +181,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
 
         assert_equals(result.subject, expected_subject)
         assert_equals(result.organizer, expected_organizer)
-        assert_equals(result.organizer_fullname, expected_organizer_fullname)
+        assert_equals(result.organizer_fullname, expected_organizer)
         assert_equals(result.attendees, expected_attendees_id)
         assert_equals(result.start_datetime, expected_startDatetime)
         assert_equals(result.end_datetime, expected_endDatetime)
@@ -211,6 +210,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         logger.info('logNodeSettingsJson:::' + str(logNodeSettingsJson))
         AttendeesFactory = IntegromatAttendeesFactory(node_settings=self.node_settings)
         AllMeetingInformationFactory = IntegromatAllMeetingInformationFactory(node_settings=self.node_settings)
+        testAttendee = Attendees.objects.get(user_guid='testuser')
 
         url = self.project.api_url_for('integromat_update_meeting_registration')
 
@@ -220,7 +220,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         expected_subject = 'Subject Test Update'
         expected_organizer = 'testUser1@test.onmicrosoft.com'
         expected_organizer_fullname = 'TEST USER'
-        expected_attendees = []
+        expected_attendees = testAttendee.id
         expected_startDatetime = datetime.now().isoformat()
         expected_endDatetime = (datetime.now() + timedelta(hours=1)).isoformat()
         expected_location = 'Location Test Update'
@@ -253,7 +253,6 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         assert_equals(result.subject, expected_subject)
         assert_equals(result.organizer, expected_organizer)
         assert_equals(result.organizer_fullname, expected_organizer_fullname)
-        assert_equals(result.attendees, expected_attendees)
         assert_equals(result.start_datetime, expected_startDatetime)
         assert_equals(result.end_datetime, expected_endDatetime)
         assert_equals(result.location, expected_location)
@@ -261,6 +260,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         assert_equals(result.join_url, expected_joinUrl)
         assert_equals(result.meetingid, expected_meetingId)
         assert_equals(result.password, expected_password)
+        assert_equals(result.attendees.id, expected_attendees)
         assert_equals(rv, {})
 
         expected_appId = 1639
@@ -291,7 +291,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
             'meetingId': meetingId,
         }, auth=self.user.auth)
 
-        result = AllMeetingInformation.objects.filter(meetingId='qwertyuiopasdfghjklzxcvbnm')
+        result = AllMeetingInformation.objects.filter(meetingid='qwertyuiopasdfghjklzxcvbnm')
 
         assert_equals(result.count(), 0)
         assert_equals(rv, {})
@@ -330,15 +330,14 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         logNodeSettings = NodeSettings.objects.all()
         logNodeSettingsJson = serializers.serialize('json', logNodeSettings, ensure_ascii=False)
         logger.info('logNodeSettingsJson:::' + str(logNodeSettingsJson))
-        logOSFUser = OSFUser.objects.all()
-        logOSFUserJson = serializers.serialize('json', logOSFUser, ensure_ascii=False)
-        logger.info('logOSFUserJson:::' + str(logOSFUserJson))
+        osfUser = OSFUser.objects.get(username=self.user.username)
+        logger.info('self.user.osfUser:::' + str(osfUser))
         AllMeetingInformationFactory = IntegromatAllMeetingInformationFactory(node_settings=self.node_settings)
 
         url = self.project.api_url_for('integromat_register_web_meeting_apps_email')
 
         _id = None
-        expected_guid = self.user._prefetched_objects_cache['guids'].only()
+        expected_guid = osfUser._prefetched_objects_cache['guids'].only()
         appName = 'MicrosoftTeams'
         expected_email = 'testUser4@test.onmicrosoft.com'
         expected_username = 'Teams User4'
@@ -373,15 +372,14 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         logNodeSettings = NodeSettings.objects.all()
         logNodeSettingsJson = serializers.serialize('json', logNodeSettings, ensure_ascii=False)
         logger.info('logNodeSettingsJson:::' + str(logNodeSettingsJson))
-        logOSFUser = OSFUser.objects.all()
-        logOSFUserJson = serializers.serialize('json', logOSFUser, ensure_ascii=False)
-        logger.info('logOSFUserJson:::' + str(logOSFUserJson))
+        osfUser = OSFUser.objects.get(username=self.user.username)
+        logger.info('self.user.osfUser:::' + str(osfUser))
         AllMeetingInformationFactory = IntegromatAllMeetingInformationFactory(node_settings=self.node_settings)
 
         url = self.project.api_url_for('integromat_register_web_meeting_apps_email')
 
         _id = '1234567890qwertyuiop'
-        expected_guid = self.user._prefetched_objects_cache['guids'].only()
+        expected_guid = osfUser._prefetched_objects_cache['guids'].only()
         appName = 'MicrosoftTeams'
         expected_email = 'testUser4update@test.onmicrosoft.com'
         expected_username = 'Teams User4 update'
@@ -422,7 +420,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         origin_is_guest = True
         expected_fullname = ''
 
-        AttendeesFactory = IntegromatAttendeesFactory(_id='0987654321poiuytrewq', fullname=fullname, microsoft_teams_mail=origin_email, microsoft_teams_user_name=origin_username, is_guest=is_guest)
+        AttendeesFactory = IntegromatAttendeesFactory(_id='0987654321poiuytrewq', fullname=fullname, microsoft_teams_mail=origin_email, microsoft_teams_user_name=origin_username, is_guest=origin_is_guest)
 
         expected_email = 'testUser5Update@guest.com'
         expected_username = 'Teams Guest User5 Update'
