@@ -180,7 +180,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
 
         result = AllMeetingInformation.objects.get(meetingid='1234567890qwertyuiopasdfghjkl')
 
-        logger.info('Attendee.id:::' + str(result.attendees.id) + str(expected_attendees_id))
+        logger.info('Attendee.id:::' + str(result.attendees) + str(expected_attendees_id))
 
         assert_equals(result.subject, expected_subject)
         assert_equals(result.organizer, expected_organizer)
@@ -193,7 +193,6 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         assert_equals(result.meetingid, expected_meetingId)
         assert_equals(result.password, expected_password)
         assert_equals(rvBodyJson, {})
-        assert_equals(result.attendees.id, expected_attendees_id)
 
         expected_appId = 1639
         expected_nodeId = NodeSettings.objects.get(_id=node_id).pk
@@ -203,6 +202,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
 
         rResult = AllMeetingInformationAttendeesRelation.objects.all()
         assert_equals(len(rResult), 0)
+        assert_equals(result.attendees, expected_attendees_id)
         #Attendees table clean
         Attendees.objects.all().delete()
 
@@ -256,6 +256,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         logAllMeetingInformation = AllMeetingInformation.objects.all()
         logAllMeetingInformationJson = serializers.serialize('json', logAllMeetingInformation, ensure_ascii=False)
         logger.info('logAllMeetingInformationJson:::' + str(logAllMeetingInformationJson))
+        logger.info('Attendee.id:::' + str(result.attendees) + str(expected_attendees_id))
 
         result = AllMeetingInformation.objects.get(meetingid='qwertyuiopasdfghjklzxcvbnm')
         assert_equals(result.subject, expected_subject)
@@ -269,7 +270,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         assert_equals(result.meetingid, expected_meetingId)
         assert_equals(result.password, expected_password)
         assert_equals(rvBodyJson, {})
-        assert_equals(result.attendees.id, expected_attendees)
+
 
         expected_appId = 1639
         expected_nodeId = NodeSettings.objects.get(_id=node_id).id
@@ -279,6 +280,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
 
         rResult = AllMeetingInformationAttendeesRelation.objects.all()
         assert_equals(len(rResult), 0)
+        assert_equals(result.attendees, expected_attendees)
         #clear
         Attendees.objects.all().delete()
         AllMeetingInformation.objects.all().delete()
@@ -342,10 +344,11 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         AllMeetingInformationFactory = IntegromatAllMeetingInformationFactory(node_settings=self.node_settings)
 
         osfUser = OSFUser.objects.get(username=self.user.username)
-        osfUserSerializer = serializers.serialize('json', osfUser, ensure_ascii=False)
-        osfUserJson = json.loads(osfUserSerializer)
-        osfUserGuid = osfUserJson[0]['fields']['_id']
-        logger.info('testGuidStr::::' + str(testGuidStr))
+        osfGuids = osfUser._prefetched_objects_cache['guids'].only()
+        osfGuidsSerializer = serializers.serialize('json', osfGuids, ensure_ascii=False)
+        osfGuidsJson = json.loads(osfGuidsSerializer)
+        osfUserGuid = osfGuidsJson[0]['fields']['_id']
+        logger.info('testGuidStr::::' + str(osfUserGuid))
         url = self.project.api_url_for('integromat_register_web_meeting_apps_email')
 
         _id = None
@@ -390,10 +393,11 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         AllMeetingInformationFactory = IntegromatAllMeetingInformationFactory(node_settings=self.node_settings)
 
         osfUser = OSFUser.objects.get(username=self.user.username)
-        osfUserSerializer = serializers.serialize('json', osfUser, ensure_ascii=False)
-        osfUserJson = json.loads(osfUserSerializer)
-        osfUserGuid = osfUserJson[0]['fields']['_id']
-        logger.info('testGuidStr::::' + str(testGuidStr))
+        osfGuids = osfUser._prefetched_objects_cache['guids'].only()
+        osfGuidsSerializer = serializers.serialize('json', osfGuids, ensure_ascii=False)
+        osfGuidsJson = json.loads(osfGuidsSerializer)
+        osfUserGuid = osfGuidsJson[0]['fields']['_id']
+        logger.info('testGuidStr::::' + str(osfUserGuid))
 
         url = self.project.api_url_for('integromat_register_web_meeting_apps_email')
 
@@ -451,6 +455,8 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
 
         expected_email = 'testUser5Update@guest.com'
         expected_username = 'Teams Guest User5 Update'
+        expected_webex_meetings_mail = 'testUser2@test.co.jp'
+        expected_webex_meetings_display_name = 'Webex User'
         expected_is_guest = True
 
         rv = self.app.post_json(url, {
@@ -469,8 +475,8 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         assert_equals(result.fullname, expected_fullname)
         assert_equals(result.microsoft_teams_mail, expected_email)
         assert_equals(result.microsoft_teams_user_name, expected_username)
-        assert_equals(result.webex_meetings_mail, None)
-        assert_equals(result.webex_meetings_display_name, None)
+        assert_equals(result.webex_meetings_mail, expected_webex_meetings_mail)
+        assert_equals(result.webex_meetings_display_name, expected_webex_meetings_display_name)
         assert_equals(result.is_guest, expected_is_guest)
 
     def test_integromat_req_next_msg(self):
@@ -566,7 +572,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
 
         url = self.project.api_url_for('integromat_register_alternative_webhook_url')
 
-        workflowDescription = 'integromat.test.workflows.web_meeting.description'
+        workflowDescription = 'workflow_description'
         expected_alternativeWebhookUrl = 'hook/integromat/com/test'
 
         rv = self.app.post_json(url, {
