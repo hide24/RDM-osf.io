@@ -696,7 +696,7 @@ def integromat_register_alternative_webhook_url(**kwargs):
 
     workflowDescription = requestDataJson['workflowDescription']
     alternativeWebhookUrl = requestDataJson['alternativeWebhookUrl']
-
+    workflowId = ''
     workflows = settings.RDM_WORKFLOW
     for workflow in workflows:
         if ('workflow_description', workflowDescription) in workflow.items():
