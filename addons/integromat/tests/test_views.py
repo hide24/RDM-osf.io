@@ -117,7 +117,11 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
 
     def test_integromat_register_meeting_microsoft_teams(self):
 
-        AttendeesFactory = IntegromatAttendeesFactory()
+        logNodeSettings = NodeSettings.objects.all()
+        logNodeSettingsJson = json.loads(serializers.serialize('json', logNodeSettings, ensure_ascii=False))
+        logger.info('logNodeSettingsJson:::' + str(logNodeSettingsJson))
+        nodeId = logNodeSettingsJson[0]['pk']
+        AttendeesFactory = IntegromatAttendeesFactory(node_settings=nodeId)
         url = self.project.api_url_for('integromat_register_meeting')
 
         node_id = 'qwe'
@@ -203,9 +207,13 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         Attendees.objects.all().delete()
 
     def test_integromat_update_meeting_registration_microsoft_teams(self):
+        logNodeSettings = NodeSettings.objects.all()
+        logNodeSettingsJson = json.loads(serializers.serialize('json', logNodeSettings, ensure_ascii=False))
+        logger.info('logNodeSettingsJson:::' + str(logNodeSettingsJson))
+        nodeId = logNodeSettingsJson[0]['pk']
+        AttendeesFactory = IntegromatAttendeesFactory(node_settings=nodeId)
+        AllMeetingInformationFactory = IntegromatAllMeetingInformationFactory(node_settings=nodeId)
 
-        AttendeesFactory = IntegromatAttendeesFactory()
-        AllMeetingInformationFactory = IntegromatAllMeetingInformationFactory()
         url = self.project.api_url_for('integromat_update_meeting_registration')
 
         node_id = 'qwe'
@@ -269,8 +277,18 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         AllMeetingInformation.objects.all().delete()
 
     def test_integromat_get_meetings(self):
-        AllMeetingInformationFactory = IntegromatAllMeetingInformationFactory()
+
+        logNodeSettings = NodeSettings.objects.all()
+        logNodeSettingsJson = json.loads(serializers.serialize('json', logNodeSettings, ensure_ascii=False))
+        logger.info('logNodeSettingsJson:::' + str(logNodeSettingsJson))
+        nodeId = logNodeSettingsJson[0]['pk']
+        AllMeetingInformationFactory = IntegromatAllMeetingInformationFactory(node_settings=nodeId)
+
         url = self.project.api_url_for('integromat_get_meetings')
+
+        logAllMeetingInformation = AllMeetingInformation.objects.all()
+        logAllMeetingInformationJson = serializers.serialize('json', logAllMeetingInformation, ensure_ascii=False)
+        logger.info('logAllMeetingInformationJson:::' + str(logAllMeetingInformationJson))
 
         res = self.app.get(url, auth=self.user.auth)
         resBodyJson = json.loads(res.body)
@@ -287,7 +305,12 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
 
 
     def test_integromat_req_next_msg(self):
-        WorkflowExecutionMessage = IntegromatWorkflowExecutionMessagesFactory()
+        logNodeSettings = NodeSettings.objects.all()
+        logNodeSettingsJson = json.loads(serializers.serialize('json', logNodeSettings, ensure_ascii=False))
+        logger.info('logNodeSettingsJson:::' + str(logNodeSettingsJson))
+        nodeId = logNodeSettingsJson[0]['pk']
+        WorkflowExecutionMessage = IntegromatWorkflowExecutionMessagesFactory(node_settings=nodeId)
+
         url = self.project.api_url_for('integromat_req_next_msg')
 
         expected_timestamp = '1234567890123'
