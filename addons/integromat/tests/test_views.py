@@ -18,6 +18,7 @@ import addons.integromat.settings as integromat_settings
 from website.util import api_url_for
 from admin.rdm_addons.utils import get_rdm_addon_option
 from datetime import date, datetime, timedelta
+from dateutil import parser as date_parse
 from addons.integromat.models import (
     UserSettings,
     NodeSettings,
@@ -137,8 +138,8 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         expected_password = ''
         expected_meetingInviteesInfo = ''
 
-        expected_startDatetime_format = (date.fromisoformat(expected_startDatetime)).strftime('%Y/%m/%d %H:%M:%S')
-        expected_endDatetime_format = (date.fromisoformat(expected_endDatetime)).strftime('%Y/%m/%d %H:%M:%S')
+        expected_startDatetime_format = date_parse.parse(expected_startDatetime).strftime('%Y/%m/%d %H:%M:%S')
+        expected_endDatetime_format = date_parse.parse(expected_endDatetime).strftime('%Y/%m/%d %H:%M:%S')
 
         logExternalAccount = ExternalAccount.objects.all()
         logExternalAccountJson = serializers.serialize('json', logExternalAccount, ensure_ascii=False)
@@ -241,8 +242,8 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         expected_meetingDeletedInviteesInfo = ''
         expected_password = ''
 
-        expected_startDatetime_format = (date.fromisoformat(expected_startDatetime)).strftime('%Y/%m/%d %H:%M:%S')
-        expected_endDatetime_format = (date.fromisoformat(expected_endDatetime)).strftime('%Y/%m/%d %H:%M:%S')
+        expected_startDatetime_format = date_parse.parse(expected_startDatetime).strftime('%Y/%m/%d %H:%M:%S')
+        expected_endDatetime_format = date_parse.parse(expected_endDatetime).strftime('%Y/%m/%d %H:%M:%S')
 
         rv = self.app.post_json(url, {
             'nodeId': node_id,
@@ -581,7 +582,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         url = self.project.api_url_for('integromat_register_alternative_webhook_url')
 
         workflowDescription = 'integromat.workflows.web_meeting.description'
-        expected_alternativeWebhookUrl = 'hook/integromat/com/test'
+        expected_alternativeWebhookUrl = 'https://hook.integromat.com/test'
 
         rv = self.app.post_json(url, {
             'workflowDescription': workflowDescription,
