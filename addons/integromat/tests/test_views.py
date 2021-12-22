@@ -207,7 +207,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         assert_equals(len(rResult), 0)
         assert_equals(result.start_datetime.strftime('%Y/%m/%d %H:%M:%S'), expected_startDatetime_format)
         assert_equals(result.end_datetime.strftime('%Y/%m/%d %H:%M:%S'), expected_endDatetime_format)
-        assert_equals(result.attendees, expected_attendees_id)
+        assert_equals(result.attendees.all()[0].id, expected_attendees_id)
         #Attendees table clean
         Attendees.objects.all().delete()
 
@@ -291,7 +291,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         assert_equals(len(rResult), 0)
         assert_equals(result.start_datetime.strftime('%Y/%m/%d %H:%M:%S'), expected_startDatetime_format)
         assert_equals(result.end_datetime.strftime('%Y/%m/%d %H:%M:%S'), expected_endDatetime_format)
-        assert_equals(result.attendees, expected_attendees)
+        assert_equals(result.attendees.all()[0].id, expected_attendees_id)
         #clear
         Attendees.objects.all().delete()
         AllMeetingInformation.objects.all().delete()
