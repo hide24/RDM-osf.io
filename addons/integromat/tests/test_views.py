@@ -194,7 +194,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         assert_equals(result.content, expected_content)
         assert_equals(result.join_url, expected_joinUrl)
         assert_equals(result.meetingid, expected_meetingId)
-        assert_equals(result.password, expected_password)
+        assert_equals(result.meeting_password, expected_password)
         assert_equals(rvBodyJson, {})
 
         expected_appId = 1639
@@ -240,6 +240,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         expected_meetingId = 'qwertyuiopasdfghjklzxcvbnm'
         expected_meetingCreatedInviteesInfo = ''
         expected_meetingDeletedInviteesInfo = ''
+        expected_joinUrl = 'teams/microsoft.com/321'
         expected_password = ''
 
         expected_startDatetime_format = date_parse.parse(expected_startDatetime).strftime('%Y/%m/%d %H:%M:%S')
@@ -277,7 +278,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         assert_equals(result.content, expected_content)
         assert_equals(result.join_url, expected_joinUrl)
         assert_equals(result.meetingid, expected_meetingId)
-        assert_equals(result.password, expected_password)
+        assert_equals(result.meeting_password, expected_password)
         assert_equals(rvBodyJson, {})
 
 
@@ -601,7 +602,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         url = self.project.api_url_for('integromat_start_scenario')
 
         expected_timestamp = '1234567890123'
-        webhook_url = 'hook/integromat/com/test'
+        webhook_url = 'https://hook.integromat.com/test'
 
         rv = self.app.post_json(url, {
             'timestamp': expected_timestamp,
