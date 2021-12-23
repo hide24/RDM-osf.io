@@ -28,7 +28,7 @@ from addons.integromat.models import (
     AllMeetingInformationAttendeesRelation,
     NodeWorkflows
 )
-from osf.models import ExternalAccount, OSFUser
+from osf.models import ExternalAccount, OSFUser, RdmAddonOption
 from addons.integromat.tests.factories import (
     IntegromatUserSettingsFactory,
     IntegromatNodeSettingsFactory,
@@ -42,6 +42,7 @@ from addons.integromat.tests.factories import (
 from django.core import serializers
 
 pytestmark = pytest.mark.django_db
+from requests import HTTPError
 import json
 import logging
 logger = logging.getLogger(__name__)
@@ -58,12 +59,20 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         super(TestIntegromatViews, self).tearDown()
 
     def test_integromat_settings_input_empty_access_key(self):
+        RdmAddonOption = RdmAddonOption.objects.get(provider='integromat')
+        logger.info('RdmAddonOption.is_allowed:::' + str(RdmAddonOption.is_allowed))
+        RdmAddonOption.is_allowed = True
+        RdmAddonOption.save()
         url = self.project.api_url_for('integromat_add_user_account')
         rv = self.app.post_json(url, {
             'integromat_api_token': '',
         }, auth=self.user.auth, expect_errors=True)
         assert_equals(rv.status_int, http_status.HTTP_400_BAD_REQUEST)
         assert_in('All the fields above are required.', rv.body.decode())
+
+        RdmAddonOption = RdmAddonOption.objects.get(provider='integromat')
+        RdmAddonOption.is_allowed = False
+        RdmAddonOption.save()
 
     def test_integromat_settings_rdm_addons_denied(self):
         institution = InstitutionFactory()
@@ -199,7 +208,6 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         assert_equals(rvBodyJson, {})
 
         expected_appId = 1639
-        expected_nodeId = NodeSettings.objects.get(_id=node_id).pk
 
         assert_equals(result.appid, expected_appId)
         assert_equals(result.node_settings, self.node_settings.id)
@@ -282,7 +290,6 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
 
 
         expected_appId = 1639
-        expected_nodeId = NodeSettings.objects.get(_id=node_id).id
 
         assert_equals(result.appid, expected_appId)
         assert_equals(result.node_settings, self.node_settings.id)
@@ -605,7 +612,8 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
             'webhookUrl': webhook_url,
         }, auth=self.user.auth)
 
-        assert_equals(rv.status_int, http_status.HTTP_500_INTERNAL_SERVER_ERROR)
+        with pytest.raises(HTTPError) as e:
+            assert_equals(e.response.status_code, http_status.HTTP_404_NOT_FOUND)
 
     ## Overrides ##
 
