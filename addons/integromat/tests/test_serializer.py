@@ -20,7 +20,7 @@ class TestIntegromatSerializer(StorageAddonSerializerTestSuiteMixin, OsfTestCase
         self.node_settings.folder_id = pid
 
     def setUp(self):
-        self.mock_credentials = mock.patch('addons.integromat.serializer.IntegromatSerializer.credentials_are_valid')
+        self.mock_credentials = mock.patch('addons.integromat.serializer.credentials_are_valid')
         self.mock_credentials.return_value = True
         self.mock_credentials.start()
         super(TestIntegromatSerializer, self).setUp()
