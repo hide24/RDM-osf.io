@@ -122,7 +122,6 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         AttendeesFactory = IntegromatAttendeesFactory(node_settings=self.node_settings)
         url = self.project.api_url_for('integromat_register_meeting')
 
-        node_id = 'qwe'
         app_name = 'MicrosoftTeams'
 
         expected_subject = 'Subject Test'
@@ -166,7 +165,6 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         logger.info('logAllMeetingInformationAttendeesRelationJson:::' + str(logAllMeetingInformationAttendeesRelationJson))
 
         rv = self.app.post_json(url, {
-            'nodeId': node_id,
             'appName': app_name,
             'subject': expected_subject,
             'organizer': expected_organizer,
@@ -190,6 +188,9 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         assert_equals(result.subject, expected_subject)
         assert_equals(result.organizer, expected_organizer)
         assert_equals(result.organizer_fullname, expected_organizer)
+        assert_equals(result.start_datetime.strftime('%Y/%m/%d %H:%M:%S'), expected_startDatetime_format)
+        assert_equals(result.end_datetime.strftime('%Y/%m/%d %H:%M:%S'), expected_endDatetime_format)
+        assert_equals(result.attendees.all()[0].id, expected_attendees_id)
         assert_equals(result.location, expected_location)
         assert_equals(result.content, expected_content)
         assert_equals(result.join_url, expected_joinUrl)
@@ -201,13 +202,10 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         expected_nodeId = NodeSettings.objects.get(_id=node_id).pk
 
         assert_equals(result.appid, expected_appId)
-        assert_equals(result.node_settings_id, expected_nodeId)
+        assert_equals(result.node_settings, self.node_settings.id)
 
         rResult = AllMeetingInformationAttendeesRelation.objects.all()
         assert_equals(len(rResult), 0)
-        assert_equals(result.start_datetime.strftime('%Y/%m/%d %H:%M:%S'), expected_startDatetime_format)
-        assert_equals(result.end_datetime.strftime('%Y/%m/%d %H:%M:%S'), expected_endDatetime_format)
-        assert_equals(result.attendees.all()[0].id, expected_attendees_id)
         #Attendees table clean
         Attendees.objects.all().delete()
 
@@ -225,7 +223,6 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
 
         url = self.project.api_url_for('integromat_update_meeting_registration')
 
-        node_id = 'qwe'
         app_name = 'MicrosoftTeams'
 
         expected_subject = 'Subject Test Update'
@@ -247,7 +244,6 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         expected_endDatetime_format = date_parse.parse(expected_endDatetime).strftime('%Y/%m/%d %H:%M:%S')
 
         rv = self.app.post_json(url, {
-            'nodeId': node_id,
             'appName': app_name,
             'subject': expected_subject,
             'attendees': expected_attendees,
@@ -274,6 +270,9 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         assert_equals(result.subject, expected_subject)
         assert_equals(result.organizer, expected_organizer)
         assert_equals(result.organizer_fullname, expected_organizer_fullname)
+        assert_equals(result.start_datetime.strftime('%Y/%m/%d %H:%M:%S'), expected_startDatetime_format)
+        assert_equals(result.end_datetime.strftime('%Y/%m/%d %H:%M:%S'), expected_endDatetime_format)
+        assert_equals(result.attendees.all()[0].id, expected_attendees_id)
         assert_equals(result.location, expected_location)
         assert_equals(result.content, expected_content)
         assert_equals(result.join_url, expected_joinUrl)
@@ -286,13 +285,10 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         expected_nodeId = NodeSettings.objects.get(_id=node_id).id
 
         assert_equals(result.appid, expected_appId)
-        assert_equals(result.node_settings_id, expected_nodeId)
+        assert_equals(result.node_settings, self.node_settings.id)
 
         rResult = AllMeetingInformationAttendeesRelation.objects.all()
         assert_equals(len(rResult), 0)
-        assert_equals(result.start_datetime.strftime('%Y/%m/%d %H:%M:%S'), expected_startDatetime_format)
-        assert_equals(result.end_datetime.strftime('%Y/%m/%d %H:%M:%S'), expected_endDatetime_format)
-        assert_equals(result.attendees.all()[0].id, expected_attendees_id)
         #clear
         Attendees.objects.all().delete()
         AllMeetingInformation.objects.all().delete()
