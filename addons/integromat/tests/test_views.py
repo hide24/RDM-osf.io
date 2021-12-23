@@ -59,10 +59,10 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         super(TestIntegromatViews, self).tearDown()
 
     def test_integromat_settings_input_empty_access_key(self):
-        RdmAddonOption = RdmAddonOption.objects.get(provider='integromat')
-        logger.info('RdmAddonOption.is_allowed:::' + str(RdmAddonOption.is_allowed))
-        RdmAddonOption.is_allowed = True
-        RdmAddonOption.save()
+        addonOption = RdmAddonOption.objects.get(provider='integromat')
+        logger.info('addonOption.is_allowed:::' + str(addonOption.is_allowed))
+        addonOption.is_allowed = True
+        addonOption.save()
         url = self.project.api_url_for('integromat_add_user_account')
         rv = self.app.post_json(url, {
             'integromat_api_token': '',
@@ -70,9 +70,9 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         assert_equals(rv.status_int, http_status.HTTP_400_BAD_REQUEST)
         assert_in('All the fields above are required.', rv.body.decode())
 
-        RdmAddonOption = RdmAddonOption.objects.get(provider='integromat')
-        RdmAddonOption.is_allowed = False
-        RdmAddonOption.save()
+        addonOption = RdmAddonOption.objects.get(provider='integromat')
+        addonOption.is_allowed = False
+        addonOption.save()
 
     def test_integromat_settings_rdm_addons_denied(self):
         institution = InstitutionFactory()
@@ -210,7 +210,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         expected_appId = 1639
 
         assert_equals(result.appid, expected_appId)
-        assert_equals(result.node_settings, self.node_settings.id)
+        assert_equals(result.node_settings.id, self.node_settings.id)
 
         rResult = AllMeetingInformationAttendeesRelation.objects.all()
         assert_equals(len(rResult), 0)
@@ -292,7 +292,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         expected_appId = 1639
 
         assert_equals(result.appid, expected_appId)
-        assert_equals(result.node_settings, self.node_settings.id)
+        assert_equals(result.node_settings.id, self.node_settings.id)
 
         rResult = AllMeetingInformationAttendeesRelation.objects.all()
         assert_equals(len(rResult), 0)

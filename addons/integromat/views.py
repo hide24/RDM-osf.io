@@ -14,6 +14,7 @@ from addons.integromat.serializer import IntegromatSerializer
 from osf.models import ExternalAccount, OSFUser
 from django.core.exceptions import ValidationError
 from framework.exceptions import HTTPError
+from requests import HTTPError as http_error
 from rest_framework import status as http_status
 from osf.utils.permissions import ADMIN, READ
 from website.project.decorators import (
@@ -624,7 +625,10 @@ def integromat_start_scenario(**kwargs):
     requestDataJson = json.dumps(requestDataJsonLoads)
 
     response = requests.post(webhook_url, data=requestDataJson, headers={'Content-Type': 'application/json'})
-    response.raise_for_status()
+    try:
+        response.raise_for_status()
+    except http_error as e:
+        raise HTTPError(e.response.status_code)
 
     logger.info('webhook response:' + str(response))
     logger.info('integromat_start_scenario end')
