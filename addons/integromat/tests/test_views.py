@@ -52,27 +52,23 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         self.mock_uid = mock.patch('addons.integromat.views.authIntegromat')
         self.mock_uid.return_value = {'id': '1234567890', 'name': 'integromat.user'}
         self.mock_uid.start()
+        self.mock_rdm_addon_option = mock.patch('admin.rdm_addons.utils.get_rdm_addon_option')
+        self.mock_rdm_addon_option.return_value = True
+        self.mock_rdm_addon_option.start()
         super(TestIntegromatViews, self).setUp()
 
     def tearDown(self):
         self.mock_uid.stop()
+        self.mock_rdm_addon_option.stop()
         super(TestIntegromatViews, self).tearDown()
 
     def test_integromat_settings_input_empty_access_key(self):
-        addonOption = RdmAddonOption.objects.get(provider='integromat')
-        logger.info('addonOption.is_allowed:::' + str(addonOption.is_allowed))
-        addonOption.is_allowed = True
-        addonOption.save()
         url = self.project.api_url_for('integromat_add_user_account')
         rv = self.app.post_json(url, {
             'integromat_api_token': '',
         }, auth=self.user.auth, expect_errors=True)
         assert_equals(rv.status_int, http_status.HTTP_400_BAD_REQUEST)
         assert_in('All the fields above are required.', rv.body.decode())
-
-        addonOption = RdmAddonOption.objects.get(provider='integromat')
-        addonOption.is_allowed = False
-        addonOption.save()
 
     def test_integromat_settings_rdm_addons_denied(self):
         institution = InstitutionFactory()
@@ -602,18 +598,20 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
 
     def test_integromat_start_scenario_webhook_not_found(self):
 
-        url = self.project.api_url_for('integromat_start_scenario')
-
-        expected_timestamp = '1234567890123'
-        webhook_url = 'https://hook.integromat.com/test'
-
-        rv = self.app.post_json(url, {
-            'timestamp': expected_timestamp,
-            'webhookUrl': webhook_url,
-        }, auth=self.user.auth)
-
         with pytest.raises(HTTPError) as e:
-            assert_equals(e.response.status_code, http_status.HTTP_404_NOT_FOUND)
+
+            url = self.project.api_url_for('integromat_start_scenario')
+
+            expected_timestamp = '1234567890123'
+            webhook_url = 'https://hook.integromat.com/test'
+
+            rv = self.app.post_json(url, {
+                'timestamp': expected_timestamp,
+                'webhookUrl': webhook_url,
+            }, auth=self.user.auth)
+
+            assert_equals(e.value.code, http_status.HTTP_404_NOT_FOUND)
+
 
     ## Overrides ##
 
