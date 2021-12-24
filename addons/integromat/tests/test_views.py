@@ -49,17 +49,15 @@ logger = logging.getLogger(__name__)
 
 class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCaseMixin, OsfTestCase):
     def setUp(self):
-        self.mock_rdm_addon_option = mock.patch('admin.rdm_addons.utils.get_rdm_addon_option')
-        self.mock_rdm_addon_option.return_value = True
-        self.mock_rdm_addon_option.start()
         super(TestIntegromatViews, self).setUp()
 
     def tearDown(self):
-        self.mock_rdm_addon_option.stop()
         super(TestIntegromatViews, self).tearDown()
 
+    @mock.patch('admin.rdm_addons.utils.get_rdm_addon_option')
     @mock.patch('addons.integromat.views.authIntegromat')
-    def test_integromat_settings_input_empty_access_key(self, mock_auth_integromat):
+    def test_integromat_settings_input_empty_access_key(self, mock_rdm_addon_option, mock_auth_integromat):
+        mock_rdm_addon_option.return_value = True
         mock_auth_integromat.return_value = {}
         url = self.project.api_url_for('integromat_add_user_account')
         rv = self.app.post_json(url, {
@@ -615,3 +613,26 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
 
     def test_set_config(self):
         pass
+
+    @mock.patch('admin.rdm_addons.utils.get_rdm_addon_option')
+    def test_import_auth(self, mock_rdm_addon_option):
+        mock_rdm_addon_option.return_value = True
+        ea = self.ExternalAccountFactory()
+        self.user.external_accounts.add(ea)
+        self.user.save()
+
+        node = ProjectFactory(creator=self.user)
+        node_settings = node.get_or_add_addon(self.ADDON_SHORT_NAME, auth=Auth(self.user))
+        node.save()
+        url = node.api_url_for('{0}_import_auth'.format(self.ADDON_SHORT_NAME))
+        res = self.app.put_json(url, {
+            'external_account_id': ea._id
+        }, auth=self.user.auth)
+        assert_equal(res.status_code, http_status.HTTP_200_OK)
+        assert_in('result', res.json)
+        node_settings.reload()
+        assert_equal(node_settings.external_account._id, ea._id)
+
+        node.reload()
+        last_log = node.logs.latest()
+        assert_equal(last_log.action, '{0}_node_authorized'.format(self.ADDON_SHORT_NAME))
