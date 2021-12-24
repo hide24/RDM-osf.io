@@ -628,7 +628,7 @@ def integromat_start_scenario(**kwargs):
     try:
         response.raise_for_status()
     except http_error as e:
-        raise HTTPError(e.response.status_code)
+        raise http_error(e.response.status_code)
 
     logger.info('webhook response:' + str(response))
     logger.info('integromat_start_scenario end')
