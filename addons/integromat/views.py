@@ -629,10 +629,7 @@ def integromat_start_scenario(**kwargs):
     requestDataJson = json.dumps(requestDataJsonLoads)
 
     response = requests.post(webhook_url, data=requestDataJson, headers={'Content-Type': 'application/json'})
-    try:
-        response.raise_for_status()
-    except http_error as e:
-        raise http_error(e.response.status_code)
+    response.raise_for_status()
 
     logger.info('webhook response:' + str(response))
     logger.info('integromat_start_scenario end')

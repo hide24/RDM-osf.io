@@ -54,11 +54,17 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
     def tearDown(self):
         super(TestIntegromatViews, self).tearDown()
 
-    @mock.patch('admin.rdm_addons.utils.get_rdm_addon_option')
     @mock.patch('addons.integromat.views.authIntegromat')
-    def test_integromat_settings_input_empty_access_key(self, mock_rdm_addon_option, mock_auth_integromat):
-        mock_rdm_addon_option.return_value = True
+    def test_integromat_settings_input_empty_access_key(self, mock_auth_integromat):
         mock_auth_integromat.return_value = {}
+
+        institution = InstitutionFactory()
+        self.user.affiliated_institutions.add(institution)
+        self.user.save()
+        rdm_addon_option = get_rdm_addon_option(institution.id, self.ADDON_SHORT_NAME)
+        rdm_addon_option.is_allowed = True
+        rdm_addon_option.save()
+
         url = self.project.api_url_for('integromat_add_user_account')
         rv = self.app.post_json(url, {
             'integromat_api_token': '',
@@ -614,9 +620,15 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
     def test_set_config(self):
         pass
 
-    @mock.patch('admin.rdm_addons.utils.get_rdm_addon_option')
-    def test_import_auth(self, mock_rdm_addon_option):
-        mock_rdm_addon_option.return_value = True
+    def test_import_auth(self):
+
+        institution = InstitutionFactory()
+        self.user.affiliated_institutions.add(institution)
+        self.user.save()
+        rdm_addon_option = get_rdm_addon_option(institution.id, self.ADDON_SHORT_NAME)
+        rdm_addon_option.is_allowed = True
+        rdm_addon_option.save()
+
         ea = self.ExternalAccountFactory()
         self.user.external_accounts.add(ea)
         self.user.save()
