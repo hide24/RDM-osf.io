@@ -69,11 +69,15 @@ def integromat_add_user_account(auth, **kwargs):
     #integromat auth
     integromatUserInfo = authIntegromat(access_token, settings.H_SDK_VERSION)
 
+    logger.info('integromatUserInfo:::' + str(integromatUserInfo))
+
     if not integromatUserInfo:
+        logger.info('integromatUserInfo is cleared:::')
         raise HTTPError(http_status.HTTP_400_BAD_REQUEST)
     else:
         integromat_userid = integromatUserInfo['id']
         integromat_username = integromatUserInfo['name']
+        logger.info('integromatUserInfo is ok:::' + str(integromat_userid) + str(integromat_username))
 
     user = auth.user
 
