@@ -14,7 +14,6 @@ from addons.integromat.serializer import IntegromatSerializer
 from osf.models import ExternalAccount, OSFUser
 from django.core.exceptions import ValidationError
 from framework.exceptions import HTTPError
-from requests import HTTPError as http_error
 from rest_framework import status as http_status
 from osf.utils.permissions import ADMIN, READ
 from website.project.decorators import (
