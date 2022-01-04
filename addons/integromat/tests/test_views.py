@@ -599,19 +599,6 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         assert_equals(result.alternative_webhook_url, expected_alternativeWebhookUrl)
         assert_equals(rvBodyJson, {})
 
-    def test_integromat_start_scenario_webhook_not_found(self):
-        url = self.project.api_url_for('integromat_start_scenario')
-
-        expected_timestamp = '1234567890123'
-        webhook_url = 'https://hook.integromat.com/test'
-
-        rv = self.app.post_json(url, {
-            'timestamp': expected_timestamp,
-            'webhookUrl': webhook_url,
-        }, auth=self.user.auth, expect_errors=True)
-
-        assert_equals(rv.status_int, http_status.HTTP_404_NOT_FOUND)
-
     ## Overrides ##
 
     def test_folder_list(self):
