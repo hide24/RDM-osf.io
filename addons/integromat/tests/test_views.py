@@ -1,20 +1,21 @@
 # -*- coding: utf-8 -*-
-from rest_framework import status as http_status
-
-from boto.exception import S3ResponseError
 import mock
+import pytest
+import json
+import addons.integromat.settings as integromat_settings
+
 from nose.tools import (assert_equal, assert_equals,
     assert_true, assert_in, assert_false)
-import pytest
-
+from rest_framework import status as http_status
+from django.core import serializers
+from requests import HTTPError
 from framework.auth import Auth
-from tests.base import OsfTestCase, get_default_metaschema
-from osf_tests.factories import ProjectFactory, AuthUserFactory, DraftRegistrationFactory, InstitutionFactory
+from tests.base import OsfTestCase
+from osf_tests.factories import ProjectFactory, AuthUserFactory, InstitutionFactory
 from addons.base.tests.views import (
     OAuthAddonConfigViewsTestCaseMixin
 )
 from addons.integromat.tests.utils import IntegromatAddonTestCase
-import addons.integromat.settings as integromat_settings
 from website.util import api_url_for
 from admin.rdm_addons.utils import get_rdm_addon_option
 from datetime import date, datetime, timedelta
@@ -39,13 +40,8 @@ from addons.integromat.tests.factories import (
     IntegromatAllMeetingInformationAttendeesRelationFactory,
     IntegromatNodeWorkflowsFactory
 )
-from django.core import serializers
 
 pytestmark = pytest.mark.django_db
-from requests import HTTPError
-import json
-import logging
-logger = logging.getLogger(__name__)
 
 class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCaseMixin, OsfTestCase):
     def setUp(self):
@@ -125,8 +121,6 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
 
     def test_integromat_register_meeting_microsoft_teams(self):
 
-        logger.info('logNodeSettingsJson:::' + str(self.node_settings))
-
         AttendeesFactory = IntegromatAttendeesFactory(node_settings=self.node_settings)
         url = self.project.api_url_for('integromat_register_meeting')
 
@@ -148,30 +142,6 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         expected_startDatetime_format = date_parse.parse(expected_startDatetime).strftime('%Y/%m/%d %H:%M:%S')
         expected_endDatetime_format = date_parse.parse(expected_endDatetime).strftime('%Y/%m/%d %H:%M:%S')
 
-        logExternalAccount = ExternalAccount.objects.all()
-        logExternalAccountJson = serializers.serialize('json', logExternalAccount, ensure_ascii=False)
-        logger.info('logExternalAccountJson:::' + str(logExternalAccountJson))
-
-        logUserSettings = UserSettings.objects.all()
-        logUserSettingsJson = serializers.serialize('json', logUserSettings, ensure_ascii=False)
-        logger.info('logUserSettingsJson:::' + str(logUserSettingsJson))
-
-        logNodeSettings = NodeSettings.objects.all()
-        logNodeSettingsJson = serializers.serialize('json', logNodeSettings, ensure_ascii=False)
-        logger.info('logNodeSettingsJson:::' + str(logNodeSettingsJson))
-
-        logAllMeetingInformation = AllMeetingInformation.objects.all()
-        logAllMeetingInformationJson = serializers.serialize('json', logAllMeetingInformation, ensure_ascii=False)
-        logger.info('logAllMeetingInformationJson:::' + str(logAllMeetingInformationJson))
-
-        logAttendee = Attendees.objects.all()
-        logAttendeeJson = serializers.serialize('json', logAttendee, ensure_ascii=False)
-        logger.info('logAttendeeJson:::' + str(logAttendeeJson))
-
-        logAllMeetingInformationAttendeesRelation = AllMeetingInformationAttendeesRelation.objects.all()
-        logAllMeetingInformationAttendeesRelationJson = serializers.serialize('json', logAllMeetingInformationAttendeesRelation, ensure_ascii=False)
-        logger.info('logAllMeetingInformationAttendeesRelationJson:::' + str(logAllMeetingInformationAttendeesRelationJson))
-
         rv = self.app.post_json(url, {
             'appName': app_name,
             'subject': expected_subject,
@@ -189,9 +159,6 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         rvBodyJson = json.loads(rv.body)
 
         result = AllMeetingInformation.objects.get(meetingid='1234567890qwertyuiopasdfghjkl')
-
-        logger.info('Attendee.id:::' + str(result.attendees) + ':::' + str(expected_attendees_id))
-        logger.info('result:::' + str(result))
 
         assert_equals(result.subject, expected_subject)
         assert_equals(result.organizer, expected_organizer)
@@ -217,16 +184,8 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         Attendees.objects.all().delete()
 
     def test_integromat_update_meeting_registration_microsoft_teams(self):
-        logger.info('self.node_settings:::' + str(self.node_settings))
-        logNodeSettings = NodeSettings.objects.all()
-        logNodeSettingsJson = serializers.serialize('json', logNodeSettings, ensure_ascii=False)
-        logger.info('logNodeSettingsJson:::' + str(logNodeSettingsJson))
         AttendeesFactory = IntegromatAttendeesFactory(node_settings=self.node_settings)
         AllMeetingInformationFactory = IntegromatAllMeetingInformationFactory(node_settings=self.node_settings)
-
-        logAttendee = Attendees.objects.all()
-        logAttendeeJson = serializers.serialize('json', logAttendee, ensure_ascii=False)
-        logger.info('logAttendeeJson:::' + str(logAttendeeJson))
 
         url = self.project.api_url_for('integromat_update_meeting_registration')
 
@@ -265,14 +224,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         }, auth=self.user.auth)
         rvBodyJson = json.loads(rv.body)
 
-        logAllMeetingInformation = AllMeetingInformation.objects.all()
-        logAllMeetingInformationJson = serializers.serialize('json', logAllMeetingInformation, ensure_ascii=False)
-        logger.info('logAllMeetingInformationJson:::' + str(logAllMeetingInformationJson))
-
         result = AllMeetingInformation.objects.get(meetingid='qwertyuiopasdfghjklzxcvbnm')
-
-        logger.info('Attendee.id:::' + str(result.attendees) + ':::' + str(expected_attendees_id))
-        logger.info('result:::' + str(result))
 
         assert_equals(result.subject, expected_subject)
         assert_equals(result.organizer, expected_organizer)
@@ -301,10 +253,6 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
 
     def test_integromat_delete_meeting_registration(self):
 
-        logger.info('self.node_settings:::' + str(self.node_settings))
-        logNodeSettings = NodeSettings.objects.all()
-        logNodeSettingsJson = serializers.serialize('json', logNodeSettings, ensure_ascii=False)
-        logger.info('logNodeSettingsJson:::' + str(logNodeSettingsJson))
         AllMeetingInformationFactory = IntegromatAllMeetingInformationFactory(node_settings=self.node_settings)
 
         url = self.project.api_url_for('integromat_delete_meeting_registration')
@@ -324,25 +272,14 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         AllMeetingInformation.objects.all().delete()
 
     def test_integromat_get_meetings(self):
-        logger.info('self.node_settings:::' + str(self.node_settings))
-        logNodeSettings = NodeSettings.objects.all()
-        logNodeSettingsJson = serializers.serialize('json', logNodeSettings, ensure_ascii=False)
-        logger.info('logNodeSettingsJson:::' + str(logNodeSettingsJson))
         AllMeetingInformationFactory = IntegromatAllMeetingInformationFactory(node_settings=self.node_settings)
 
         url = self.project.api_url_for('integromat_get_meetings')
-
-        logAllMeetingInformation = AllMeetingInformation.objects.all()
-        logAllMeetingInformationJson = serializers.serialize('json', logAllMeetingInformation, ensure_ascii=False)
-        logger.info('logAllMeetingInformationJson:::' + str(logAllMeetingInformationJson))
 
         res = self.app.get(url, auth=self.user.auth)
         resBodyJson = json.loads(res.body)
         expectedQuery = AllMeetingInformation.objects.all()
         expectedJson = json.loads(serializers.serialize('json', expectedQuery, ensure_ascii=False))
-
-        logger.info('resBodyJson:::' + str(resBodyJson))
-        logger.info('expectedJson:::' + str(expectedJson))
 
         assert_equals(len(resBodyJson), 1)
         assert_equals(resBodyJson['recentMeetings'], expectedJson)
@@ -351,10 +288,6 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
 
     def test_integromat_register_web_meeting_apps_email_register(self):
 
-        logger.info('self.node_settings:::' + str(self.node_settings))
-        logNodeSettings = NodeSettings.objects.all()
-        logNodeSettingsJson = serializers.serialize('json', logNodeSettings, ensure_ascii=False)
-        logger.info('logNodeSettingsJson:::' + str(logNodeSettingsJson))
         AllMeetingInformationFactory = IntegromatAllMeetingInformationFactory(node_settings=self.node_settings)
 
         osfUser = OSFUser.objects.get(username=self.user.username)
@@ -362,7 +295,6 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         osfGuidsSerializer = serializers.serialize('json', osfGuids, ensure_ascii=False)
         osfGuidsJson = json.loads(osfGuidsSerializer)
         osfUserGuid = osfGuidsJson[0]['fields']['_id']
-        logger.info('testGuidStr::::' + str(osfUserGuid))
         url = self.project.api_url_for('integromat_register_web_meeting_apps_email')
 
         _id = None
@@ -399,10 +331,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         AllMeetingInformation.objects.all().delete()
 
     def test_integromat_register_web_meeting_apps_email_update(self):
-        logger.info('self.node_settings:::' + str(self.node_settings))
-        logNodeSettings = NodeSettings.objects.all()
-        logNodeSettingsJson = serializers.serialize('json', logNodeSettings, ensure_ascii=False)
-        logger.info('logNodeSettingsJson:::' + str(logNodeSettingsJson))
+
         AllMeetingInformationFactory = IntegromatAllMeetingInformationFactory(node_settings=self.node_settings)
 
         osfUser = OSFUser.objects.get(username=self.user.username)
@@ -410,7 +339,6 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         osfGuidsSerializer = serializers.serialize('json', osfGuids, ensure_ascii=False)
         osfGuidsJson = json.loads(osfGuidsSerializer)
         osfUserGuid = osfGuidsJson[0]['fields']['_id']
-        logger.info('testGuidStr::::' + str(osfUserGuid))
 
         url = self.project.api_url_for('integromat_register_web_meeting_apps_email')
 
@@ -492,10 +420,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         assert_equals(result.is_guest, expected_is_guest)
 
     def test_integromat_req_next_msg(self):
-        logger.info('self.node_settings:::' + str(self.node_settings))
-        logNodeSettings = NodeSettings.objects.all()
-        logNodeSettingsJson = serializers.serialize('json', logNodeSettings, ensure_ascii=False)
-        logger.info('logNodeSettingsJson:::' + str(logNodeSettingsJson))
+
         WorkflowExecutionMessage = IntegromatWorkflowExecutionMessagesFactory(node_settings=self.node_settings)
 
         url = self.project.api_url_for('integromat_req_next_msg')
@@ -577,11 +502,6 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
 
     def test_integromat_register_alternative_webhook_url(self):
 
-        logger.info('self.node_settings:::' + str(self.node_settings))
-        logNodeSettings = NodeSettings.objects.all()
-        logNodeSettingsJson = serializers.serialize('json', logNodeSettings, ensure_ascii=False)
-        logger.info('logNodeSettingsJson:::' + str(logNodeSettingsJson))
-
         url = self.project.api_url_for('integromat_register_alternative_webhook_url')
 
         workflowDescription = 'integromat.workflows.web_meeting.description'
@@ -594,7 +514,6 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         rvBodyJson = json.loads(rv.body)
         workflowId = 7895
         result = NodeWorkflows.objects.get(node_settings_id=self.node_settings.id, workflowid=workflowId)
-        logger.info('self.node_settings.id:::' + str(self.node_settings.id))
 
         assert_equals(result.alternative_webhook_url, expected_alternativeWebhookUrl)
         assert_equals(rvBodyJson, {})
