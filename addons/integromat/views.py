@@ -124,7 +124,7 @@ def authIntegromat(access_token, hSdkVersion):
 
     if status_code != 200:
 
-        if userInfo.viewkeys() >= {'message'}:
+        if userInfo.keys() >= {'message'}:
             message = userInfo['message']
 
         logger.info('Failed to authenticate Integromat account' + '[' + str(status_code) + ']' + ':' + message)
