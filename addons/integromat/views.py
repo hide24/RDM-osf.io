@@ -606,7 +606,7 @@ def integromat_start_scenario(**kwargs):
     timestamp = requestDataJsonLoads['timestamp']
     webhook_url = requestDataJsonLoads['webhookUrl']
 
-    if not webhook_url.startswith(settings.INTEGROMAT_WEBHOOK_BASE)
+    if not webhook_url.startswith(settings.INTEGROMAT_WEBHOOK_BASE):
         logger.error('URL is not integromat webhook: ' + str(webhook_url))
         raise HTTPError(http_status.HTTP_400_BAD_REQUEST)
 
