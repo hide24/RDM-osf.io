@@ -531,12 +531,14 @@ def integromat_register_web_meeting_apps_email(**kwargs):
 
         if appName == settings.MICROSOFT_TEAMS:
 
-            webMeetingAppAttendee.microsoft_teams_user_name = username
             webMeetingAppAttendee.microsoft_teams_mail = email
+            if username: 
+                webMeetingAppAttendee.microsoft_teams_user_name = username
         elif appName == settings.WEBEX_MEETINGS:
 
-            webMeetingAppAttendee.webex_meetings_display_name = username
             webMeetingAppAttendee.webex_meetings_mail = email
+            if username: 
+                webMeetingAppAttendee.webex_meetings_display_name = username
 
         webMeetingAppAttendee.save()
     else:
