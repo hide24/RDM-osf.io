@@ -132,9 +132,9 @@ class TestIQBRIMSSpreadsheetClient(OsfTestCase):
                 })
                 name, args, kwargs = mkreq.mock_calls[1]
                 assert_equal(json.loads(kwargs['data']), {
-                  'range': 'sheet01!A4:H4',
-                  'values': [['file1.txt', '', '', '', '.txt', '', ''],
-                             ['file2.txt', '', '', '', '', '', '']],
+                  'range': 'sheet01!A4:I4',
+                  'values': [['file1.txt', '', '.txt', '', '', '.txt', '', ''],
+                             ['file2.txt', '', '.txt', '', '', '', '', '']],
                   'majorDimension': 'ROWS'
                 })
                 name, args, kwargs = mkreq.mock_calls[2]
@@ -145,7 +145,7 @@ class TestIQBRIMSSpreadsheetClient(OsfTestCase):
                     'protectedRange': {
                       'range': {
                         'endRowIndex': 1,
-                        'endColumnIndex': 7,
+                        'endColumnIndex': 8,
                         'sheetId': 1,
                         'startColumnIndex': 0,
                         'startRowIndex': 0
@@ -159,7 +159,7 @@ class TestIQBRIMSSpreadsheetClient(OsfTestCase):
                     'protectedRange': {
                       'range': {
                         'endRowIndex': 1 + 3,
-                        'endColumnIndex': 7,
+                        'endColumnIndex': 8,
                         'sheetId': 1,
                         'startColumnIndex': 0,
                         'startRowIndex': 0 + 3
@@ -173,7 +173,7 @@ class TestIQBRIMSSpreadsheetClient(OsfTestCase):
                     'protectedRange': {
                       'range': {
                         'endRowIndex': 3 + 3,
-                        'endColumnIndex': 2,
+                        'endColumnIndex': 3,
                         'sheetId': 1,
                         'startColumnIndex': 0,
                         'startRowIndex': 1 + 3
@@ -187,9 +187,9 @@ class TestIQBRIMSSpreadsheetClient(OsfTestCase):
                     'protectedRange': {
                       'range': {
                         'endRowIndex': 3 + 3,
-                        'endColumnIndex': 5,
+                        'endColumnIndex': 6,
                         'sheetId': 1,
-                        'startColumnIndex': 4,
+                        'startColumnIndex': 5,
                         'startRowIndex': 1 + 3
                       },
                       'warningOnly': True
@@ -224,16 +224,16 @@ class TestIQBRIMSSpreadsheetClient(OsfTestCase):
                   'majorDimension': 'ROWS'
                 })
                 name, args, kwargs = mkreq.mock_calls[1]
-                assert_equal(json.loads(kwargs['data'])['range'], 'sheet01!A4:I4')
+                assert_equal(json.loads(kwargs['data'])['range'], 'sheet01!A4:J4')
                 assert_equal(len(json.loads(kwargs['data'])['values']), 4)
                 assert_equal(json.loads(kwargs['data'])['values'][0],
-                             ['file1.txt', '', '', '', '', '.txt', '', ''])
+                             ['file1.txt', '', '', '.txt', '', '', '.txt', '', ''])
                 assert_equal(json.loads(kwargs['data'])['values'][1],
-                             ['file2.txt', '', '', '', '', '', '', ''])
+                             ['file2.txt', '', '', '.txt', '', '', '', '', ''])
                 assert_equal(json.loads(kwargs['data'])['values'][2],
-                             ['test', '', '', '', '', '', '', ''])
+                             ['test', '', '', '-', '', '', '', '', ''])
                 assert_equal(json.loads(kwargs['data'])['values'][3],
-                             [u'\u2514\u2212\u2212', 'file3.txt', '', '', '', '', '', ''])
+                             [u'\u2514\u2212\u2212', 'file3.txt', '', '.txt', '', '', '', '', ''])
                 assert_equal(json.loads(kwargs['data'])['majorDimension'], 'ROWS')
                 name, args, kwargs = mkreq.mock_calls[2]
                 requests = json.loads(kwargs['data'])['requests']
@@ -243,7 +243,7 @@ class TestIQBRIMSSpreadsheetClient(OsfTestCase):
                       'protectedRange': {
                         'range': {
                           'endRowIndex': 1,
-                          'endColumnIndex': 8,
+                          'endColumnIndex': 9,
                           'sheetId': 1,
                           'startColumnIndex': 0,
                           'startRowIndex': 0
@@ -257,7 +257,7 @@ class TestIQBRIMSSpreadsheetClient(OsfTestCase):
                       'protectedRange': {
                         'range': {
                           'endRowIndex': 1 + 3,
-                          'endColumnIndex': 8,
+                          'endColumnIndex': 9,
                           'sheetId': 1,
                           'startColumnIndex': 0,
                           'startRowIndex': 0 + 3
@@ -271,7 +271,7 @@ class TestIQBRIMSSpreadsheetClient(OsfTestCase):
                       'protectedRange': {
                         'range': {
                           'endRowIndex': 5 + 3,
-                          'endColumnIndex': 3,
+                          'endColumnIndex': 4,
                           'sheetId': 1,
                           'startColumnIndex': 0,
                           'startRowIndex': 1 + 3
@@ -285,9 +285,9 @@ class TestIQBRIMSSpreadsheetClient(OsfTestCase):
                       'protectedRange': {
                         'range': {
                           'endRowIndex': 5 + 3,
-                          'endColumnIndex': 6,
+                          'endColumnIndex': 7,
                           'sheetId': 1,
-                          'startColumnIndex': 5,
+                          'startColumnIndex': 6,
                           'startRowIndex': 1 + 3
                         },
                         'warningOnly': True
@@ -342,20 +342,20 @@ class TestIQBRIMSSpreadsheetClient(OsfTestCase):
                   'majorDimension': 'ROWS'
                 })
                 name, args, kwargs = mkreq.mock_calls[1]
-                assert_equal(json.loads(kwargs['data'])['range'], 'sheet01!A4:I4')
+                assert_equal(json.loads(kwargs['data'])['range'], 'sheet01!A4:J4')
                 assert_equal(len(json.loads(kwargs['data'])['values']), 6)
                 assert_equal(json.loads(kwargs['data'])['values'][0],
-                             ['file1.txt', '', '', '', '', '.txt', '', ''])
+                             ['file1.txt', '', '', '.txt', '', '', '.txt', '', ''])
                 assert_equal(json.loads(kwargs['data'])['values'][1],
-                             ['file2.txt', '', '', '', '', '', '', ''])
+                             ['file2.txt', '', '', '.txt', '', '', '', '', ''])
                 assert_equal(json.loads(kwargs['data'])['values'][2],
-                             ['test1', '', '', '', '', '', '', ''])
+                             ['test1', '', '', '-', '', '', '', '', ''])
                 assert_equal(json.loads(kwargs['data'])['values'][3],
-                             [u'\u2514\u2212\u2212', 'file3.txt', '', '', '', '', '', ''])
+                             [u'\u2514\u2212\u2212', 'file3.txt', '', '.txt', '', '', '', '', ''])
                 assert_equal(json.loads(kwargs['data'])['values'][4],
-                             ['test2', '', '', '', '', '', '', ''])
+                             ['test2', '', '', '-', '', '', '', '', ''])
                 assert_equal(json.loads(kwargs['data'])['values'][5],
-                             [u'\u2514\u2212\u2212', 'file4.txt', '', '', '', '', '', ''])
+                             [u'\u2514\u2212\u2212', 'file4.txt', '', '.txt', '', '', '', '', ''])
                 assert_equal(json.loads(kwargs['data'])['majorDimension'], 'ROWS')
                 name, args, kwargs = mkreq.mock_calls[2]
                 requests = json.loads(kwargs['data'])['requests']
@@ -365,7 +365,7 @@ class TestIQBRIMSSpreadsheetClient(OsfTestCase):
                       'protectedRange': {
                         'range': {
                           'endRowIndex': 1,
-                          'endColumnIndex': 8,
+                          'endColumnIndex': 9,
                           'sheetId': 1,
                           'startColumnIndex': 0,
                           'startRowIndex': 0
@@ -379,7 +379,7 @@ class TestIQBRIMSSpreadsheetClient(OsfTestCase):
                       'protectedRange': {
                         'range': {
                           'endRowIndex': 1 + 3,
-                          'endColumnIndex': 8,
+                          'endColumnIndex': 9,
                           'sheetId': 1,
                           'startColumnIndex': 0,
                           'startRowIndex': 0 + 3
@@ -393,7 +393,7 @@ class TestIQBRIMSSpreadsheetClient(OsfTestCase):
                       'protectedRange': {
                         'range': {
                           'endRowIndex': 7 + 3,
-                          'endColumnIndex': 3,
+                          'endColumnIndex': 4,
                           'sheetId': 1,
                           'startColumnIndex': 0,
                           'startRowIndex': 1 + 3
@@ -407,9 +407,9 @@ class TestIQBRIMSSpreadsheetClient(OsfTestCase):
                       'protectedRange': {
                         'range': {
                           'endRowIndex': 7 + 3,
-                          'endColumnIndex': 6,
+                          'endColumnIndex': 7,
                           'sheetId': 1,
-                          'startColumnIndex': 5,
+                          'startColumnIndex': 6,
                           'startRowIndex': 1 + 3
                         },
                         'warningOnly': True
@@ -486,11 +486,11 @@ class TestIQBRIMSSpreadsheetClient(OsfTestCase):
                 })
                 name, args, kwargs = mkreq.mock_calls[1]
                 assert_equal(json.loads(kwargs['data']), {
-                  'range': 'sheet01!A4:I4',
-                  'values': [[u'ファイル1.txt', '', '', '', '', '.txt', '', ''],
-                             [u'ファイル2.txt', '', '', '', '', '', '', ''],
-                             [u'テスト', '', '', '', '', '', '', ''],
-                             [u'\u2514\u2212\u2212', u'ファイル3.txt', '', '', '', '', '', '']],
+                  'range': 'sheet01!A4:J4',
+                  'values': [[u'ファイル1.txt', '', '', '.txt', '', '', '.txt', '', ''],
+                             [u'ファイル2.txt', '', '', '.txt', '', '', '', '', ''],
+                             [u'テスト', '', '', '-', '', '', '', '', ''],
+                             [u'\u2514\u2212\u2212', u'ファイル3.txt', '', '.txt', '', '', '', '', '']],
                   'majorDimension': 'ROWS'
                 })
                 name, args, kwargs = mkreq.mock_calls[2]
@@ -501,7 +501,7 @@ class TestIQBRIMSSpreadsheetClient(OsfTestCase):
                       'protectedRange': {
                         'range': {
                           'endRowIndex': 1,
-                          'endColumnIndex': 8,
+                          'endColumnIndex': 9,
                           'sheetId': 1,
                           'startColumnIndex': 0,
                           'startRowIndex': 0
@@ -515,7 +515,7 @@ class TestIQBRIMSSpreadsheetClient(OsfTestCase):
                       'protectedRange': {
                         'range': {
                           'endRowIndex': 1 + 3,
-                          'endColumnIndex': 8,
+                          'endColumnIndex': 9,
                           'sheetId': 1,
                           'startColumnIndex': 0,
                           'startRowIndex': 0 + 3
@@ -529,7 +529,7 @@ class TestIQBRIMSSpreadsheetClient(OsfTestCase):
                       'protectedRange': {
                         'range': {
                           'endRowIndex': 5 + 3,
-                          'endColumnIndex': 3,
+                          'endColumnIndex': 4,
                           'sheetId': 1,
                           'startColumnIndex': 0,
                           'startRowIndex': 1 + 3
@@ -543,9 +543,9 @@ class TestIQBRIMSSpreadsheetClient(OsfTestCase):
                       'protectedRange': {
                         'range': {
                           'endRowIndex': 5 + 3,
-                          'endColumnIndex': 6,
+                          'endColumnIndex': 7,
                           'sheetId': 1,
-                          'startColumnIndex': 5,
+                          'startColumnIndex': 6,
                           'startRowIndex': 1 + 3
                         },
                         'warningOnly': True
@@ -601,9 +601,9 @@ class TestIQBRIMSSpreadsheetClient(OsfTestCase):
                 })
                 name, args, kwargs = mkreq.mock_calls[1]
                 assert_equal(json.loads(kwargs['data']), {
-                  'range': 'sheet01!A4:J4',
-                  'values': [['file1.txt', '', '', '', '.txt', '', '', '', ''],
-                             ['file2.txt', '', '', '', '', '', '', '', '']],
+                  'range': 'sheet01!A4:K4',
+                  'values': [['file1.txt', '', '.txt', '', '', '.txt', '', '', '', ''],
+                             ['file2.txt', '', '.txt', '', '', '', '', '', '', '']],
                   'majorDimension': 'ROWS'
                 })
                 name, args, kwargs = mkreq.mock_calls[2]
@@ -614,7 +614,7 @@ class TestIQBRIMSSpreadsheetClient(OsfTestCase):
                       'protectedRange': {
                         'range': {
                           'endRowIndex': 1,
-                          'endColumnIndex': 7,
+                          'endColumnIndex': 8,
                           'sheetId': 1,
                           'startColumnIndex': 0,
                           'startRowIndex': 0
@@ -628,7 +628,7 @@ class TestIQBRIMSSpreadsheetClient(OsfTestCase):
                       'protectedRange': {
                         'range': {
                           'endRowIndex': 1 + 3,
-                          'endColumnIndex': 7,
+                          'endColumnIndex': 8,
                           'sheetId': 1,
                           'startColumnIndex': 0,
                           'startRowIndex': 0 + 3
@@ -642,7 +642,7 @@ class TestIQBRIMSSpreadsheetClient(OsfTestCase):
                       'protectedRange': {
                         'range': {
                           'endRowIndex': 3 + 3,
-                          'endColumnIndex': 2,
+                          'endColumnIndex': 3,
                           'sheetId': 1,
                           'startColumnIndex': 0,
                           'startRowIndex': 1 + 3
@@ -656,9 +656,9 @@ class TestIQBRIMSSpreadsheetClient(OsfTestCase):
                       'protectedRange': {
                         'range': {
                           'endRowIndex': 3 + 3,
-                          'endColumnIndex': 5,
+                          'endColumnIndex': 6,
                           'sheetId': 1,
-                          'startColumnIndex': 4,
+                          'startColumnIndex': 5,
                           'startRowIndex': 1 + 3
                         },
                         'warningOnly': True
@@ -680,8 +680,8 @@ class TestIQBRIMSSpreadsheetClient(OsfTestCase):
                       'range': {
                         'sheetId': 1,
                         'dimension': 'COLUMNS',
-                        'startIndex': 7,
-                        'endIndex': 8,
+                        'startIndex': 8,
+                        'endIndex': 9,
                       },
                       'properties': {
                         'hiddenByUser': True,
@@ -694,8 +694,8 @@ class TestIQBRIMSSpreadsheetClient(OsfTestCase):
                       'range': {
                         'sheetId': 1,
                         'dimension': 'COLUMNS',
-                        'startIndex': 8,
-                        'endIndex': 9,
+                        'startIndex': 9,
+                        'endIndex': 10,
                       },
                       'properties': {
                         'hiddenByUser': True,
@@ -734,60 +734,60 @@ class TestIQBRIMSSpreadsheetClient(OsfTestCase):
                   'majorDimension': 'ROWS'
                 })
                 name, args, kwargs = mkreq.mock_calls[1]
-                assert_equal(json.loads(kwargs['data'])['range'], 'sheet01!A4:L4')
+                assert_equal(json.loads(kwargs['data'])['range'], 'sheet01!A4:M4')
                 assert_equal(len(json.loads(kwargs['data'])['values']), 26)
                 assert_equal(json.loads(kwargs['data'])['values'][0],
-                             ['Data_2022_Sample', '', '', '', '', '', '', '', '.csv', '', ''])
+                             ['Data_2022_Sample', '', '', '', '', '', '-', '', '', '.csv', '', ''])
                 assert_equal(json.loads(kwargs['data'])['values'][1],
-                             ['├−−', 'manuscript.tex', '', '', '', '', '', '', '.key', '', ''])
+                             ['├−−', 'manuscript.tex', '', '', '', '', '.tex', '', '', '.key', '', ''])
                 assert_equal(json.loads(kwargs['data'])['values'][2],
-                             ['├−−', 'suppl.tex', '', '', '', '', '', '', '.png', '', ''])
+                             ['├−−', 'suppl.tex', '', '', '', '', '.tex', '', '', '.png', '', ''])
                 assert_equal(json.loads(kwargs['data'])['values'][3],
-                             ['├−−', 'Fig1', '', '', '', '', '', '', '.tex', '', ''])
+                             ['├−−', 'Fig1', '', '', '', '', '-', '', '', '.tex', '', ''])
                 assert_equal(json.loads(kwargs['data'])['values'][4],
-                             ['│', '├−−', 'Sample.key', '', '', '', '', '', '.txt', '', ''])
+                             ['│', '├−−', 'Sample.key', '', '', '', '.key', '', '', '.txt', '', ''])
                 assert_equal(json.loads(kwargs['data'])['values'][5],
-                             ['│', '└−−', 'B', '', '', '', '', '', '', '', ''])
+                             ['│', '└−−', 'B', '', '', '', '-', '', '', '', '', ''])
                 assert_equal(json.loads(kwargs['data'])['values'][6],
-                             ['│', '', '├−−', 'processed', '', '', '', '', '', '', ''])
+                             ['│', '', '├−−', 'processed', '', '', '-', '', '', '', '', ''])
                 assert_equal(json.loads(kwargs['data'])['values'][7],
-                             ['│', '', '│', '└−−', 'SampleB.png', '', '', '', '', '', ''])
+                             ['│', '', '│', '└−−', 'SampleB.png', '', '.png', '', '', '', '', ''])
                 assert_equal(json.loads(kwargs['data'])['values'][8],
-                             ['│', '', '└−−', 'raw', '', '', '', '', '', '', ''])
+                             ['│', '', '└−−', 'raw', '', '', '-', '', '', '', '', ''])
                 assert_equal(json.loads(kwargs['data'])['values'][9],
-                             ['│', '', '', '├−−', 'Sample01.csv', '', '', '', '', '', ''])
+                             ['│', '', '', '├−−', 'Sample01.csv', '', '.csv', '', '', '', '', ''])
                 assert_equal(json.loads(kwargs['data'])['values'][10],
-                             ['│', '', '', '└−−', 'Sample02.csv', '', '', '', '', '', ''])
+                             ['│', '', '', '└−−', 'Sample02.csv', '', '.csv', '', '', '', '', ''])
                 assert_equal(json.loads(kwargs['data'])['values'][11],
-                             ['└−−', 'Fig2', '', '', '', '', '', '', '', '', ''])
+                             ['└−−', 'Fig2', '', '', '', '', '-', '', '', '', '', ''])
                 assert_equal(json.loads(kwargs['data'])['values'][12],
-                             ['', '├−−', 'Sample.key', '', '', '', '', '', '', '', ''])
+                             ['', '├−−', 'Sample.key', '', '', '', '.key', '', '', '', '', ''])
                 assert_equal(json.loads(kwargs['data'])['values'][13],
-                             ['', '├−−', 'A', '', '', '', '', '', '', '', ''])
+                             ['', '├−−', 'A', '', '', '', '-', '', '', '', '', ''])
                 assert_equal(json.loads(kwargs['data'])['values'][14],
-                             ['', '│', '├−−', 'processed', '', '', '', '', '', '', ''])
+                             ['', '│', '├−−', 'processed', '', '', '-', '', '', '', '', ''])
                 assert_equal(json.loads(kwargs['data'])['values'][15],
-                             ['', '│', '│', '├−−', 'SampleA.png', '', '', '', '', '', ''])
+                             ['', '│', '│', '├−−', 'SampleA.png', '', '.png', '', '', '', '', ''])
                 assert_equal(json.loads(kwargs['data'])['values'][16],
-                             ['', '│', '│', '└−−', 'SampleA.txt', '', '', '', '', '', ''])
+                             ['', '│', '│', '└−−', 'SampleA.txt', '', '.txt', '', '', '', '', ''])
                 assert_equal(json.loads(kwargs['data'])['values'][17],
-                             ['', '│', '└−−', 'raw', '', '', '', '', '', '', ''])
+                             ['', '│', '└−−', 'raw', '', '', '-', '', '', '', '', ''])
                 assert_equal(json.loads(kwargs['data'])['values'][18],
-                             ['', '│', '', '├−−', 'Sample03.csv', '', '', '', '', '', ''])
+                             ['', '│', '', '├−−', 'Sample03.csv', '', '.csv', '', '', '', '', ''])
                 assert_equal(json.loads(kwargs['data'])['values'][19],
-                             ['', '│', '', '└−−', 'Sample04.csv', '', '', '', '', '', ''])
+                             ['', '│', '', '└−−', 'Sample04.csv', '', '.csv', '', '', '', '', ''])
                 assert_equal(json.loads(kwargs['data'])['values'][20],
-                             ['', '└−−', 'C', '', '', '', '', '', '', '', ''])
+                             ['', '└−−', 'C', '', '', '', '-', '', '', '', '', ''])
                 assert_equal(json.loads(kwargs['data'])['values'][21],
-                             ['', '', '├−−', 'processed', '', '', '', '', '', '', ''])
+                             ['', '', '├−−', 'processed', '', '', '-', '', '', '', '', ''])
                 assert_equal(json.loads(kwargs['data'])['values'][22],
-                             ['', '', '│', '├−−', 'SampleC.png', '', '', '', '', '', ''])
+                             ['', '', '│', '├−−', 'SampleC.png', '', '.png', '', '', '', '', ''])
                 assert_equal(json.loads(kwargs['data'])['values'][23],
-                             ['', '', '│', '└−−', 'SampleC.txt', '', '', '', '', '', ''])
+                             ['', '', '│', '└−−', 'SampleC.txt', '', '.txt', '', '', '', '', ''])
                 assert_equal(json.loads(kwargs['data'])['values'][24],
-                             ['', '', '└−−', 'raw', '', '', '', '', '', '', ''])
+                             ['', '', '└−−', 'raw', '', '', '-', '', '', '', '', ''])
                 assert_equal(json.loads(kwargs['data'])['values'][25],
-                             ['', '', '', '└−−', 'Sample05.csv', '', '', '', '', '', ''])
+                             ['', '', '', '└−−', 'Sample05.csv', '', '.csv', '', '', '', '', ''])
                 assert_equal(json.loads(kwargs['data'])['majorDimension'], 'ROWS')
                 name, args, kwargs = mkreq.mock_calls[2]
                 requests = json.loads(kwargs['data'])['requests']
@@ -797,7 +797,7 @@ class TestIQBRIMSSpreadsheetClient(OsfTestCase):
                       'protectedRange': {
                         'range': {
                           'endRowIndex': 1,
-                          'endColumnIndex': 11,
+                          'endColumnIndex': 12,
                           'sheetId': 1,
                           'startColumnIndex': 0,
                           'startRowIndex': 0
@@ -811,7 +811,7 @@ class TestIQBRIMSSpreadsheetClient(OsfTestCase):
                       'protectedRange': {
                         'range': {
                           'endRowIndex': 1 + 3,
-                          'endColumnIndex': 11,
+                          'endColumnIndex': 12,
                           'sheetId': 1,
                           'startColumnIndex': 0,
                           'startRowIndex': 0 + 3
@@ -825,7 +825,7 @@ class TestIQBRIMSSpreadsheetClient(OsfTestCase):
                       'protectedRange': {
                         'range': {
                           'endRowIndex': 27 + 3,
-                          'endColumnIndex': 6,
+                          'endColumnIndex': 7,
                           'sheetId': 1,
                           'startColumnIndex': 0,
                           'startRowIndex': 1 + 3
@@ -839,9 +839,9 @@ class TestIQBRIMSSpreadsheetClient(OsfTestCase):
                       'protectedRange': {
                         'range': {
                           'endRowIndex': 27 + 3,
-                          'endColumnIndex': 9,
+                          'endColumnIndex': 10,
                           'sheetId': 1,
-                          'startColumnIndex': 8,
+                          'startColumnIndex': 9,
                           'startRowIndex': 1 + 3
                         },
                         'warningOnly': True
