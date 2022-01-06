@@ -475,7 +475,7 @@ def integromat_delete_meeting_registration(**kwargs):
 
     meetingId = request.get_json().get('meetingId')
 
-    logger.info('Delete Meeting: ' + str(meetingId)
+    logger.info('Delete Meeting: ' + str(meetingId))
 
     qsDeleteMeeting = models.AllMeetingInformation.objects.get(meetingid=meetingId)
     qsDeleteMeeting.delete()
