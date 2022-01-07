@@ -68,7 +68,10 @@ def integromat_add_user_account(auth, **kwargs):
     #integromat auth
     integromatUserInfo = authIntegromat(access_token, settings.H_SDK_VERSION)
 
+    logger.info('integromatUserInfo:::' + str(integromatUserInfo))
+
     if not integromatUserInfo:
+        logger.info('integromat unauthorized')
         raise HTTPError(http_status.HTTP_400_BAD_REQUEST)
     else:
         integromat_userid = integromatUserInfo['id']
@@ -101,6 +104,8 @@ def integromat_add_user_account(auth, **kwargs):
     user.get_or_add_addon('integromat', auth=auth)
 
     user.save()
+
+    logger.info('integromat_add_user_account end')
 
     return {}
 
@@ -427,8 +432,7 @@ def integromat_update_meeting_registration(**kwargs):
             try:
                 meetingCreatedInviteesInfoJson = json.loads(meetingCreatedInviteesInfo)
                 meetingDeletedInviteesInfoJson = json.loads(meetingDeletedInviteesInfo)
-            except ObjectDoesNotExist:
-                logger.error('meetingInviteesInfo or meetingDeletedInviteesInfoJson is None')
+            except TypeError:
                 raise HTTPError(http_status.HTTP_400_BAD_REQUEST)
 
             for meetingAttendeeRelation in qsNodeWebMeetingsAttendeesRelation:
@@ -601,6 +605,8 @@ def integromat_register_web_meeting_apps_email(**kwargs):
 @must_have_addon(SHORT_NAME, 'node')
 def integromat_start_scenario(**kwargs):
 
+    logger.info('integromat_start_scenario start')
+
     requestData = request.get_data()
     requestDataJsonLoads = json.loads(requestData)
     timestamp = requestDataJsonLoads['timestamp']
@@ -615,6 +621,8 @@ def integromat_start_scenario(**kwargs):
 
     response = requests.post(webhook_url, data=requestDataJson, headers={'Content-Type': 'application/json'})
     response.raise_for_status()
+
+    logger.info('integromat_start_scenario end')
 
     return {
         'timestamp': timestamp
