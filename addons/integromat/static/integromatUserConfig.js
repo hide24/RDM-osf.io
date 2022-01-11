@@ -101,8 +101,11 @@ function ViewModel(url) {
     self.askDisconnect = function(account) {
         var self = this;
         bootbox.confirm({
-            title: _('Disconnect Integromat Account?'),
-            message: sprintf(_('<p class="overflow">Are you sure you want to disconnect the Integromat account <strong>%1$s</strong>? This will revoke access to Integromat for all projects associated with this account.</p>'), osfHelpers.htmlEscape(account.name)),
+            title: 'Disconnect Integromat Account?',
+            message: '<p class="overflow">' +
+                'Are you sure you want to disconnect the Integromat account <strong>' +
+                osfHelpers.htmlEscape(account.name) + '</strong>? This will revoke access to Integromat for all projects associated with this account.' +
+                '</p>',
             callback: function (confirm) {
                 if (confirm) {
                     self.disconnectAccount(account);
