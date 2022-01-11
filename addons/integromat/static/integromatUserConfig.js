@@ -15,9 +15,6 @@ var addonSettings = require('js/addonSettings');
 var ChangeMessageMixin = require('js/changeMessage');
 var ExternalAccount = addonSettings.ExternalAccount;
 
-var _ = require('js/rdmGettext')._;
-var sprintf = require('agh.sprintf').sprintf;
-
 var $modal = $('#integromatCredentialsModal');
 
 function ViewModel(url) {
