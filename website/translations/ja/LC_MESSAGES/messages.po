@@ -3873,6 +3873,30 @@ msgstr "論文登録申請"
 msgid "Image Scan only"
 msgstr "投稿前画像スキャン依頼"
 
+#: website/templates/messages.mako:30
+msgid "Web Apps"
+msgstr "アプリ"
+
+#: website/templates/util/render_addon_widget.mako:244
+msgid "Application Information"
+msgstr "アプリ情報"
+
+#: website/templates/util/render_addon_widget.mako:245
+msgid "No Today's Meeting"
+msgstr "今日の会議はありません"
+
+#: website/templates/util/render_addon_widget.mako:247
+msgid "Today's Meeting"
+msgstr "今日の会議"
+
+#: website/templates/util/render_addon_widget.mako:265
+msgid "No Tomorrow's Meeting"
+msgstr "明日の会議はありません"
+
+#: website/templates/util/render_addon_widget.mako:267
+msgid "Tomorrow's Meeting"
+msgstr "明日の会議"
+
 #: website/templates/util/render_node.mako:5
 msgid "component"
 msgstr "コンポーネント"
