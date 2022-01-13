@@ -6,7 +6,7 @@
                 % if addon_name != 'integromat':
                     <h3 class="panel-title">${addon_data['full_name']}</h3>
                 % elif addon_name == 'integromat':
-                    <h3 class="panel-title">${_(addon_data['tab_name'])}</h3>
+                    <h3 class="panel-title">${addon_data['tab_name']}</h3>
                 % endif
                 <div class="pull-right">
                     % if addon_data['has_page']:
