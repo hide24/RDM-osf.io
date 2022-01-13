@@ -40,7 +40,7 @@ msgid ""
 "<p class=\"overflow\">Are you sure you want to disconnect the Integromat "
 "account <strong>%1$s</strong>? This will revoke access to Integromat for "
 "all projects associated with this account.</p>"
-msgstr "<p class=\"overflow\">Integromatアカウント<strong>%1$s</strongを切断してもよろしいですか？これにより、認証したすべてのプロジェクトのIntegromatへのアクセスが取り消されます。</p>"
+msgstr "<p class=\"overflow\">Integromatアカウント<strong>%1$s</strong>を切断してもよろしいですか？これにより、認証したすべてのプロジェクトのIntegromatへのアクセスが取り消されます。</p>"
 
 #: addons/jupyterhub/static/files.js:93
 msgid "Launch"

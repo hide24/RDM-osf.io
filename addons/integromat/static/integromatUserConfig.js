@@ -113,7 +113,7 @@ function ViewModel(url) {
             },
             buttons:{
                 confirm:{
-                    label:'Disconnect',
+                    label:_('Disconnect'),
                     className:'btn-danger'
                 }
             }
