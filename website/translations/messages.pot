@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-01-11 11:50+0900\n"
+"POT-Creation-Date: 2022-01-14 10:58+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1360,6 +1360,10 @@ msgstr ""
 
 #: website/templates/messages.mako:30
 msgid "Web Apps"
+msgstr ""
+
+#: website/templates/messages.mako:31
+msgid "Web apps"
 msgstr ""
 
 #: website/templates/my_projects.mako:2 website/templates/nav.mako:51
@@ -3706,6 +3710,10 @@ msgstr ""
 
 #: website/templates/util/oauth_complete.mako:9
 msgid "OAuth Complete"
+msgstr ""
+
+#: website/templates/util/render_addon_widget.mako:9
+msgid "tab_name"
 msgstr ""
 
 #: website/templates/util/render_addon_widget.mako:38

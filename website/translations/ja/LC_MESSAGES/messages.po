@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  0.6.0\n"
 "Report-Msgid-Bugs-To: rocs-office@nii.ac.jp\n"
-"POT-Creation-Date: 2022-01-11 11:50+0900\n"
+"POT-Creation-Date: 2022-01-14 10:58+0900\n"
 "PO-Revision-Date: 2020-11-10 20:10+0900\n"
-"Last-Translator: Hiroki Ohashi\n"
+"Last-Translator: Shunta Nishikawa\n"
 "Language: ja\n"
 "Language-Team: RCOS <rocs-office@nii.ac.jp>\n"
 "Plural-Forms: nplurals=1; plural=0\n"
@@ -1409,6 +1409,10 @@ msgstr ""
 
 #: website/templates/messages.mako:30
 msgid "Web Apps"
+msgstr "アプリ"
+
+#: website/templates/messages.mako:31
+msgid "Web apps"
 msgstr "アプリ"
 
 #: website/templates/my_projects.mako:2 website/templates/nav.mako:51
@@ -3815,6 +3819,10 @@ msgstr "あと%(othersCount)s人"
 #: website/templates/util/oauth_complete.mako:9
 msgid "OAuth Complete"
 msgstr "OAuthの完了"
+
+#: website/templates/util/render_addon_widget.mako:9
+msgid "tab_name"
+msgstr ""
 
 #: website/templates/util/render_addon_widget.mako:38
 msgid "Read More"
