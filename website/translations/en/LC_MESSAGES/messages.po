@@ -8,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  0.6.0\n"
 "Report-Msgid-Bugs-To: rocs-office@nii.ac.jp\n"
-"POT-Creation-Date: 2022-01-11 11:50+0900\n"
+"POT-Creation-Date: 2022-01-14 10:58+0900\n"
 "PO-Revision-Date: 2020-07-02 20:20+0900\n"
-"Last-Translator: Takuya Ishibashi\n"
+"Last-Translator: Shunta Nishikawa\n"
 "Language: en\n"
 "Language-Team: RCOS <rocs-office@nii.ac.jp>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -1362,6 +1362,10 @@ msgstr ""
 
 #: website/templates/messages.mako:30
 msgid "Web Apps"
+msgstr ""
+
+#: website/templates/messages.mako:31
+msgid "Web apps"
 msgstr ""
 
 #: website/templates/my_projects.mako:2 website/templates/nav.mako:51
@@ -3708,6 +3712,10 @@ msgstr ""
 
 #: website/templates/util/oauth_complete.mako:9
 msgid "OAuth Complete"
+msgstr ""
+
+#: website/templates/util/render_addon_widget.mako:9
+msgid "tab_name"
 msgstr ""
 
 #: website/templates/util/render_addon_widget.mako:38
