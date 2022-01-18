@@ -15,7 +15,7 @@ from osf.models import ExternalAccount, OSFUser
 from django.core.exceptions import ValidationError
 from framework.exceptions import HTTPError
 from rest_framework import status as http_status
-from osf.utils.permissions import ADMIN, READ
+from osf.utils.permissions import ADMIN, WRITE, READ
 from website.project.decorators import (
     must_have_addon,
     must_be_valid_project,
@@ -265,7 +265,7 @@ def integromat_api_call(*args, **kwargs):
     return {'email': str(user)}
 
 @must_be_valid_project
-@must_have_permission(ADMIN)
+@must_have_permission(WRITE)
 @must_have_addon(SHORT_NAME, 'node')
 def integromat_register_meeting(**kwargs):
 
@@ -377,7 +377,7 @@ def integromat_register_meeting(**kwargs):
     return {}
 
 @must_be_valid_project
-@must_have_permission(ADMIN)
+@must_have_permission(WRITE)
 @must_have_addon(SHORT_NAME, 'node')
 def integromat_update_meeting_registration(**kwargs):
 
@@ -471,7 +471,7 @@ def integromat_update_meeting_registration(**kwargs):
     return {}
 
 @must_be_valid_project
-@must_have_permission(ADMIN)
+@must_have_permission(WRITE)
 @must_have_addon(SHORT_NAME, 'node')
 def integromat_delete_meeting_registration(**kwargs):
 
@@ -486,7 +486,7 @@ def integromat_delete_meeting_registration(**kwargs):
 
 
 @must_be_valid_project
-@must_have_permission(ADMIN)
+@must_have_permission(WRITE)
 @must_have_addon(SHORT_NAME, 'node')
 def integromat_register_web_meeting_apps_email(**kwargs):
 
@@ -599,7 +599,7 @@ def integromat_register_web_meeting_apps_email(**kwargs):
     return {}
 
 @must_be_valid_project
-@must_have_permission(ADMIN)
+@must_have_permission(WRITE)
 @must_have_addon(SHORT_NAME, 'node')
 def integromat_start_scenario(**kwargs):
 
@@ -619,7 +619,7 @@ def integromat_start_scenario(**kwargs):
     }
 
 @must_be_valid_project
-@must_have_permission(ADMIN)
+@must_have_permission(WRITE)
 @must_have_addon(SHORT_NAME, 'node')
 def integromat_req_next_msg(**kwargs):
 
@@ -691,7 +691,7 @@ def integromat_register_alternative_webhook_url(**kwargs):
     return {}
 
 @must_be_valid_project
-@must_have_permission(ADMIN)
+@must_have_permission(WRITE)
 @must_have_addon(SHORT_NAME, 'node')
 def integromat_info_msg(**kwargs):
 
@@ -714,7 +714,7 @@ def integromat_info_msg(**kwargs):
     return {}
 
 @must_be_valid_project
-@must_have_permission(ADMIN)
+@must_have_permission(WRITE)
 @must_have_addon(SHORT_NAME, 'node')
 def integromat_error_msg(**kwargs):
 
