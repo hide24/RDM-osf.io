@@ -475,7 +475,7 @@
             <!-- Show widgets in left column if present -->
             % for addon in addons_enabled:
                 % if addons[addon]['has_widget']:
-                    %if addon != 'wiki' and addon != 'iqbrims': ## We already show the wiki widget at the top
+                    %if addon != 'wiki' and addon != 'iqbrims' and addon != 'integromat': ## We already show the wiki widget at the top
                         ${ render_addon_widget.render_addon_widget(addon, addons_widget_data[addon]) }
                     %endif
                 % endif
@@ -493,6 +493,8 @@
             % for addon in addons_enabled:
                 % if addons[addon]['has_widget']:
                     %if addon == 'iqbrims':
+                        ${ render_addon_widget.render_addon_widget(addon, addons_widget_data[addon]) }
+                    %elif addon == 'integromat':
                         ${ render_addon_widget.render_addon_widget(addon, addons_widget_data[addon]) }
                     %endif
                 % endif
