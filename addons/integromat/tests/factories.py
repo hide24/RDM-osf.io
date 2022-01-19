@@ -13,7 +13,8 @@ from addons.integromat.models import (
     Attendees,
     AllMeetingInformation,
     AllMeetingInformationAttendeesRelation,
-    NodeWorkflows
+    NodeWorkflows,
+    NodeFileWebappMap
 )
 
 from osf_tests.factories import UserFactory, ProjectFactory, ExternalAccountFactory
@@ -111,3 +112,10 @@ class IntegromatNodeWorkflowsFactory(DjangoModelFactory):
     # An alternative webhook url to the external service
     alternative_webhook_url = 'hook/integromat/com'
     node_settings = factory.SubFactory(IntegromatNodeSettingsFactory)
+
+class IntegromatNodeFileWebappMapFactory(DjangoModelFactory):
+    class Meta:
+        model = NodeFileWebappMap
+
+    node_file_guid = 'xyz89'
+    slack_channel_id = 'ABCDE987654321'

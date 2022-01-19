@@ -23,16 +23,15 @@ from website.project.decorators import (
 )
 from admin.rdm_addons.decorators import must_be_rdm_addons_allowed
 from website.ember_osf_web.views import use_ember_app
+from api.base.utils import waterbutler_api_url_for
 from addons.integromat import settings
 from addons.integromat import models
+from addons.integromat import utils
 from django.core import serializers
 from django.core.exceptions import ObjectDoesNotExist
 from framework.auth.core import Auth
 from admin.rdm import utils as rdm_utils
-from osf.models import AbstractNode
-from framework.database import get_or_http_error
-_load_node_or_fail = lambda pk: get_or_http_error(AbstractNode, pk)
-
+from osf.models import AbstractNode, BaseFileNode, Guid, Comment
 logger = logging.getLogger(__name__)
 
 integromat_account_list = generic_views.account_list(
@@ -289,7 +288,7 @@ def integromat_register_meeting(**kwargs):
     attendees = request.get_json().get('attendees')
     startDatetime = request.get_json().get('startDatetime')
     endDatetime = request.get_json().get('endDatetime')
-    endDatetime = endDatetime.replace('UTC','')
+    endDatetime = endDatetime.replace('UTC', '')
     location = request.get_json().get('location')
     content = request.get_json().get('content')
     joinUrl = request.get_json().get('joinUrl')
@@ -416,7 +415,7 @@ def integromat_update_meeting_registration(**kwargs):
     attendees = request.get_json().get('attendees')
     startDatetime = request.get_json().get('startDatetime')
     endDatetime = request.get_json().get('endDatetime')
-    endDatetime = endDatetime.replace('UTC','')
+    endDatetime = endDatetime.replace('UTC', '')
     location = request.get_json().get('location')
     content = request.get_json().get('content')
     meetingId = request.get_json().get('meetingId')
@@ -516,6 +515,161 @@ def integromat_delete_meeting_registration(**kwargs):
 
     return {}
 
+@must_be_valid_project
+@must_have_permission(WRITE)
+@must_have_addon(SHORT_NAME, 'node')
+def integromat_get_file_id(auth, **kwargs):
+
+    node = kwargs['node'] or kwargs['project']
+
+    title = request.get_json().get('title')
+    file_path = ''
+    guid = utils.get_guid(node)
+    auth_headers = request.headers.environ['HTTP_AUTHORIZATION']
+
+    response = requests.get(
+        waterbutler_api_url_for(
+            guid, 'osfstorage', path='/', _internal=True, meta=''
+        ),
+        headers={
+            'content-type': 'application/json',
+            'authorization': auth_headers,
+        }
+    )
+
+    filesInfo = response.json()['data']
+
+    for fileInfo in filesInfo:
+        if title == fileInfo['attributes']['name']:
+            file_path = fileInfo['attributes']['path']
+
+    return {'filePath': file_path}
+
+def integromat_get_node(*args, **kwargs):
+    auth = Auth.from_kwargs(request.args.to_dict(), kwargs)
+    user = auth.user
+    logger.info('auth:' + str(user))
+    if not user:
+        raise HTTPError(http_status.HTTP_401_UNAUTHORIZED)
+
+    guid = request.get_json().get('guid')
+    slackChannelId = request.get_json().get('slackChannelId')
+    root_guid = None
+    nodeType = None
+    reqBody = {}
+
+    if guid and not slackChannelId:
+
+        try:
+            targetNode = AbstractNode.objects.get(guids___id=guid)
+            # User must have permissions
+            if not targetNode.has_permission(user, READ):
+                raise HTTPError(http_status.HTTP_403_FORBIDDEN)
+            nodeType = AbstractNode.objects.get(guids___id=guid).target_type
+            title = AbstractNode.objects.get(guids___id=guid).title
+            try:
+                slack_channel_id = models.NodeFileWebappMap.objects.get(node_file_guid=guid).slack_channel_id
+            except ObjectDoesNotExist:
+                slack_channel_id = ''
+        except ObjectDoesNotExist:
+            try:
+                nodeType = BaseFileNode.objects.get(guids___id=guid).target_type
+            except ObjectDoesNotExist:
+                raise HTTPError(http_status.HTTP_400_BAD_REQUEST, data=dict(message_short='GUID does not exixt.'))
+            title = BaseFileNode.objects.get(guids___id=guid).name
+            targetObjectId = BaseFileNode.objects.get(guids___id=guid).target_object_id
+            targetNode = AbstractNode.objects.get(id=targetObjectId)
+            # User must have permissions
+            if not targetNode.has_permission(user, READ):
+                raise HTTPError(http_status.HTTP_403_FORBIDDEN)
+            root_guid = utils.get_guid(targetNode)
+            try:
+                slack_channel_id = models.NodeFileWebappMap.objects.get(node_file_guid=guid).slack_channel_id
+            except ObjectDoesNotExist:
+                slack_channel_id = ''
+
+        reqBody = {
+            'title': title,
+            'slackChannelId': slack_channel_id,
+            'guid': guid,
+            'rootGuid': root_guid
+        }
+
+    if slackChannelId and not guid:
+
+        try:
+            guid = models.NodeFileWebappMap.objects.get(slack_channel_id=slackChannelId).node_file_guid
+        except ObjectDoesNotExist:
+            raise HTTPError(http_status.HTTP_400_BAD_REQUEST, data=dict(message_short='Slack Channel ID does not registered.'))
+
+        try:
+            targetNode = AbstractNode.objects.get(guids___id=guid)
+            # User must have permissions
+            if not targetNode.has_permission(user, READ):
+                raise HTTPError(http_status.HTTP_403_FORBIDDEN)
+            nodeType = AbstractNode.objects.get(guids___id=guid).target_type
+        except ObjectDoesNotExist:
+            nodeType = BaseFileNode.objects.get(guids___id=guid).target_type
+            targetObjectId = BaseFileNode.objects.get(guids___id=guid).target_object_id
+            targetNode = AbstractNode.objects.get(id=targetObjectId)
+            # User must have permissions
+            if not targetNode.has_permission(user, READ):
+                raise HTTPError(http_status.HTTP_403_FORBIDDEN)
+            root_guid = utils.get_guid(targetNode)
+
+        reqBody = {
+            'guid': guid,
+            'rootGuid': root_guid
+        }
+
+    reqBody['nodeType'] = nodeType
+
+    return reqBody
+
+@must_be_valid_project
+@must_have_permission(ADMIN)
+@must_have_addon(SHORT_NAME, 'node')
+def integromat_link_to_node(**kwargs):
+
+    guid = request.get_json().get('guid')
+    slack_channel_id = request.get_json().get('slackChannelId')
+    qsNodeFileWebappMap = models.NodeFileWebappMap(slack_channel_id=slack_channel_id, node_file_guid=guid)
+    try:
+        qsNodeFileWebappMap.save()
+    except ValidationError:
+        raise HTTPError(http_status.HTTP_400_BAD_REQUEST, data=dict(message_short='Check your GUID or Slack Channel ID.'))
+
+    return {}
+
+@must_be_valid_project
+@must_have_permission(ADMIN)
+@must_have_addon(SHORT_NAME, 'node')
+def integromat_watch_comment(**kwargs):
+
+    guid = request.get_json().get('guid')
+    try:
+        rootTargetId = Guid.objects.get(_id=guid)
+    except ObjectDoesNotExist:
+        raise HTTPError(http_status.HTTP_400_BAD_REQUEST, data=dict(message_short='GUID does not exixt.'))
+
+    updatedComments = Comment.objects.filter(root_target_id=rootTargetId)
+    updatedCommentsJson = serializers.serialize('json', updatedComments, ensure_ascii=False)
+    updatedCommentsDict = json.loads(updatedCommentsJson)
+    qsSlackChannelId = models.NodeFileWebappMap.objects.filter(node_file_guid=guid)
+    qsSlackChannelIdJson = serializers.serialize('json', qsSlackChannelId, ensure_ascii=False)
+    qsSlackChannelIdDict = json.loads(qsSlackChannelIdJson)
+    slack_channel_id = qsSlackChannelIdDict[0]['fields']['slack_channel_id'] if len(qsSlackChannelId) == 1 else None
+    retComments = {'guid': guid, 'slackChannelId': slack_channel_id, 'data': []}
+
+    for comment in updatedCommentsDict:
+        commentsInfo = {}
+        commentsInfo['id'] = comment['pk']
+        commentsInfo['content'] = comment['fields']['content']
+        commentsInfo['modified'] = comment['fields']['modified']
+        commentsInfo['user'] = OSFUser.objects.get(id=comment['fields']['user']).fullname
+        retComments['data'].append(commentsInfo)
+
+    return retComments
 
 @must_be_valid_project
 @must_have_permission(WRITE)
