@@ -3371,6 +3371,16 @@ msgstr ""
 
 #: website/static/js/anonymousLogActionsList_extract.js:175
 msgid "Google Drive addon for a project deauthorized"
+
+#: website/static/js/accountSettings.js:226 website/static/js/fangorn.js:2298
+#: website/static/js/folderPickerNodeConfig.js:591
+#: website/static/js/pages/profile-settings-addons-page.js:72
+#: website/static/js/pages/project-settings-page.js:118
+msgid "Close"
+msgstr ""
+
+#: website/static/js/accountSettings.js:236
+msgid "Email cannot be empty."
 msgstr ""
 
 #: website/static/js/anonymousLogActionsList_extract.js:176
