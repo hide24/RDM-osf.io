@@ -30,7 +30,7 @@
         "iqbrims",
         "dropboxbusiness",
         "binderhub",
-        "onedrivebusiness"
+        "onedrivebusiness",
         "integromat"
     ],
     "addons_default": [
@@ -65,7 +65,7 @@
         "nextcloudinstitutions": "partial",
         "iqbrims": "partial",
         "dropboxbusiness": "partial",
-        "onedrivebusiness": "partial"
+        "onedrivebusiness": "partial",
         "integromat": "partial"
     },
     "addons_commentable": [
@@ -93,7 +93,7 @@
         "nextcloudinstitutions",
         "iqbrims",
         "dropboxbusiness",
-        "onedrivebusiness"
+        "onedrivebusiness",
         "integromat"
     ],
     "addons_based_on_ids": [
@@ -135,7 +135,7 @@
         "nextcloudinstitutions": "Nextcloud for Institutions is a file storage add-on for Institutions. Connect your Nextcloud account to a GakuNin RDM project to interact with files hosted on Nextcloud via the GakuNin RDM.",
         "dropboxbusiness": "Dropbox Business for Institutions is a file storage add-on for Institutions. Connect your Dropbox Business administrator account to a GakuNin RDM project to interact with files hosted on Dropbox via the GakuNin RDM.",
         "binderhub": "BinderHub is a web-based interactive computational environment. Files on a GakuNin RDM project can be imported to/exported from BinderHub",
-        "onedrivebusiness": "OneDrive for Office365 is a file storage add-on. Connect your Microsoft OneDrive account to a GakuNin RDM project to interact with files hosted on Microsoft OneDrive via the GakuNin RDM."
+        "onedrivebusiness": "OneDrive for Office365 is a file storage add-on. Connect your Microsoft OneDrive account to a GakuNin RDM project to interact with files hosted on Microsoft OneDrive via the GakuNin RDM.",
         "integromat": "Integromat is a service that connects web services such as Twitter and Slack to connect an automated workflow."
     },
     "addons_url": {
@@ -162,7 +162,7 @@
         "iqbrims": "https://drive.google.com",
         "dropboxbusiness": "http://www.dropbox.com",
         "binderhub": "https://binder.cs.rcos.nii.ac.jp",
-        "onedrivebusiness": "https://onedrive.live.com"
+        "onedrivebusiness": "https://onedrive.live.com",
         "integromat": "https://www.integromat.com/"
     }
 }
