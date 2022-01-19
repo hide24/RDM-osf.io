@@ -3496,6 +3496,1142 @@ msgstr ""
 msgid "A user removed a file in an S3 Compatible Storage bucket in a project"
 msgstr ""
 
+#: website/static/js/accountSettings.js:465
+msgid "will <strong>NOT</strong> be able to reactivate your account."
+msgstr ""
+
+#: website/static/js/accountSettings.js:473
+#: website/static/js/accountSettings.js:546
+msgid "Request"
+msgstr ""
+
+#: website/static/js/accountSettings.js:485
+msgid "Cancel deactivation request?"
+msgstr ""
+
+#: website/static/js/accountSettings.js:486
+msgid ""
+"Are you sure you want to rescind your account deactivation request? This "
+"will preserve your account status."
+msgstr ""
+
+#: website/static/js/accountSettings.js:494
+msgid "Cancel Deactivation Request"
+msgstr ""
+
+#: website/static/js/accountSettings.js:512
+msgid ""
+"An GakuNin RDM administrator will contact you shortly to confirm your "
+"export request."
+msgstr ""
+
+#: website/static/js/accountSettings.js:520
+msgid "Export request failed. Please contact %1$s if the problem persists."
+msgstr ""
+
+#: website/static/js/accountSettings.js:524
+msgid "Error requesting account export"
+msgstr ""
+
+#: website/static/js/accountSettings.js:537
+msgid "Request account export?"
+msgstr ""
+
+#: website/static/js/accountSettings.js:538
+msgid "Are you sure you want to request account export?"
+msgstr ""
+
+#: website/static/js/addProjectPlugin.js:21
+#: website/static/js/addProjectPlugin.js:24
+#: website/static/js/myProjects.js:1118
+msgid "Create new project"
+msgstr ""
+
+#: website/static/js/addProjectPlugin.js:57
+msgid "There was an unknown error. Please try again later."
+msgstr ""
+
+#: website/static/js/addProjectPlugin.js:184 website/static/js/conference.js:19
+msgid "Title"
+msgstr ""
+
+#: website/static/js/addProjectPlugin.js:198
+msgid "Enter %1$s title"
+msgstr ""
+
+#: website/static/js/addProjectPlugin.js:203
+msgid "Affiliation"
+msgstr ""
+
+#: website/static/js/addProjectPlugin.js:210
+msgid "Remove all"
+msgstr ""
+
+#: website/static/js/addProjectPlugin.js:217
+msgid "Select all"
+msgstr ""
+
+#: website/static/js/addProjectPlugin.js:233
+msgid "Storage location"
+msgstr ""
+
+#: website/static/js/addProjectPlugin.js:251
+msgid " Add contributors from "
+msgstr ""
+
+#: website/static/js/addProjectPlugin.js:253
+msgid " Admins of "
+msgstr ""
+
+#: website/static/js/addProjectPlugin.js:253
+msgid " will have read access to this component."
+msgstr ""
+
+#: website/static/js/addProjectPlugin.js:264
+msgid " Add tags from "
+msgstr ""
+
+#: website/static/js/addProjectPlugin.js:268
+msgid "License"
+msgstr ""
+
+#: website/static/js/addProjectPlugin.js:270
+msgid " This component will inherit the same license as "
+msgstr ""
+
+#: website/static/js/addProjectPlugin.js:273
+msgid "Learn more."
+msgstr ""
+
+#: website/static/js/addProjectPlugin.js:282
+msgid " More"
+msgstr ""
+
+#: website/static/js/addProjectPlugin.js:286
+msgid "Description"
+msgstr ""
+
+#: website/static/js/addProjectPlugin.js:295
+msgid "Enter %1$s description"
+msgstr ""
+
+#: website/static/js/addProjectPlugin.js:299 website/static/js/conference.js:31
+msgid "Category"
+msgstr ""
+
+#: website/static/js/addProjectPlugin.js:300
+msgid " (for descriptive purposes)"
+msgstr ""
+
+#: website/static/js/addProjectPlugin.js:307
+msgid "Uncategorized"
+msgstr ""
+
+#: website/static/js/addProjectPlugin.js:320
+msgid "(Empty category)"
+msgstr ""
+
+#: website/static/js/addProjectPlugin.js:330
+msgid "Template (optional)"
+msgstr ""
+
+#: website/static/js/addProjectPlugin.js:331
+msgid ""
+"Start typing to search your projects. Selecting project as template will "
+"duplicate its "
+msgstr ""
+
+#: website/static/js/addProjectPlugin.js:332
+msgid ""
+"structure in the new project without importing the content of that "
+"project."
+msgstr ""
+
+#: website/static/js/addProjectPlugin.js:351
+#: website/static/js/nodeControl.js:224
+#: website/static/js/privateLinkManager.js:31 website/static/js/project.js:140
+msgid "Create"
+msgstr ""
+
+#: website/static/js/addProjectPlugin.js:362
+#, python-format
+msgid "Saving your %s..."
+msgstr ""
+
+#: website/static/js/addProjectPlugin.js:376
+msgid "New %1$s created successfully!"
+msgstr ""
+
+#: website/static/js/addProjectPlugin.js:386
+#: website/static/js/addProjectPlugin.js:434 website/static/js/project.js:62
+msgid "Keep working here"
+msgstr ""
+
+#: website/static/js/addProjectPlugin.js:392
+#: website/static/js/addProjectPlugin.js:437
+msgid "Go to new %1$s"
+msgstr ""
+
+#: website/static/js/addProjectPlugin.js:405
+msgid "Couldn't create your %1$s"
+msgstr ""
+
+#: website/static/js/addProjectPlugin.js:424
+msgid "Could not add institution affiliation to your new %1$s"
+msgstr ""
+
+#: website/static/js/addProjectPlugin.js:471
+msgid "Select a project to use as a template"
+msgstr ""
+
+#: website/static/js/addonHelper.js:37
+#: website/static/js/nodeSelectTreebeard.js:59
+#: website/static/js/notificationsTreebeard.js:59
+#: website/static/js/profile.js:311
+#: website/static/js/wikiSettingsTreebeard.js:54
+msgid "Settings updated"
+msgstr ""
+
+#: website/static/js/addonHelper.js:46
+msgid "Settings not updated."
+msgstr ""
+
+#: website/static/js/addonNodeConfig.js:39
+#: website/static/js/oauthAddonNodeConfig.js:47
+msgid "Successfully linked \"%1$s\""
+msgstr ""
+
+#: website/static/js/addonNodeConfig.js:40
+#: website/static/js/oauthAddonNodeConfig.js:48
+msgid " Go to the <a href=\"%1$s\">Files page</a> to view your content."
+msgstr ""
+
+#: website/static/js/addonPermissions.js:21
+#: website/static/js/addonSettings.js:58
+msgid "Remove addon?"
+msgstr ""
+
+#: website/static/js/addonPermissions.js:22
+msgid "Are you sure you want to disconnnect the %1$s account from this project?"
+msgstr ""
+
+#: website/static/js/addonPermissions.js:43
+msgid "An error occurred, the account is still connected to the project. "
+msgstr ""
+
+#: website/static/js/addonPermissions.js:44
+msgid "If the issue persists, please report it to %1$s."
+msgstr ""
+
+#: website/static/js/addonSettings.js:46
+msgid "Error deauthorizing node: "
+msgstr ""
+
+#: website/static/js/addonSettings.js:59
+msgid "Are you sure you want to remove the %1$s authorization from this project?"
+msgstr ""
+
+#: website/static/js/addonSettings.js:100
+msgid ""
+"Add-on successfully authorized. If you wish to link a different account, "
+"log out of dropbox.com before attempting to connect to a second Dropbox "
+"account on the GakuNin RDM. This will clear the credentials stored in "
+"your browser."
+msgstr ""
+
+#: website/static/js/addonSettings.js:102
+msgid ""
+"Add-on successfully authorized. If you wish to link a different account, "
+"log out of bitbucket.org before attempting to connect to a second "
+"Bitbucket account on the GakuNin RDM. This will clear the credentials "
+"stored in your browser."
+msgstr ""
+
+#: website/static/js/addonSettings.js:104
+msgid ""
+"Add-on successfully authorized. If you wish to link a different account, "
+"log out of onedrive.live.com before attempting to connect to a second "
+"OneDrive account on the GakuNin RDM. This will clear the credentials "
+"stored in your browser."
+msgstr ""
+
+#: website/static/js/addonSettings.js:106
+msgid ""
+"Add-on successfully authorized. To link this add-on to an GakuNin RDM "
+"project, go to the settings page of the project, enable %1$s, and choose "
+"content to connect."
+msgstr ""
+
+#: website/static/js/addonSettings.js:109
+msgid ""
+"Error while authorizing add-on. Please log in to your %1$s account and "
+"grant access to the GakuNin RDM to enable this add-on."
+msgstr ""
+
+#: website/static/js/addonSettings.js:120
+msgid ""
+"Are you sure you want to disconnect the %1$s account "
+"<strong>%2$s</strong>? This will revoke access to %1$s for all projects "
+"you have authorized."
+msgstr ""
+
+#: website/static/js/alertsManager.js:42
+msgid "Could not dismiss alert. Please refresh page and try again."
+msgstr ""
+
+#: website/static/js/alertsManager.js:43 website/static/js/alertsManager.js:77
+msgid "Error fetching user alerts"
+msgstr ""
+
+#: website/static/js/alertsManager.js:76
+msgid "Could not fetch alerts for this page. Please refresh page and try again."
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:2
+#: website/static/js/anonymousLogActionsList_extract.js:74
+msgid "A user created a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:3
+msgid "A user registered a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:4
+msgid "Project registered"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:5
+msgid ""
+"A user submitted for review to the Preregistration Challenge a "
+"registration of a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:6
+msgid "A user deleted a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:7
+msgid "A user created a project based on a template"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:8
+msgid "A user created a link to a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:9
+msgid "A user forked a link to a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:10
+msgid "A user removed a link to a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:11
+msgid "A user added a group to a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:12
+msgid "A user removed a group from a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:13
+msgid "A user changed a group's permissions to a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:14
+msgid "A user made a project public"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:15
+msgid "Project made public"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:16
+msgid "A user made a project private"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:17
+msgid "A user added a tag to a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:18
+msgid "A user removed a tag from a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:19
+msgid "A user changed the title of a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:20
+msgid "A user edited the description of a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:21
+msgid "A user changed the category of a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:22
+msgid "A user changed the article_doi of a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:23
+msgid "A user changed the ${updated_fields} for a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:24
+msgid "A user created external identifiers on a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:25
+msgid "A user created a custom citation for a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:26
+msgid "A user updated a custom citation for a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:27
+msgid "A user removed a custom citation from a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:28
+msgid "A user added contributor(s) to a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:29
+msgid "A user removed contributor(s) from a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:30
+msgid "A user reordered contributors for a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:31
+msgid "A user changed permissions for a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:32
+msgid "A user made contributor(s) visible on a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:33
+msgid "A user made contributor(s) invisible on a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:34
+msgid "A user updated a wiki page of a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:35
+msgid "A user deleted a wiki page of a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:36
+msgid "A user renamed a wiki page of a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:37
+msgid "A user made the wiki of a project publicly editable"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:38
+msgid "A user made the wiki of a project privately editable"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:39
+msgid "A user added an addon to a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:40
+msgid "A user removed an addon from a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:41
+msgid "A user moved a file"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:42
+msgid "A user copied a file"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:43
+msgid "A user renamed a file"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:44
+msgid "A user created a folder in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:45
+msgid "A user added a file to a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:46
+msgid "A user updated a file in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:47
+msgid "A user removed a file from a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:48
+msgid "A user restored a file from a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:49
+msgid "A user updated the file metadata for a file"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:50
+msgid "A user checked out a file from a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:51
+msgid "A user checked in a file to a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:52
+msgid "A user added a comment to a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:53
+msgid "A user deleted a comment from a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:54
+msgid "A user restored a comment in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:55
+msgid "A user updated a comment on a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:56
+msgid "A user initiated an embargoed registration of a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:57
+msgid "A user approved an embargoed registration of a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:58
+msgid "Embargo of registration of a project approved"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:59
+msgid "A user cancelled an embargoed registration of a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:60
+msgid "A user completed an embargo of a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:61
+msgid "Embargo for a project completed"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:62
+msgid "Embargo for a project ended"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:63
+msgid "A user initiated a withdrawal of a registration of a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:64
+msgid "A withdrawal of a registration of a project was proposed"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:65
+msgid "A user approved a withdrawal of a registration of a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:66
+msgid "A withdrawal of a registration of ${node} was approved"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:67
+msgid "A user cancelled a withdrawal of a registration of a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:68
+msgid "Registration was created on an external registry."
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:69
+msgid "Registration was imported to OSF from an external registry."
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:70
+msgid "A user initiated a registration of a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:71
+msgid "A user approved a registration of a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:72
+msgid "Registration of a project was approved"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:73
+msgid "A user cancelled a registration of a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:75
+msgid "A user created fork from a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:76
+msgid "A user removed a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:77
+msgid "A user enabled access requests for a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:78
+msgid "A user disabled access requests for a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:79
+msgid "A user updated the license of a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:80
+msgid "A user added a tag to a file in NII Storage in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:81
+msgid "A user removed tag from a file in NII Storage in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:82
+msgid "A user added a file to NII Storage in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:83
+msgid "A user created a folder in NII Storage in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:84
+msgid "A user updated a file in NII Storage in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:85
+msgid "A user removed a file from NII Storage in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:86
+msgid "A user added an affiliation to a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:87
+msgid "A user removed an affiliation from a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:88
+msgid "A user made a project a preprint"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:89
+msgid "A user updated the primary file of a preprint"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:90
+msgid "A user updated the license of a preprint"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:91
+msgid "A user updated the subjects"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:92
+msgid "A user created a view-only link to a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:93
+msgid "A user removed a view-only link to a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:94
+msgid "A user added a file to Box in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:95
+msgid "A user removed a file from Box in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:96
+msgid "A user updated a file in Box in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:97
+msgid "A user created a folder in Box in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:98
+msgid "A user linked a Box folder to a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:99
+msgid "A user authorized the Box addon for a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:100
+msgid "A user deauthorized the Box addon for a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:101
+msgid "Box addon for a project deauthorized"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:102
+msgid "A user added a file to a Dataverse dataset in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:103
+msgid "A user removed a file from a Dataverse dataset in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:104
+#: website/static/js/anonymousLogActionsList_extract.js:105
+msgid "A user linked a Dataverse dataset to a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:106
+#: website/static/js/anonymousLogActionsList_extract.js:107
+msgid "A user published a new version of a Dataverse dataset to a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:108
+msgid "A user authorized the Dataverse addon for a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:109
+msgid "A user deauthorized the Dataverse addon for a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:110
+msgid "Dataverse addon for a project deauthorized"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:111
+msgid "A user added a file to Dropbox in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:112
+msgid "A user removed a file from Dropbox in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:113
+msgid "A user  updated a file in Dropbox in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:114
+msgid "A user created a folder in Dropbox in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:115
+msgid "A user linked a Dropbox folder in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:116
+msgid "A user authorized the Dropbox addon for a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:117
+msgid "A user deauthorized the Dropbox addon for a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:118
+msgid "Dropbox addon for a project deauthorized"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:119
+msgid "A user linked content from figshare in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:120
+msgid "A user unlinked content from figshare in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:121
+msgid "A user added a file to figshare in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:122
+msgid "A user removed a file or folder from figshare in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:123
+msgid "A user created a folder in figshare in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:124
+msgid "A user authorized the figshare addon for a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:125
+msgid "A user deauthorized the figshare addon for a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:126
+msgid "figshare addon for a project deauthorized"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:127
+msgid "A user changed the forward URL in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:128
+msgid "A user added a file to a GitHub repo in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:129
+msgid "A user removed a file in a GitHub repo in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:130
+msgid "A user updated a file in a GitHub repo in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:131
+msgid "A user created a folder in a GitHub repo in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:132
+msgid "A user authorized the GitHub addon for a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:133
+msgid "A user deauthorized the GitHub addon for a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:134
+msgid "GitHub addon for a project deauthorized"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:135
+msgid "A user linked a GitHub repo in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:136
+msgid "A user selected a folder in Mendeley in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:137
+msgid "A user authorized the Mendeley addon for a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:138
+msgid "A user deauthorized the Mendeley addon for a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:139
+msgid "A user linked a Zotero folder to a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:140
+msgid "A user linked a Zotero library to a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:141
+msgid "A user authorized the Zotero addon for a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:142
+msgid "A user deauthorized the Zotero addon for a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:143
+msgid "A user added a file to ownCloud in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:144
+msgid "A user removed a file from ownCloud in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:145
+msgid "A user updated a file in ownCloud in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:146
+msgid "A user created a folder in ownCloud in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:147
+msgid "A user linked a ownCloud folder in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:148
+msgid "A user authorized the ownCloud addon for a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:149
+msgid "A user deauthorized the ownCloud addon for a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:150
+msgid "ownCloud addon for a project deauthorized"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:151
+msgid "A user added a file to Microsoft OneDrive in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:152
+msgid "A user removed a file from Microsoft OneDrive in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:153
+msgid "A user updated a file in Microsoft OneDrive in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:154
+msgid "A user created a folder in Microsoft OneDrive in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:155
+msgid "A user linked a Microsoft OneDrive folder to a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:156
+msgid "A user authorized the Microsoft OneDrive addon for a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:157
+msgid "A user deauthorized the Microsoft OneDrive addon for a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:158
+msgid "Microsoft OneDrive addon for a project deauthorized"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:159
+msgid "A user linked an Amazon S3 bucket to a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:160
+msgid "A user unselected an Amazon S3 bucket in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:161
+msgid "A user added a file to an Amazon S3 bucket in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:162
+msgid "A user removed a file in an Amazon S3 bucket in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:163
+msgid "A user updated a file in an Amazon S3 bucket in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:164
+msgid "A user created a folder in an Amazon S3 in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:165
+msgid "A user authorized the Amazon S3 addon for a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:166
+msgid "A user deauthorized the Amazon S3 addon for a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:167
+msgid "Amazon S3 addon for a project deauthorized"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:168
+msgid "A user added a file to Google Drive in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:169
+msgid "A user removed a file from Google Drive in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:170
+msgid "A user updated a file in Google Drive in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:171
+msgid "A user created a folder in Google Drive in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:172
+msgid "A user linked a Google Drive folder to a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:173
+msgid "A user authorized the Google Drive addon for a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:174
+msgid "A user deauthorized the Google Drive addon for a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:175
+msgid "Google Drive addon for a project deauthorized"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:176
+msgid "A user added a file to a Bitbucket repo in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:177
+msgid "A user removed a file in a Bitbucket repo in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:178
+msgid "A user updated a file in a Bitbucket repo in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:179
+msgid "A user created a folder in a Bitbucket repo in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:180
+msgid "A user authorized the Bitbucket addon for a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:181
+msgid "A user deauthorized the Bitbucket addon for a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:182
+msgid "Bitbucket addon for a project deauthorized"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:183
+msgid "A user linked a Bitbucket repo in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:184
+msgid "A user linked an Swift container to a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:185
+msgid "A user unselected an Swift container in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:186
+msgid "A user added a file to an Swift container in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:187
+msgid "A user removed a file in an Swift container in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:188
+msgid "A user updated a file in an Swift container in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:189
+msgid "A user created a folder in an Swift in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:190
+msgid "A user authorized the Swift addon for a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:191
+msgid "A user deauthorized the Swift addon for a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:192
+msgid "Swift addon for a project deauthorized"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:193
+msgid "A user linked an Azure Blob Storage container to a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:194
+msgid "A user unselected an Azure Blob Storage container in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:195
+msgid "A user added a file to an Azure Blob Storage container in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:196
+msgid "A user removed a file in an Azure Blob Storage container in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:197
+msgid "A user updated a file in an Azure Blob Storage container in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:198
+msgid "A user created a folder in an Azure Blob Storage in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:199
+msgid "A user authorized the Azure Blob Storage addon for a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:200
+msgid "A user deauthorized the Azure Blob Storage addon for a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:201
+msgid "Azure Blob Storage addon for a project deauthorized"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:202
+msgid "A user added a file to a WEKO index in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:203
+msgid "A user removed a file from a WEKO index in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:204
+msgid "A user linked a WEKO index to a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:205
+msgid "A user created an index to a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:206
+msgid "A user created an item to a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:207
+msgid "A user created a folder in WEKO in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:208
+msgid "A user authorized the WEKO addon for a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:209
+msgid "A user deauthorized the WEKO addon for a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:210
+msgid "WEKO addon for a project deauthorized"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:211
+msgid "A user linked an S3 Compatible Storage bucket to a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:212
+msgid "A user unselected an S3 Compatible Storage bucket in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:213
+msgid "A user added a file to an S3 Compatible Storage bucket in a project"
+msgstr ""
+
+#: website/static/js/anonymousLogActionsList_extract.js:214
+msgid "A user removed a file in an S3 Compatible Storage bucket in a project"
+msgstr ""
+
 #: website/static/js/anonymousLogActionsList_extract.js:215
 msgid "A user updated a file in an S3 Compatible Storage bucket in a project"
 msgstr ""
