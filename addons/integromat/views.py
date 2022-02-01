@@ -146,6 +146,7 @@ def makeInstitutionUserList(users):
         userInfo = {}
         userInfo['guid'] = user._id
         userInfo['fullname'] = user.fullname
+        userInfo['username'] = user.username
         institutionUsers.append(userInfo)
 
     ret = json.dumps(institutionUsers)
@@ -171,6 +172,7 @@ def grdmapps_get_config_ember(**kwargs):
     nodeAttendeesAll = models.Attendees.objects.filter(node_settings_id=addon.id)
     nodeMicrosoftTeamsAttendees = models.Attendees.objects.filter(node_settings_id=addon.id).exclude(microsoft_teams_mail__exact='').exclude(microsoft_teams_mail__isnull=True)
     nodeWebexMeetingsAttendees = models.Attendees.objects.filter(node_settings_id=addon.id).exclude(webex_meetings_mail__exact='').exclude(webex_meetings_mail__isnull=True)
+    nodeZoomMeetingsAttendees = models.Attendees.objects.filter(node_settings_id=addon.id).exclude(zoom_meetings_mail__exact='').exclude(zoom_meetings_mail__isnull=True)
     nodeWorkflows = models.NodeWorkflows.objects.filter(node_settings_id=addon.id)
     nodeWebMeetingsAttendeesRelation = models.AllMeetingInformationAttendeesRelation.objects.filter(all_meeting_information__node_settings_id=addon.id)
 
@@ -180,6 +182,7 @@ def grdmapps_get_config_ember(**kwargs):
     nodeAttendeesAllJson = serializers.serialize('json', nodeAttendeesAll, ensure_ascii=False)
     nodeMicrosoftTeamsAttendeesJson = serializers.serialize('json', nodeMicrosoftTeamsAttendees, ensure_ascii=False)
     nodeWebexMeetingsAttendeesJson = serializers.serialize('json', nodeWebexMeetingsAttendees, ensure_ascii=False)
+    nodeZoomMeetingsAttendeesJson = serializers.serialize('json', nodeZoomMeetingsAttendees, ensure_ascii=False)
     nodeWorkflowsJson = serializers.serialize('json', nodeWorkflows, ensure_ascii=False)
     nodeWebMeetingsAttendeesRelationJson = serializers.serialize('json', nodeWebMeetingsAttendeesRelation, ensure_ascii=False)
 
@@ -198,11 +201,13 @@ def grdmapps_get_config_ember(**kwargs):
                          'node_microsoft_teams_attendees': nodeMicrosoftTeamsAttendeesJson,
                          'node_webex_meetings_attendees': nodeWebexMeetingsAttendeesJson,
                          'node_web_meetings_attendees_relation': nodeWebMeetingsAttendeesRelationJson,
+                         'node_zoom_meetings_attendees': nodeZoomMeetingsAttendeesJson,
                          'workflows': workflowsJson,
                          'node_workflows': nodeWorkflowsJson,
                          'web_meeting_apps': webMeetingAppsJson,
                          'app_name_microsoft_teams': settings.MICROSOFT_TEAMS,
                          'app_name_webex_meetings': settings.WEBEX_MEETINGS,
+                         'app_name_zoom_meetings': settings.ZOOM_MEETINGS,
                          'institution_users': institutionUsers
                      }}}
 
@@ -220,6 +225,7 @@ def grdmapps_set_config_ember(**kwargs):
     nodeAttendeesAll = models.Attendees.objects.filter(node_settings_id=addon.id)
     nodeMicrosoftTeamsAttendees = models.Attendees.objects.filter(node_settings_id=addon.id).exclude(microsoft_teams_mail__exact='').exclude(microsoft_teams_mail__isnull=True)
     nodeWebexMeetingsAttendees = models.Attendees.objects.filter(node_settings_id=addon.id).exclude(webex_meetings_mail__exact='').exclude(webex_meetings_mail__isnull=True)
+    nodeZoomMeetingsAttendees = models.Attendees.objects.filter(node_settings_id=addon.id).exclude(zoom_meetings_mail__exact='').exclude(zoom_meetings_mail__isnull=True)
     nodeWorkflows = models.NodeWorkflows.objects.filter(node_settings_id=addon.id)
     nodeWebMeetingsAttendeesRelation = models.AllMeetingInformationAttendeesRelation.objects.filter(all_meeting_information__node_settings_id=addon.id)
 
@@ -229,6 +235,7 @@ def grdmapps_set_config_ember(**kwargs):
     nodeAttendeesAllJson = serializers.serialize('json', nodeAttendeesAll, ensure_ascii=False)
     nodeMicrosoftTeamsAttendeesJson = serializers.serialize('json', nodeMicrosoftTeamsAttendees, ensure_ascii=False)
     nodeWebexMeetingsAttendeesJson = serializers.serialize('json', nodeWebexMeetingsAttendees, ensure_ascii=False)
+    nodeZoomMeetingsAttendeesJson = serializers.serialize('json', nodeZoomMeetingsAttendees, ensure_ascii=False)
     nodeWorkflowsJson = serializers.serialize('json', nodeWorkflows, ensure_ascii=False)
     nodeWebMeetingsAttendeesRelationJson = serializers.serialize('json', nodeWebMeetingsAttendeesRelation, ensure_ascii=False)
 
@@ -245,6 +252,7 @@ def grdmapps_set_config_ember(**kwargs):
                          'node_microsoft_teams_attendees': nodeMicrosoftTeamsAttendeesJson,
                          'node_webex_meetings_attendees': nodeWebexMeetingsAttendeesJson,
                          'node_web_meetings_attendees_relation': nodeWebMeetingsAttendeesRelationJson,
+                         'node_zoom_meetings_attendees': nodeZoomMeetingsAttendeesJson,
                          'node_workflows': nodeWorkflowsJson,
                          'institution_users': institutionUsers
                      }}}
@@ -317,6 +325,13 @@ def integromat_register_meeting(**kwargs):
         except ObjectDoesNotExist:
             organizer_fullname = organizer
 
+    elif appName == settings.ZOOM_MEETINGS:
+
+        try:
+            organizer_fullname = models.Attendees.objects.get(node_settings_id=node.id, zoom_meetings_mail=organizer).fullname
+        except ObjectDoesNotExist:
+            organizer_fullname = organizer
+
     with transaction.atomic():
 
         meetingInfo = models.AllMeetingInformation(
@@ -370,6 +385,14 @@ def integromat_register_meeting(**kwargs):
                             webex_meetings_invitee_id=meetingInvitee['id']
                         )
                         meetingInviteeInfo.save()
+
+        elif appName == settings.ZOOM_MEETINGS:
+
+            for attendeeMail in attendees:
+
+                qsAttendee = models.Attendees.objects.get(node_settings_id=node.id, zoom_meetings_mail=attendeeMail)
+                attendeeId = qsAttendee.id
+                attendeeIds.append(attendeeId)
 
         meetingInfo.attendees = attendeeIds
         meetingInfo.save()
@@ -464,6 +487,13 @@ def integromat_update_meeting_registration(**kwargs):
 
             attendeeIds = attendeeIdsFormer
 
+        elif appName == settings.ZOOM_MEETINGS:
+
+            for attendeeMail in attendees:
+                qsAttendee = models.Attendees.objects.get(node_settings_id=node.id, zoom_meetings_mail=attendeeMail)
+                attendeeId = qsAttendee.id
+                attendeeIds.append(attendeeId)
+
         qsUpdateMeetingInfo.attendees = attendeeIds
 
         qsUpdateMeetingInfo.save()
@@ -525,6 +555,10 @@ def integromat_register_web_meeting_apps_email(**kwargs):
             if username:
                 webMeetingAppAttendee.webex_meetings_display_name = username
 
+        elif appName == settings.ZOOM_MEETINGS:
+
+            webMeetingAppAttendee.zoom_meetings_mail = email
+
         webMeetingAppAttendee.save()
     else:
 
@@ -571,6 +605,9 @@ def integromat_register_web_meeting_apps_email(**kwargs):
                         node_settings=nodeSettings,
                     )
 
+            elif appName == settings.ZOOM_MEETINGS:
+                pass
+
         else:
 
             if appName == settings.MICROSOFT_TEAMS:
@@ -593,20 +630,63 @@ def integromat_register_web_meeting_apps_email(**kwargs):
                     webex_meetings_mail=email,
                     node_settings=nodeSettings,
                 )
+            elif appName == settings.ZOOM_MEETINGS:
+
+                webMeetingAppAttendeeInfo = models.Attendees(
+                    user_guid=guid,
+                    fullname=fullname,
+                    is_guest=is_guest,
+                    zoom_meetings_mail=email,
+                    node_settings=nodeSettings,
+                )
 
         webMeetingAppAttendeeInfo.save()
 
     return {}
+
+def register_instituion_users_zoom_attendees(nodeSettings, attendees):
+
+    for email in attendees:
+        try:
+            attendeeObj = models.Attendees.objects.get(node_settings_id=nodeSettings.id, zoom_meetings_mail=email)
+        except ObjectDoesNotExist:
+            user = OSFUser.objects.get(username=email)
+            qsUserGuid = user._prefetched_objects_cache['guids'].only()
+            userGuidSerializer = serializers.serialize('json', qsUserGuid, ensure_ascii=False)
+            userGuidJson = json.loads(userGuidSerializer)
+            userGuid = userGuidJson[0]['fields']['_id']
+            try:
+                attendeeObjUpdate = models.Attendees.objects.get(node_settings_id=nodeSettings.id, user_guid=userGuid)
+                attendeeObjUpdate.zoom_meetings_mail = email
+                attendeeObjUpdate.save()
+            except ObjectDoesNotExist:
+                fullname = user.fullname
+                attendeeObjCreate = models.Attendees(
+                    user_guid=userGuid,
+                    fullname=fullname,
+                    is_guest=False,
+                    zoom_meetings_mail=email,
+                    node_settings=nodeSettings,
+                )
+                attendeeObjCreate.save()
 
 @must_be_valid_project
 @must_have_permission(WRITE)
 @must_have_addon(SHORT_NAME, 'node')
 def integromat_start_scenario(**kwargs):
 
+    node = kwargs['node'] or kwargs['project']
+    addon = node.get_addon(SHORT_NAME)
+
     requestData = request.get_data()
     requestDataJsonLoads = json.loads(requestData)
     timestamp = requestDataJsonLoads['timestamp']
+    appName = requestDataJsonLoads['appName']
+    attendees = requestDataJsonLoads['attendees']
     webhook_url = requestDataJsonLoads['webhookUrl']
+
+    if appName == settings.ZOOM_MEETINGS:
+        register_instituion_users_zoom_attendees(addon, attendees)
 
     requestDataJsonLoads.pop('webhookUrl')
     requestDataJson = json.dumps(requestDataJsonLoads)
