@@ -79,5 +79,8 @@ class QuickFilesNode(AbstractNode):
 
 
 def get_quickfiles_project_title(user):
-    possessive_title_name = user.fullname + "'s" if user.fullname[-1] != 's' else user.fullname + "'"
+    fullname = user.fullname
+    if isinstance(fullname, unicode):
+        fullname = fullname.encode('utf-8')
+    possessive_title_name = fullname + "'s" if fullname[-1] != 's' else fullname + "'"
     return '{} Quick Files'.format(possessive_title_name)
