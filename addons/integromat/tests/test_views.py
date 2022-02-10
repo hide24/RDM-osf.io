@@ -547,11 +547,10 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
 
         mock_requests.post.return_value.status_code = 200
 
-        email = self.user.username
         AttendeesFactory = IntegromatAttendeesFactory(node_settings=self.node_settings, zoom_meetings_email='')
         url = self.project.api_url_for('integromat_start_scenario')
 
-        email = 
+        email = self.user.username
         expectedTimestamp = '6789012345678'
         appName = 'ZoomMeetings'
         expecitedAttendee = [email]
