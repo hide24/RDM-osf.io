@@ -8,7 +8,7 @@ from nose.tools import (assert_equal, assert_equals,
     assert_true, assert_in, assert_false)
 from rest_framework import status as http_status
 from django.core import serializers
-from requests import HTTPError
+import requests
 from framework.auth import Auth
 from tests.base import OsfTestCase
 from osf_tests.factories import ProjectFactory, AuthUserFactory, InstitutionFactory
