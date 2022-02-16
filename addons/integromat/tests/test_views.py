@@ -518,7 +518,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         assert_equals(result.alternative_webhook_url, expected_alternativeWebhookUrl)
         assert_equals(rvBodyJson, {})
 
-    @mock.patch('requests')
+    @mock.patch('addons.integromat.views.requests')
     def test_integromat_start_scenario_the_user_attendee_unregistered(self, mock_requests):
 
         mock_requests.post.return_value.status_code = 200
@@ -542,7 +542,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         assert_equals(result.zoom_meetings_mail, expecitedAttendee[0])
         assert_equals(rvBodyJson['timestamp'], expectedTimestamp)
 
-    @mock.patch('requests')
+    @mock.patch('addons.integromat.views.requests')
     def test_integromat_start_scenario_the_zoom_attendee_unregistered(self, mock_requests):
 
         mock_requests.post.return_value.status_code = 200
@@ -567,7 +567,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         assert_equals(result.zoom_meetings_mail, expecitedAttendee[0])
         assert_equals(rvBodyJson['timestamp'], expectedTimestamp)
 
-    @mock.patch('requests')
+    @mock.patch('addons.integromat.views.requests')
     def test_integromat_start_scenario_zoom_attendee_exist(self, mock_requests):
 
         mock_requests.post.return_value.status_code = 200
