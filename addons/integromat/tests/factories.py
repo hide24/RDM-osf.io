@@ -61,6 +61,7 @@ class IntegromatAttendeesFactory(DjangoModelFactory):
     microsoft_teams_user_name = 'Teams User'
     webex_meetings_mail = 'testUser2@test.co.jp'
     webex_meetings_display_name = 'Webex User'
+    zoom_meetings_email = 'testUser3@test.co.jp'
     is_guest = False
     node_settings = factory.SubFactory(IntegromatNodeSettingsFactory)
 

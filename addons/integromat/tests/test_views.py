@@ -538,7 +538,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
             'webhookUrl': webhookUrl,
         }, auth=self.user.auth)
         rvBodyJson = json.loads(rv.body)
-        result = Attendees.objects.get(node_settings_id=self.node_settings.id, zoom_meetings_mail=attendee[0])
+        result = Attendees.objects.get(node_settings_id=self.node_settings.id, zoom_meetings_mail=expecitedAttendee[0])
         assert_equals(result.zoom_meetings_mail, expecitedAttendee[0])
         assert_equals(rvBodyJson['timestamp'], expectedTimestamp)
 
@@ -563,7 +563,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
             'webhookUrl': webhookUrl,
         }, auth=self.user.auth)
         rvBodyJson = json.loads(rv.body)
-        result = Attendees.objects.get(node_settings_id=self.node_settings.id, zoom_meetings_mail=attendee[0])
+        result = Attendees.objects.get(node_settings_id=self.node_settings.id, zoom_meetings_mail=expecitedAttendee[0])
         assert_equals(result.zoom_meetings_mail, expecitedAttendee[0])
         assert_equals(rvBodyJson['timestamp'], expectedTimestamp)
 
@@ -585,11 +585,9 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         }, auth=self.user.auth)
 
         rvBodyJson = json.loads(rv.body)
-        workflowId = 7895
-        result = NodeWorkflows.objects.get(node_settings_id=self.node_settings.id, workflowid=workflowId)
-
-        assert_equals(result.alternative_webhook_url, expected_alternativeWebhookUrl)
-        assert_equals(rvBodyJson['timestamp'], )
+        result = Attendees.objects.get(node_settings_id=self.node_settings.id, zoom_meetings_mail=email)
+        assert_equals(result.zoom_meetings_mail, email)
+        assert_equals(rvBodyJson['timestamp'], expectedTimestamp)
 
     ## Overrides ##
 
