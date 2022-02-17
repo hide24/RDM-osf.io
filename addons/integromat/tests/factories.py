@@ -82,7 +82,6 @@ class IntegromatAllMeetingInformationFactory(DjangoModelFactory):
     meeting_password = ''
     appid = 1639
     node_settings = factory.SubFactory(IntegromatNodeSettingsFactory)
-#    attendees = attendees(True, ['testUser1@test.onmicrosoft.com'])
 
 
     @factory.post_generation
