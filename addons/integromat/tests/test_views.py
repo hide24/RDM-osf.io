@@ -547,7 +547,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
 
         mock_requests.post.return_value.status_code = 200
 
-        AttendeesFactory = IntegromatAttendeesFactory(node_settings=self.node_settings, zoom_meetings_email='')
+        AttendeesFactory = IntegromatAttendeesFactory(node_settings=self.node_settings, zoom_meetings_mail='')
         url = self.project.api_url_for('integromat_start_scenario')
 
         email = self.user.username
@@ -573,7 +573,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         mock_requests.post.return_value.status_code = 200
 
         email = self.user.username
-        AttendeesFactory = IntegromatAttendeesFactory(node_settings=self.node_settings, zoom_meetings_email=email)
+        AttendeesFactory = IntegromatAttendeesFactory(node_settings=self.node_settings, zoom_meetings_mail=email)
 
         url = self.project.api_url_for('integromat_start_scenario')
 
