@@ -649,6 +649,36 @@
                 "status": "none",
                 "text": "BinderHub information will not be registered."
             }
+        },
+        "Integromat": {
+            "Permissions": {
+                "status": "none",
+                "text": "The GakuNin RDM does not affect the permissions of Integromat."
+            },
+            "View / download file versions": {
+                "status": "none",
+                "text": "The Integromat add-on does not provide Storage Features."
+            },
+            "Add / update files": {
+                "status": "none",
+                "text": "The Integromat add-on does not provide Storage Features."
+            },
+            "Delete files": {
+                "status": "none",
+                "text": "The Integromat add-on does not provide Storage Features."
+            },
+            "Logs": {
+                "status": "none",
+                "text": "The Integromat add-on does not provide Storage Features."
+            },
+            "Forking": {
+                "status": "partial",
+                "text": "Forking a project or component copies information about linked Integromat but the GakuNin RDM does not affect authentication of Integromat."
+            },
+            "Registering": {
+                "status": "none",
+                "text": "Integromat information will not be registered."
+            }
         }
     },
     "disclaimers": [
