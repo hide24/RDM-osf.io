@@ -1,0 +1,5 @@
+{
+    "integromat_node_authorized" : "A user authorized the Integromat addon for a project",
+    "integromat_node_deauthorized" : "A user deauthorized the Integromat addon for a project",
+    "integromat_node_deauthorized_no_user" : "Integromat addon for a project deauthorized"
+}

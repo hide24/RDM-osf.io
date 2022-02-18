@@ -174,6 +174,7 @@ COPY ./addons/nextcloud/static/ ./addons/nextcloud/static/
 COPY ./addons/nextcloudinstitutions/static/ ./addons/nextcloudinstitutions/static/
 COPY ./addons/iqbrims/static/ ./addons/iqbrims/static/
 COPY ./addons/binderhub/static/ ./addons/binderhub/static/
+COPY ./addons/integromat/static/ ./addons/integromat/static/
 RUN \
     # OSF
     yarn install --frozen-lockfile \
