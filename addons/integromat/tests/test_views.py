@@ -574,13 +574,13 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
 
         email = self.user.username
         expecitedAttendee = [email]
-        expectedTimestamp = '6789012345678'
+        expectedTimestamp = '1234567890'
         AttendeesFactory = IntegromatAttendeesFactory(node_settings=self.node_settings, zoom_meetings_mail=email)
 
         url = self.project.api_url_for('integromat_start_scenario')
 
         rv = self.app.post_json(url, {
-            'timestamp': '1234567890',
+            'timestamp': expectedTimestamp,
             'appName': 'ZoomMeetings',
             'attendees': expecitedAttendee,
             'webhookUrl': 'https://hook.integromat.com/test',
