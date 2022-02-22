@@ -95,11 +95,12 @@ class Attendees(ObjectIDMixin, BaseModel):
     microsoft_teams_user_name = models.CharField(max_length=255, blank=True, null=True)
     webex_meetings_mail = models.CharField(max_length=254, blank=True, null=True)
     webex_meetings_display_name = models.CharField(max_length=255, blank=True, null=True)
+    zoom_meetings_mail = models.CharField(max_length=254, blank=True, null=True)
     is_guest = models.BooleanField(default=False)
     node_settings = models.ForeignKey(NodeSettings, null=False, blank=False, default=None)
 
     class Meta:
-        unique_together = (('user_guid', 'node_settings'), ('microsoft_teams_mail', 'node_settings'), ('webex_meetings_mail', 'node_settings'))
+        unique_together = (('user_guid', 'node_settings'), ('microsoft_teams_mail', 'node_settings'), ('webex_meetings_mail', 'node_settings'), ('zoom_meetings_mail', 'node_settings'))
 
 
 class AllMeetingInformation(ObjectIDMixin, BaseModel):

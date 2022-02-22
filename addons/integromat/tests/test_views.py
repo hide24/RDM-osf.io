@@ -8,7 +8,7 @@ from nose.tools import (assert_equal, assert_equals,
     assert_true, assert_in, assert_false)
 from rest_framework import status as http_status
 from django.core import serializers
-from requests import HTTPError
+import requests
 from framework.auth import Auth
 from tests.base import OsfTestCase
 from osf_tests.factories import ProjectFactory, AuthUserFactory, InstitutionFactory
@@ -517,6 +517,79 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
 
         assert_equals(result.alternative_webhook_url, expected_alternativeWebhookUrl)
         assert_equals(rvBodyJson, {})
+
+    @mock.patch('addons.integromat.views.requests')
+    def test_integromat_start_scenario_the_user_attendee_unregistered(self, mock_requests):
+
+        mock_requests.post.return_value.status_code = 200
+
+        email = self.user.username
+        url = self.project.api_url_for('integromat_start_scenario')
+
+        expectedTimestamp = '6789012345678'
+        appName = 'ZoomMeetings'
+        expecitedAttendee = [email]
+        webhookUrl = 'https://hook.integromat.com/test'
+
+        rv = self.app.post_json(url, {
+            'timestamp': expectedTimestamp,
+            'appName': appName,
+            'attendees': expecitedAttendee,
+            'webhookUrl': webhookUrl,
+        }, auth=self.user.auth)
+        rvBodyJson = json.loads(rv.body)
+        result = Attendees.objects.get(node_settings_id=self.node_settings.id, zoom_meetings_mail=expecitedAttendee[0])
+        assert_equals(result.zoom_meetings_mail, expecitedAttendee[0])
+        assert_equals(rvBodyJson['timestamp'], expectedTimestamp)
+
+    @mock.patch('addons.integromat.views.requests')
+    def test_integromat_start_scenario_the_zoom_attendee_unregistered(self, mock_requests):
+
+        mock_requests.post.return_value.status_code = 200
+
+        AttendeesFactory = IntegromatAttendeesFactory(node_settings=self.node_settings, zoom_meetings_mail='')
+        url = self.project.api_url_for('integromat_start_scenario')
+
+        email = self.user.username
+        expectedTimestamp = '6789012345678'
+        appName = 'ZoomMeetings'
+        expecitedAttendee = [email]
+        webhookUrl = 'https://hook.integromat.com/test'
+
+        rv = self.app.post_json(url, {
+            'timestamp': expectedTimestamp,
+            'appName': appName,
+            'attendees': expecitedAttendee,
+            'webhookUrl': webhookUrl,
+        }, auth=self.user.auth)
+        rvBodyJson = json.loads(rv.body)
+        result = Attendees.objects.get(node_settings_id=self.node_settings.id, zoom_meetings_mail=expecitedAttendee[0])
+        assert_equals(result.zoom_meetings_mail, expecitedAttendee[0])
+        assert_equals(rvBodyJson['timestamp'], expectedTimestamp)
+
+    @mock.patch('addons.integromat.views.requests')
+    def test_integromat_start_scenario_zoom_attendee_exist(self, mock_requests):
+
+        mock_requests.post.return_value.status_code = 200
+
+        email = self.user.username
+        expecitedAttendee = [email]
+        expectedTimestamp = '1234567890'
+        AttendeesFactory = IntegromatAttendeesFactory(node_settings=self.node_settings, zoom_meetings_mail=email)
+
+        url = self.project.api_url_for('integromat_start_scenario')
+
+        rv = self.app.post_json(url, {
+            'timestamp': expectedTimestamp,
+            'appName': 'ZoomMeetings',
+            'attendees': expecitedAttendee,
+            'webhookUrl': 'https://hook.integromat.com/test',
+        }, auth=self.user.auth)
+
+        rvBodyJson = json.loads(rv.body)
+        result = Attendees.objects.get(node_settings_id=self.node_settings.id, zoom_meetings_mail=email)
+        assert_equals(result.zoom_meetings_mail, email)
+        assert_equals(rvBodyJson['timestamp'], expectedTimestamp)
 
     ## Overrides ##
 
