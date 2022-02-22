@@ -1,11 +1,11 @@
 H_SDK_VERSION = '2.0.0'
-INTEGROMAT_WEBHOOK_BASE = 'https://hook.integromat.com/'
 INTEGROMAT_API_WHOAMI = 'https://api.integromat.com/v1/whoami'
 TIME_LIMIT_START_SCENARIO = 15
 
 #APPS
 MICROSOFT_TEAMS = 'MicrosoftTeams'
 WEBEX_MEETINGS = 'WebexMeetings'
+ZOOM_MEETINGS = 'ZoomMeetings'
 
 #WORKFLOWS
 #Make sure the values match the ember-osf-web translation key.
@@ -22,7 +22,11 @@ RDM_WEB_MEETING_APPS = [
     {
         'id': '3152',
         'app_name': WEBEX_MEETINGS
-    }
+    },
+    {
+        'id': '2126',
+        'app_name': ZOOM_MEETINGS
+    },
 ]
 
 RDM_WORKFLOW = [
