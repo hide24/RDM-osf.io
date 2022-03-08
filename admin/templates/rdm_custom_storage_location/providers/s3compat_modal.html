@@ -29,6 +29,15 @@
                             <label for="s3compat_bucket">{% trans "Bucket" %}</label>
                             <input type="text" class="form-control s3compat-params" id="s3compat_bucket" required>
                         </div>
+                        <div class="form-group">
+                            <label>{% trans "Server Side Encryption" %}</label>
+                            <form class="s3compat-params" id="s3compat_server_side_encryption">
+                                <div class="radio">
+                                    <label for="serverSideEncryption_yes"><input type="radio" name="serverSideEncryption" id="serverSideEncryption_yes" value="True" checked required>{% trans "Yes@institutional_storage" %}</label>
+                                    <label for="serverSideEncryption_no"><input type="radio" name="serverSideEncryption" id="serverSideEncryption_no" value="False">{% trans "No@institutional_storage" %}</label>
+                                </div>
+                            </form>
+                        </div>
                         <div class="help-block">
                             <p id='s3compat_message' class='text-danger'></p>
                         </div>

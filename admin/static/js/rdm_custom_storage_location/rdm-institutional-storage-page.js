@@ -418,10 +418,16 @@ var afterRequest = {
 function getParameters(params) {
     var providerClass = params.provider_short_name + '-params';
     var allParameters = $('.' + providerClass);
+    var radio = null;
     params.storage_name = $('#storage_name').val();
     $.each(allParameters, function (key, value) {
         if (!value.disabled) {
-            params[value.id] = value.value;
+            if (!value.value && value.elements) {
+                radio = value.elements.serverSideEncryption;
+                params[value.id] = radio.value;
+            } else {
+                params[value.id] = value.value;
+            }
         }
     });
 }
