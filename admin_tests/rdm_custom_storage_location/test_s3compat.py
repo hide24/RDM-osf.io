@@ -217,6 +217,7 @@ class TestSaveCredentials(AdminTestCase):
             's3compat_access_key': 'Wrong-access-key',
             's3compat_secret_key': 'Wrong-secret-key',
             's3compat_bucket': 'Cute bucket',
+            's3compat_server_side_encryption': 'False',
             'provider_short_name': 's3compat',
         })
 
