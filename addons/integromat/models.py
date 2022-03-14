@@ -135,3 +135,8 @@ class NodeWorkflows(ObjectIDMixin, BaseModel):
 
     class Meta:
         unique_together = (('workflowid', 'node_settings'))
+
+class NodeFileWebappMap(ObjectIDMixin, BaseModel):
+
+    node_file_guid = models.CharField(max_length=255, default=None, unique=True)
+    slack_channel_id = models.CharField(max_length=255, default=None, unique=True)
