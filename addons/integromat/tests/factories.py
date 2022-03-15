@@ -13,7 +13,8 @@ from addons.integromat.models import (
     Attendees,
     AllMeetingInformation,
     AllMeetingInformationAttendeesRelation,
-    NodeWorkflows
+    NodeWorkflows,
+    NodeFileWebappMap
 )
 
 from osf_tests.factories import UserFactory, ProjectFactory, ExternalAccountFactory
