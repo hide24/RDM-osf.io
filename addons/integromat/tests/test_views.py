@@ -595,7 +595,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
     def test_integromat_get_file_id(self):
 
         title = 'file_one'
-        file = api_utils.create_test_file(self.node_settings, self.user, filename=title)
+        file = api_utils.create_test_file(self.node, self.user, filename=title)
 
         url = self.project.api_url_for('integromat_get_file_id')
 
@@ -611,7 +611,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
     def test_integromat_get_node_guid_node(self):
 
         slackChannelId = None
-        qsGuid = self.node_settings._prefetched_objects_cache['guids'].only()
+        qsGuid = self.node._prefetched_objects_cache['guids'].only()
         guidSerializer = serializers.serialize('json', qsGuid, ensure_ascii=False)
         guidJson = json.loads(guidSerializer)
         expectedGuid = guidJson[0]['fields']['_id']
@@ -638,7 +638,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
 
         guid = None
 
-        qsGuid = self.node_settings._prefetched_objects_cache['guids'].only()
+        qsGuid = self.node._prefetched_objects_cache['guids'].only()
         guidSerializer = serializers.serialize('json', qsGuid, ensure_ascii=False)
         guidJson = json.loads(guidSerializer)
         expectedGuid = guidJson[0]['fields']['_id']
@@ -665,7 +665,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
     def test_integromat_link_to_node(self):
 
         expectedGuid = 'ab123'
-        expectedGuid = 'XYZ1234567890'
+        expectedSlackChannelId = 'XYZ1234567890'
 
         url = self.project.api_url_for('integromat_link_to_node')
 
@@ -683,10 +683,10 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
 
         expectedComment = 'test comment'
 
-        commentFact = CommentFactory(node=self.node_settings, user=self.user, content=expectedComment)
+        commentFact = CommentFactory(node=self.node, user=self.user, content=expectedComment)
         qsComment = Comment.objects.get(content=expectedComment)
 
-        qsGuid = self.node_settings._prefetched_objects_cache['guids'].only()
+        qsGuid = self.node._prefetched_objects_cache['guids'].only()
         guidSerializer = serializers.serialize('json', qsGuid, ensure_ascii=False)
         guidJson = json.loads(guidSerializer)
         expectedGuid = guidJson[0]['fields']['_id']
