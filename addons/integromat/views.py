@@ -24,7 +24,6 @@ from website.project.decorators import (
 )
 from admin.rdm_addons.decorators import must_be_rdm_addons_allowed
 from website.ember_osf_web.views import use_ember_app
-from website.util import api_v2_url
 from api.base.utils import waterbutler_api_url_for
 from addons.integromat import settings
 from addons.integromat import models
@@ -35,7 +34,6 @@ from framework.auth.core import Auth
 from admin.rdm import utils as rdm_utils
 from osf.models import AbstractNode, BaseFileNode, Guid, Comment
 from framework.database import get_or_http_error
-_load_node_or_fail = lambda pk: get_or_http_error(AbstractNode, pk)
 
 logger = logging.getLogger(__name__)
 
@@ -571,7 +569,7 @@ def integromat_get_node(*args, **kwargs):
         except ObjectDoesNotExist:
             try:
                 nodeType = BaseFileNode.objects.get(guids___id=guid).target_type
-            except ObjectDoesNotExist as e:
+            except ObjectDoesNotExist:
                 raise HTTPError(http_status.HTTP_400_BAD_REQUEST, data=dict(message_short='GUID does not exixt.'))
             title = BaseFileNode.objects.get(guids___id=guid).name
             targetObjectId = BaseFileNode.objects.get(guids___id=guid).target_object_id
@@ -587,11 +585,9 @@ def integromat_get_node(*args, **kwargs):
             'slackChannelId': slack_channel_id,
             'guid': guid,
             'rootGuid': root_guid
-            }
+        }
 
     if slackChannelId and not guid:
-
-
 
         try:
             guid = models.NodeFileWebappMap.objects.get(slack_channel_id=slackChannelId).node_file_guid
@@ -609,7 +605,7 @@ def integromat_get_node(*args, **kwargs):
         reqBody = {
             'guid': guid,
             'rootGuid': root_guid
-            }
+        }
 
     reqBody['nodeType'] = nodeType
 
@@ -625,7 +621,7 @@ def integromat_link_to_node(**kwargs):
     qsNodeFileWebappMap = models.NodeFileWebappMap(slack_channel_id=slack_channel_id, node_file_guid=guid)
     try:
         qsNodeFileWebappMap.save()
-    except ValidationError as e:
+    except ValidationError:
         raise HTTPError(http_status.HTTP_400_BAD_REQUEST, data=dict(message_short='Check your GUID or Slack Channel ID.'))
 
     return {}
@@ -638,7 +634,7 @@ def integromat_watch_comment(**kwargs):
     guid = request.get_json().get('guid')
     try:
         rootTargetId = Guid.objects.get(_id=guid)
-    except ObjectDoesNotExist as e:
+    except ObjectDoesNotExist:
         raise HTTPError(http_status.HTTP_400_BAD_REQUEST, data=dict(message_short='GUID does not exixt.'))
 
     updatedComments = Comment.objects.filter(root_target_id=rootTargetId)
