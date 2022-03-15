@@ -11,7 +11,7 @@ from django.core import serializers
 import requests
 from framework.auth import Auth
 from tests.base import OsfTestCase
-from osf_tests.factories import ProjectFactory, AuthUserFactory, InstitutionFactory
+from osf_tests.factories import ProjectFactory, AuthUserFactory, InstitutionFactory, CommentFactory
 from addons.base.tests.views import (
     OAuthAddonConfigViewsTestCaseMixin
 )
@@ -29,7 +29,7 @@ from addons.integromat.models import (
     AllMeetingInformationAttendeesRelation,
     NodeWorkflows
 )
-from osf.models import ExternalAccount, OSFUser, RdmAddonOption
+from osf.models import ExternalAccount, OSFUser, RdmAddonOption, BaseFileNode, Comment
 from addons.integromat.tests.factories import (
     IntegromatUserSettingsFactory,
     IntegromatNodeSettingsFactory,
@@ -40,6 +40,7 @@ from addons.integromat.tests.factories import (
     IntegromatAllMeetingInformationAttendeesRelationFactory,
     IntegromatNodeWorkflowsFactory
 )
+from api_tests import utils as api_utils
 
 pytestmark = pytest.mark.django_db
 
@@ -590,6 +591,118 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         result = Attendees.objects.get(node_settings_id=self.node_settings.id, zoom_meetings_mail=email)
         assert_equals(result.zoom_meetings_mail, email)
         assert_equals(rvBodyJson['timestamp'], expectedTimestamp)
+
+    def test_integromat_get_file_id(self):
+
+        title = 'file_one'
+        file = api_utils.create_test_file(self.node_settings, self.user, filename=title)
+
+        url = self.project.api_url_for('integromat_get_file_id')
+
+        rv = self.app.post_json(url, {
+            'title': title,
+        }, auth=self.user.auth)
+
+        rvBodyJson = json.loads(rv.body)
+        result = BaseFileNode.objects.get(name=title)
+
+        assert_equals(result._id, rvBodyJson['filePath'])
+
+    def test_integromat_get_node_guid_node(self):
+
+        slackChannelId = None
+        qsGuid = self.node_settings._prefetched_objects_cache['guids'].only()
+        guidSerializer = serializers.serialize('json', qsGuid, ensure_ascii=False)
+        guidJson = json.loads(guidSerializer)
+        expectedGuid = guidJson[0]['fields']['_id']
+        expectedSlackChannelId = 'QWERT1234567890'
+        nodeSlackMapFact = IntegromatNodeFileWebappMapFactory(node_file_guid=expectedGuid, slack_channel_id=expectedSlackChannelId)
+
+        url = self.project.api_url_for('integromat_get_node')
+
+        rv = self.app.post_json(url, {
+            'guid': expectedGuid,
+            'slackChannelId': slackChannelId,
+        }, auth=self.user.auth)
+
+        rvBodyJson = json.loads(rv.body)
+        result = BaseFileNode.objects.get(name=title)
+
+        assert_equals(result['title'], 'test')
+        assert_equals(result['slackChannelId'], expectedSlackChannelId)
+        assert_equals(result['guid'], exoectedGuid)
+        assert_equals(result['rootGuid'], None)
+        assert_equals(result['nodeType'], 'nodes')
+
+    def test_integromat_get_node_slack_channel_id_node(self):
+
+        guid = None
+
+        qsGuid = self.node_settings._prefetched_objects_cache['guids'].only()
+        guidSerializer = serializers.serialize('json', qsGuid, ensure_ascii=False)
+        guidJson = json.loads(guidSerializer)
+        expectedGuid = guidJson[0]['fields']['_id']
+        expectedSlackChannelId = 'QWERT1234567890'
+        nodeSlackMapFact = IntegromatNodeFileWebappMapFactory(node_file_guid=expectedGuid, slack_channel_id=expectedSlackChannelId)
+
+        url = self.project.api_url_for('integromat_get_node')
+
+        rv = self.app.post_json(url, {
+            'guid': expectedGuid,
+            'slackChannelId': slackChannelId,
+        }, auth=self.user.auth)
+
+
+        rvBodyJson = json.loads(rv.body)
+        result = BaseFileNode.objects.get(name=title)
+
+        assert_equals(result['title'], None)
+        assert_equals(result['slackChannelId'], None)
+        assert_equals(result['guid'], exoectedGuid)
+        assert_equals(result['rootGuid'], None)
+        assert_equals(result['nodeType'], 'nodes')
+
+    def test_integromat_link_to_node(self):
+
+        expectedGuid = 'ab123'
+        expectedGuid = 'XYZ1234567890'
+
+        url = self.project.api_url_for('integromat_link_to_node')
+
+        rv = self.app.post_json(url, {
+            'guid': expectedGuid,
+            'expectedSlackChannelId': expectedSlackChannelId,
+        }, auth=self.user.auth)
+
+        result = NodeFileWebappMap.objects.get(node_file_guid=expectedGuid, slack_channel_id=expectedSlackChannelId)
+
+        assert_equals(result.node_file_guid, expectedGuid)
+        assert_equals(result.slack_channel_id, expectedSlackChannelId)
+
+    def test_integromat_watch_comment(self):
+
+        expectedComment = 'test comment'
+
+        commentFact = CommentFactory(node=self.node_settings, user=self.user, content=expectedComment)
+        qsComment = Comment.objects.get(content=expectedComment)
+
+        qsGuid = self.node_settings._prefetched_objects_cache['guids'].only()
+        guidSerializer = serializers.serialize('json', qsGuid, ensure_ascii=False)
+        guidJson = json.loads(guidSerializer)
+        expectedGuid = guidJson[0]['fields']['_id']
+
+        url = self.project.api_url_for('integromat_watch_comment')
+
+        rv = self.app.post_json(url, {
+            'guid': expectedGuid,
+        }, auth=self.user.auth)
+
+        rvBodyJson = json.loads(rv.body)
+
+        assert_equals(rvBodyJson['data']['id'], qsComment.id)
+        assert_equals(rvBodyJson['data']['content'], qsComment.content)
+        assert_equals(rvBodyJson['data']['modified'], qsComment.modified)
+        assert_equals(rvBodyJson['data']['user'], self.user.username)
 
     ## Overrides ##
 
