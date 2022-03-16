@@ -595,7 +595,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
     def test_integromat_get_file_id(self):
 
         title = 'file_one'
-        file = api_utils.create_test_file(self.node, self.user, filename=title)
+        file = api_utils.create_test_file(self.project, self.user, filename=title)
 
         url = self.project.api_url_for('integromat_get_file_id')
 
@@ -611,10 +611,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
     def test_integromat_get_node_guid_node(self):
 
         slackChannelId = None
-        qsGuid = self.node._prefetched_objects_cache['guids'].only()
-        guidSerializer = serializers.serialize('json', qsGuid, ensure_ascii=False)
-        guidJson = json.loads(guidSerializer)
-        expectedGuid = guidJson[0]['fields']['_id']
+        expectedGuid = self.project._id
         expectedSlackChannelId = 'QWERT1234567890'
         nodeSlackMapFact = IntegromatNodeFileWebappMapFactory(node_file_guid=expectedGuid, slack_channel_id=expectedSlackChannelId)
 
@@ -638,10 +635,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
 
         guid = None
 
-        qsGuid = self.node._prefetched_objects_cache['guids'].only()
-        guidSerializer = serializers.serialize('json', qsGuid, ensure_ascii=False)
-        guidJson = json.loads(guidSerializer)
-        expectedGuid = guidJson[0]['fields']['_id']
+        expectedGuid = self.project._id
         expectedSlackChannelId = 'QWERT1234567890'
         nodeSlackMapFact = IntegromatNodeFileWebappMapFactory(node_file_guid=expectedGuid, slack_channel_id=expectedSlackChannelId)
 
@@ -671,7 +665,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
 
         rv = self.app.post_json(url, {
             'guid': expectedGuid,
-            'expectedSlackChannelId': expectedSlackChannelId,
+            'slackChannelId': expectedSlackChannelId,
         }, auth=self.user.auth)
 
         result = NodeFileWebappMap.objects.get(node_file_guid=expectedGuid, slack_channel_id=expectedSlackChannelId)
@@ -683,13 +677,10 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
 
         expectedComment = 'test comment'
 
-        commentFact = CommentFactory(node=self.node, user=self.user, content=expectedComment)
+        commentFact = CommentFactory(node=self.project, user=self.user, content=expectedComment)
         qsComment = Comment.objects.get(content=expectedComment)
 
-        qsGuid = self.node._prefetched_objects_cache['guids'].only()
-        guidSerializer = serializers.serialize('json', qsGuid, ensure_ascii=False)
-        guidJson = json.loads(guidSerializer)
-        expectedGuid = guidJson[0]['fields']['_id']
+        expectedGuid = self.project._id
 
         url = self.project.api_url_for('integromat_watch_comment')
 
