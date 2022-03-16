@@ -594,7 +594,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
 
     def test_integromat_get_file_id(self):
 
-        title = 'file_onee'
+        title = 'file_one'
         file = api_utils.create_test_file(self.project, self.user, filename=title)
 
         url = self.project.api_url_for('integromat_get_file_id')
