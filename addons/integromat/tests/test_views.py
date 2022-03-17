@@ -695,7 +695,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
 
         expectedModified = (qsComment.modified).replace(microsecond = 0)
         dt = (rvBodyJson['data'][0]['modified']).partition('.')
-        actualModified= datetime.strptime(dt, '%Y-%m-%dT%H:%M:%S')
+        actualModified= datetime.strptime(str(dt), '%Y-%m-%dT%H:%M:%S')
 
         assert_equals(rvBodyJson['data'][0]['id'], qsComment.id)
         assert_equals(rvBodyJson['data'][0]['content'], qsComment.content)

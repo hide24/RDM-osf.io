@@ -553,6 +553,7 @@ def integromat_get_node(*args, **kwargs):
     guid = request.get_json().get('guid')
     slackChannelId = request.get_json().get('slackChannelId')
     root_guid = None
+    nodeType = None
 
     if guid and not slackChannelId:
 
