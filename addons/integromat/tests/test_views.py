@@ -27,7 +27,8 @@ from addons.integromat.models import (
     Attendees,
     AllMeetingInformation,
     AllMeetingInformationAttendeesRelation,
-    NodeWorkflows
+    NodeWorkflows,
+    NodeFileWebappMap
 )
 from osf.models import ExternalAccount, OSFUser, RdmAddonOption, BaseFileNode, Comment
 from addons.integromat.tests.factories import (
@@ -38,7 +39,8 @@ from addons.integromat.tests.factories import (
     IntegromatWorkflowExecutionMessagesFactory,
     IntegromatAllMeetingInformationFactory,
     IntegromatAllMeetingInformationAttendeesRelationFactory,
-    IntegromatNodeWorkflowsFactory
+    IntegromatNodeWorkflowsFactory,
+    IntegromatNodeFileWebappMapFactory
 )
 from api_tests import utils as api_utils
 
@@ -690,10 +692,10 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
 
         rvBodyJson = json.loads(rv.body)
 
-        assert_equals(rvBodyJson['data']['id'], qsComment.id)
-        assert_equals(rvBodyJson['data']['content'], qsComment.content)
-        assert_equals(rvBodyJson['data']['modified'], qsComment.modified)
-        assert_equals(rvBodyJson['data']['user'], self.user.username)
+        assert_equals(rvBodyJson['data'][0]['id'], qsComment.id)
+        assert_equals(rvBodyJson['data'][0]['content'], qsComment.content)
+        assert_equals(rvBodyJson['data'][0]['modified'], qsComment.modified)
+        assert_equals(rvBodyJson['data'][0]['user'], self.user.username)
 
     ## Overrides ##
 
