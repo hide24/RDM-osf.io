@@ -612,6 +612,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
 
     def test_integromat_get_node_guid_node(self):
 
+        expectedProjectName = 'test project'
         slackChannelId = None
         expectedGuid = self.project._id
         expectedSlackChannelId = 'QWERT1234567890'
@@ -625,9 +626,9 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         }, auth=self.user.auth)
 
         rvBodyJson = json.loads(rv.body)
-        result = BaseFileNode.objects.get(name=title)
+        result = BaseFileNode.objects.get(name=expectedProjectName)
 
-        assert_equals(result['title'], 'test')
+        assert_equals(result['title'], expectedProjectName)
         assert_equals(result['slackChannelId'], expectedSlackChannelId)
         assert_equals(result['guid'], exoectedGuid)
         assert_equals(result['rootGuid'], None)
@@ -645,7 +646,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
 
         rv = self.app.post_json(url, {
             'guid': expectedGuid,
-            'slackChannelId': slackChannelId,
+            'slackChannelId': expectedSlackChannelId,
         }, auth=self.user.auth)
 
 
@@ -692,9 +693,13 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
 
         rvBodyJson = json.loads(rv.body)
 
+        expectedModified = (qsComment.modified).replace(microsecond = 0)
+        dt = (rvBodyJson['data'][0]['modified']).partition(".")
+        actualModified= datetime.strptime(dt, "%Y-%m-%dT%H:%M:%S")
+
         assert_equals(rvBodyJson['data'][0]['id'], qsComment.id)
         assert_equals(rvBodyJson['data'][0]['content'], qsComment.content)
-        assert_equals(rvBodyJson['data'][0]['modified'], qsComment.modified)
+        assert_equals(actualModified, expectedModified)
         assert_equals(rvBodyJson['data'][0]['user'], self.user.username)
 
     ## Overrides ##
