@@ -30,7 +30,7 @@ from addons.integromat.models import (
     NodeWorkflows,
     NodeFileWebappMap
 )
-from osf.models import ExternalAccount, OSFUser, RdmAddonOption, BaseFileNode, Comment
+from osf.models import ExternalAccount, OSFUser, RdmAddonOption, BaseFileNode, AbstractNode, Comment
 from addons.integromat.tests.factories import (
     IntegromatUserSettingsFactory,
     IntegromatNodeSettingsFactory,
@@ -45,6 +45,9 @@ from addons.integromat.tests.factories import (
 from api_tests import utils as api_utils
 
 pytestmark = pytest.mark.django_db
+
+import logging
+logger = logging.getLogger(__name__)
 
 class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCaseMixin, OsfTestCase):
     def setUp(self):
@@ -646,8 +649,8 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
 
         rvBodyJson = json.loads(rv.body)
 
-        assert_equals(rvBodyJson['title'], None)
-        assert_equals(rvBodyJson['slackChannelId'], None)
+        assert_equals('title' in rvBodyJson.keys(), False)
+        assert_equals('slackChannelId' in rvBodyJson.keys(), False)
         assert_equals(rvBodyJson['guid'], expectedGuid)
         assert_equals(rvBodyJson['rootGuid'], None)
         assert_equals(rvBodyJson['nodeType'], 'nodes')
@@ -689,6 +692,10 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         expectedModified = (qsComment.modified).replace(microsecond = 0)
         dt = str(rvBodyJson['data'][0]['modified']).partition('.')
         actualModified= datetime.strptime(str(dt), '%Y-%m-%dT%H:%M:%S')
+
+        logger.info('expectedModified:::' + str(expectedModified))
+        logger.info('modified:::' + str(rvBodyJson['data'][0]['modified']))
+        logger.info('dt:::' + str(dt))
 
         assert_equals(rvBodyJson['data'][0]['id'], qsComment.id)
         assert_equals(rvBodyJson['data'][0]['content'], qsComment.content)
