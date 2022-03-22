@@ -612,9 +612,9 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
 
     def test_integromat_get_node_guid_node(self):
 
-        expectedProjectName = 'test project'
         slackChannelId = None
         expectedGuid = self.project._id
+        expectedTitle = AbstractNode.objects.get(guids___id=expectedGuid).title
         expectedSlackChannelId = 'QWERT1234567890'
         nodeSlackMapFact = IntegromatNodeFileWebappMapFactory(node_file_guid=expectedGuid, slack_channel_id=expectedSlackChannelId)
 
@@ -622,22 +622,18 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
 
         rv = self.app.post_json(url, {
             'guid': expectedGuid,
-            'slackChannelId': slackChannelId,
         }, auth=self.user.auth)
 
         rvBodyJson = json.loads(rv.body)
-        result = BaseFileNode.objects.get(name=expectedProjectName)
 
-        assert_equals(result['title'], expectedProjectName)
-        assert_equals(result['slackChannelId'], expectedSlackChannelId)
-        assert_equals(result['guid'], exoectedGuid)
-        assert_equals(result['rootGuid'], None)
-        assert_equals(result['nodeType'], 'nodes')
+        assert_equals(rvBodyJson['title'], expectedTitle)
+        assert_equals(rvBodyJson['slackChannelId'], expectedSlackChannelId)
+        assert_equals(rvBodyJson['guid'], expectedGuid)
+        assert_equals(rvBodyJson['rootGuid'], None)
+        assert_equals(rvBodyJson['nodeType'], 'nodes')
 
     def test_integromat_get_node_slack_channel_id_node(self):
 
-        guid = None
-
         expectedGuid = self.project._id
         expectedSlackChannelId = 'QWERT1234567890'
         nodeSlackMapFact = IntegromatNodeFileWebappMapFactory(node_file_guid=expectedGuid, slack_channel_id=expectedSlackChannelId)
@@ -645,19 +641,16 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         url = self.project.api_url_for('integromat_get_node')
 
         rv = self.app.post_json(url, {
-            'guid': expectedGuid,
             'slackChannelId': expectedSlackChannelId,
         }, auth=self.user.auth)
 
-
         rvBodyJson = json.loads(rv.body)
-        result = BaseFileNode.objects.get(name=title)
 
-        assert_equals(result['title'], None)
-        assert_equals(result['slackChannelId'], None)
-        assert_equals(result['guid'], exoectedGuid)
-        assert_equals(result['rootGuid'], None)
-        assert_equals(result['nodeType'], 'nodes')
+        assert_equals(rvBodyJson['title'], None)
+        assert_equals(rvBodyJson['slackChannelId'], None)
+        assert_equals(rvBodyJson['guid'], expectedGuid)
+        assert_equals(rvBodyJson['rootGuid'], None)
+        assert_equals(rvBodyJson['nodeType'], 'nodes')
 
     def test_integromat_link_to_node(self):
 
@@ -694,7 +687,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         rvBodyJson = json.loads(rv.body)
 
         expectedModified = (qsComment.modified).replace(microsecond = 0)
-        dt = (rvBodyJson['data'][0]['modified']).partition('.')
+        dt = str(rvBodyJson['data'][0]['modified']).partition('.')
         actualModified= datetime.strptime(str(dt), '%Y-%m-%dT%H:%M:%S')
 
         assert_equals(rvBodyJson['data'][0]['id'], qsComment.id)
