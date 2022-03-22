@@ -46,9 +46,6 @@ from api_tests import utils as api_utils
 
 pytestmark = pytest.mark.django_db
 
-import logging
-logger = logging.getLogger(__name__)
-
 class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCaseMixin, OsfTestCase):
     def setUp(self):
         super(TestIntegromatViews, self).setUp()
@@ -597,21 +594,29 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         assert_equals(result.zoom_meetings_mail, email)
         assert_equals(rvBodyJson['timestamp'], expectedTimestamp)
 
-    def test_integromat_get_file_id(self):
+    @mock.patch('addons.integromat.views.waterbutler_api_url_for')
+    @mock.patch('addons.integromat.views.requests.get')
+    def test_integromat_get_file_id(self, mock_get):
 
-        title = 'file_one'
-        file = api_utils.create_test_file(self.project, self.user, filename=title)
+        mock_get_url.return_value = 'http://queen.com/'
 
-        url = self.project.api_url_for('integromat_get_file_id')
+        guid = self.project._id
+        req_headers={
+            'content-type': 'application/json',
+            'authorization': 'QWERTYUIOPasdfghjkl1234567890',
+        }
 
-        rv = self.app.post_json(url, {
-            'title': title,
-        }, auth=self.user.auth)
-
-        rvBodyJson = json.loads(rv.body)
-        result = BaseFileNode.objects.get(name=title)
-
-        assert_equals(result._id, rvBodyJson['filePath'])
+        mock_get_url.assert_called_with(
+            self.project._id,
+            'osfstorage',
+            _internal=True,
+            path='/',
+            meta='',
+        )
+        mock_put.assert_called_with(
+            mock_get_url.return_value,
+            headers=req_headers,
+        )
 
     def test_integromat_get_node_guid_node(self):
 
@@ -690,12 +695,8 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         rvBodyJson = json.loads(rv.body)
 
         expectedModified = (qsComment.modified).replace(microsecond = 0)
-        dt = str(rvBodyJson['data'][0]['modified']).partition('.')
-        actualModified= datetime.strptime(str(dt), '%Y-%m-%dT%H:%M:%S')
-
-        logger.info('expectedModified:::' + str(expectedModified))
-        logger.info('modified:::' + str(rvBodyJson['data'][0]['modified']))
-        logger.info('dt:::' + str(dt))
+        dt = str(rvBodyJson['data'][0]['modified']).partition('.')[0]
+        actualModified= datetime.strptime(dt, '%Y-%m-%dT%H:%M:%S')
 
         assert_equals(rvBodyJson['data'][0]['id'], qsComment.id)
         assert_equals(rvBodyJson['data'][0]['content'], qsComment.content)
