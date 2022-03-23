@@ -15,7 +15,7 @@ from osf_tests.factories import ProjectFactory, AuthUserFactory, InstitutionFact
 from addons.base.tests.views import (
     OAuthAddonConfigViewsTestCaseMixin
 )
-from addons.integromat.tests.utils import IntegromatAddonTestCase
+from addons.integromat.tests.utils import IntegromatAddonTestCase, MockResponse
 from website.util import api_url_for
 from admin.rdm_addons.utils import get_rdm_addon_option
 from datetime import date, datetime, timedelta
@@ -600,11 +600,13 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         expectedFileName = 'file_one'
         url = self.project.api_url_for('integromat_get_file_id')
 
-        mock_get.return_value = {'data': {
-                                    'attributes': {
-                                    'name': expectedFileName,
-                                    'path': expectedFilePath
-                                }}}
+        data_get = {'data': {
+                        'attributes': {
+                        'name': expectedFileName,
+                        'path': expectedFilePath
+                    }}}
+
+        mock_get.return_value = MockResponse(data_get, 200)
 
         rv = self.app.post_json(url, {
             'title': expectedFileName,
