@@ -594,36 +594,17 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         assert_equals(result.zoom_meetings_mail, email)
         assert_equals(rvBodyJson['timestamp'], expectedTimestamp)
 
-    @mock.patch('addons.integromat.views.waterbutler_api_url_for')
     @mock.patch('addons.integromat.views.requests.get')
-    def test_integromat_get_file_id(self, mock_get, mock_get_url):
+    def test_integromat_get_file_id(self, mock_get):
         expectedFilePath = '/98765qwertyuiolkjhgfdsa'
         expectedFileName = 'file_one'
         url = self.project.api_url_for('integromat_get_file_id')
-        mock_get_url.return_value = 'http://queen.com/'
+
         mock_get.return_value = {'data': {
                                     'attributes': {
                                     'name': expectedFileName,
                                     'path': expectedFilePath
                                 }}}
-
-        guid = self.project._id
-        req_headers={
-            'content-type': 'application/json',
-            'authorization': 'QWERTYUIOPasdfghjkl1234567890',
-        }
-
-        mock_get_url.assert_called_with(
-            self.project._id,
-            'osfstorage',
-            _internal=True,
-            path='/',
-            meta='',
-        )
-        mock_get.assert_called_with(
-            mock_get_url.return_value,
-            headers=req_headers,
-        )
 
         rv = self.app.post_json(url, {
             'title': expectedFileName,
@@ -715,7 +696,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         assert_equals(rvBodyJson['data'][0]['id'], qsComment.id)
         assert_equals(rvBodyJson['data'][0]['content'], qsComment.content)
         assert_equals(actualModified, expectedModified)
-        assert_equals(rvBodyJson['data'][0]['user'], self.user.username)
+        assert_equals(rvBodyJson['data'][0]['user'], self.user.fullname)
 
     ## Overrides ##
 
