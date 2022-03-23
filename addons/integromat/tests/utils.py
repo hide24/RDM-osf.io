@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import json
 from addons.base.tests.base import OAuthAddonTestCaseMixin, AddonTestCase
 from addons.integromat.tests.factories import IntegromatAccountFactory
 from addons.integromat.provider import IntegromatProvider
