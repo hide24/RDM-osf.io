@@ -596,9 +596,16 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
 
     @mock.patch('addons.integromat.views.waterbutler_api_url_for')
     @mock.patch('addons.integromat.views.requests.get')
-    def test_integromat_get_file_id(self, mock_get):
-
+    def test_integromat_get_file_id(self, mock_get, mock_get_url):
+        expectedFilePath = '/98765qwertyuiolkjhgfdsa'
+        expectedFileName = 'file_one'
+        url = self.project.api_url_for('integromat_get_file_id')
         mock_get_url.return_value = 'http://queen.com/'
+        mock_get.return_value = {'data': {
+                                    'attributes': {
+                                    'name': expectedFileName,
+                                    'path': expectedFilePath
+                                }}}
 
         guid = self.project._id
         req_headers={
@@ -613,10 +620,17 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
             path='/',
             meta='',
         )
-        mock_put.assert_called_with(
+        mock_get.assert_called_with(
             mock_get_url.return_value,
             headers=req_headers,
         )
+
+        rv = self.app.post_json(url, {
+            'title': expectedFileName,
+        }, auth=self.user.auth)
+
+        rvBodyJson = json.loads(rv.body)
+        assert_equals(rvBodyJson['filePath'], expectedFilePath)
 
     def test_integromat_get_node_guid_node(self):
 
@@ -694,7 +708,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
 
         rvBodyJson = json.loads(rv.body)
 
-        expectedModified = (qsComment.modified).replace(microsecond = 0)
+        expectedModified = ((qsComment.modified).replace(microsecond = 0)).replace(tzinfo=None)
         dt = str(rvBodyJson['data'][0]['modified']).partition('.')[0]
         actualModified= datetime.strptime(dt, '%Y-%m-%dT%H:%M:%S')
 
