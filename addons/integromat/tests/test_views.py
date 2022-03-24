@@ -600,7 +600,7 @@ class TestIntegromatViews(IntegromatAddonTestCase, OAuthAddonConfigViewsTestCase
         expectedFileName = 'file_one'
         url = self.project.api_url_for('integromat_get_file_id')
 
-        data_get = '{"data": {"attributes": {"name": expectedFileName, "path": expectedFilePath}}}'
+        data_get = '{"data": {"attributes": {"name": "' + expectedFileName + '", "path": "' + expectedFilePath + '"}}}'
 
         mock_get.return_value = MockResponse(data_get, 200)
 
