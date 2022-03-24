@@ -117,6 +117,43 @@ api_routes = {
 
         Rule(
             [
+                '/project/<pid>/integromat/get_file_id',
+                '/project/<pid>/node/<nid>/integromat/get_file_id',
+            ],
+            'post',
+            views.integromat_get_file_id,
+            json_renderer,
+        ),
+
+        Rule(
+            '/integromat/get_node',
+            'post',
+            views.integromat_get_node,
+            json_renderer,
+        ),
+
+        Rule(
+            [
+                '/project/<pid>/integromat/link_to_node',
+                '/project/<pid>/node/<nid>/integromat/link_to_node',
+            ],
+            'post',
+            views.integromat_link_to_node,
+            json_renderer,
+        ),
+
+        Rule(
+            [
+                '/project/<pid>/integromat/watch_comment',
+                '/project/<pid>/node/<nid>/integromat/watch_comment',
+            ],
+            'post',
+            views.integromat_watch_comment,
+            json_renderer,
+        ),
+
+        Rule(
+            [
                 '/project/<pid>/integromat/start_scenario',
                 '/project/<pid>/node/<nid>/integromat/start_scenario',
             ],
