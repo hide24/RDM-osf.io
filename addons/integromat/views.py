@@ -559,6 +559,10 @@ def integromat_get_node(*args, **kwargs):
     if guid and not slackChannelId:
 
         try:
+            targetNode = AbstractNode.objects.get(guids___id=guid)
+            # User must have permissions
+            if not targetNode.has_permission(user, READ):
+                raise HTTPError(http_status.HTTP_403_FORBIDDEN)
             nodeType = AbstractNode.objects.get(guids___id=guid).target_type
             title = AbstractNode.objects.get(guids___id=guid).title
             try:
@@ -573,6 +577,9 @@ def integromat_get_node(*args, **kwargs):
             title = BaseFileNode.objects.get(guids___id=guid).name
             targetObjectId = BaseFileNode.objects.get(guids___id=guid).target_object_id
             targetNode = AbstractNode.objects.get(id=targetObjectId)
+            # User must have permissions
+            if not targetNode.has_permission(user, READ):
+                raise HTTPError(http_status.HTTP_403_FORBIDDEN)
             root_guid = utils.get_guid(targetNode)
             try:
                 slack_channel_id = models.NodeFileWebappMap.objects.get(node_file_guid=guid).slack_channel_id
