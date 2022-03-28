@@ -543,10 +543,12 @@ def integromat_get_file_id(auth, **kwargs):
 
     return {'filePath': file_path}
 
-@must_be_valid_project
-@must_have_permission(READ)
-@must_have_addon(SHORT_NAME, 'node')
 def integromat_get_node(*args, **kwargs):
+    auth = Auth.from_kwargs(request.args.to_dict(), kwargs)
+    user = auth.user
+    logger.info('auth:' + str(user))
+    if not user:
+        raise HTTPError(http_status.HTTP_401_UNAUTHORIZED)
 
     guid = request.get_json().get('guid')
     slackChannelId = request.get_json().get('slackChannelId')
