@@ -603,11 +603,18 @@ def integromat_get_node(*args, **kwargs):
             raise HTTPError(http_status.HTTP_400_BAD_REQUEST, data=dict(message_short='Slack Channel ID does not registered.'))
 
         try:
+            targetNode = AbstractNode.objects.get(guids___id=guid)
+            # User must have permissions
+            if not targetNode.has_permission(user, READ):
+                raise HTTPError(http_status.HTTP_403_FORBIDDEN)
             nodeType = AbstractNode.objects.get(guids___id=guid).target_type
         except ObjectDoesNotExist:
             nodeType = BaseFileNode.objects.get(guids___id=guid).target_type
             targetObjectId = BaseFileNode.objects.get(guids___id=guid).target_object_id
             targetNode = AbstractNode.objects.get(id=targetObjectId)
+            # User must have permissions
+            if not targetNode.has_permission(user, READ):
+                raise HTTPError(http_status.HTTP_403_FORBIDDEN)
             root_guid = utils.get_guid(targetNode)
 
         reqBody = {
