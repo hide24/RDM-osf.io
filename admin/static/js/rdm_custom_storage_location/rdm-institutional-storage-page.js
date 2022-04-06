@@ -423,6 +423,7 @@ function getParameters(params) {
         if (!value.disabled) {
             console.log(value)
             params[value.id] = value.value;
+            console.log(params)
         }
     });
 }
