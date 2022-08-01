@@ -107,9 +107,10 @@ class UserListByInstitutionStorageID(RdmPermissionMixin, QuotaUserList):
         return user_list
 
     def get_institution(self):
-        query = 'select name '\
-                'from addons_osfstorage_region '\
-                'where addons_osfstorage_region._id = osf_institution._id'
+        query = 'select name ' \
+                'from addons_osfstorage_region ' \
+                'where addons_osfstorage_region._id = osf_institution._id ' \
+                'order by id limit 1'
         institution = Institution.objects.filter(
             id=self.kwargs['institution_id']
         ).extra(

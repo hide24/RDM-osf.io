@@ -215,12 +215,14 @@ class NodeLogParamsSerializer(RestrictedDictSerializer):
 
             try:
                 institution = node.creator.affiliated_institutions.get()
-                return Region.objects.get(_id=institution._id).name
+                region = Region.objects.filter(_id=institution._id, is_allowed=True).first()
+                if region is not None:
+                    return region.name
+                else:
+                    logging.warning('Unable to retrieve storage name from institution ID {}'.format(institution.id))
+                    return 'Institutional Storage'
             except Institution.DoesNotExist:
                 logging.warning('Unable to retrieve storage name: Institution not found')
-                return 'Institutional Storage'
-            except Region.DoesNotExist:
-                logging.warning('Unable to retrieve storage name from institution ID {}'.format(institution.id))
                 return 'Institutional Storage'
         return None
 
