@@ -47,8 +47,12 @@ function disable_storage_name(provider) {
 			    no_storage_name_providers.indexOf(provider) >= 0);
 }
 
+//function selectedProvider() {
+//     return $('input[name=\'options\']:checked').val();
+//}
+
 function selectedProvider() {
-     return $('input[name=\'options\']:checked').val();
+     return $('select[name=\'options\']').val();
 }
 
 $(window).on('load', function () {
@@ -70,29 +74,39 @@ $('.modal').on('hidden.bs.modal', function (e) {
 $('#institutional_storage_form').submit(function (e) {
     if ($('#institutional_storage_form')[0].checkValidity()) {
         var provider = selectedProvider()
-        preload(provider, null);
-        var showModal = function () {
-            $('#' + provider + '_modal').modal('show');
-            $('body').css('overflow', 'hidden');
-            $('.modal').css('overflow', 'auto');
-            validateRequiredFields(provider);
-        };
-        if (provider === 'osfstorage' && $('[checked]').val() === 'osfstorage') {
-            showModal();
-        } else {
-            $osf.confirmDangerousAction({
-                title: _('Are you sure you want to change institutional storage?'),
-                message: _('<p>The previous storage will no longer be available to all contributors on the project.</p>'),
-                callback: showModal,
-                buttons: {
-                    success: {
-                        label: _('Change')
+        var new_storage_name = $('#storage_name').val()
+        var check_exsting_name = false;
+        $('input[name='+provider+']').each(function() {
+            if($(this).val() == new_storage_name){
+                check_exsting_name = true;
+                $osf.growl('Failed', `Name ${new_storage_name} is existing in the ${provider}`);
+            }
+        });
+        if(check_exsting_name == false){
+            preload(provider, null);
+            var showModal = function () {
+                $('#' + provider + '_modal').modal('show');
+                $('body').css('overflow', 'hidden');
+                $('.modal').css('overflow', 'auto');
+                validateRequiredFields(provider);
+            };
+            if (provider === 'osfstorage') {
+                showModal();
+            } else {
+                $osf.confirmDangerousAction({
+                    title: _('Are you sure you want to add institutional storage?'),
+                    // message: _('<p>The previous storage will no longer be available to all contributors on the project.</p>'),
+                    callback: showModal,
+                    buttons: {
+                        success: {
+                            label: _('Change')
+                        }
                     }
-                }
-            });
+                });
+            }
         }
+        e.preventDefault();
     }
-    e.preventDefault();
 });
 
 $('#s3_modal input').keyup(function () {

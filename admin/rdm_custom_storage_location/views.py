@@ -39,20 +39,27 @@ class InstitutionalStorageView(InstitutionalStorageBaseView, TemplateView):
 
     def get_context_data(self, *args, **kwargs):
         institution = self.request.user.affiliated_institutions.first()
-
         region = None
         if Region.objects.filter(_id=institution._id).exists():
-            region = Region.objects.get(_id=institution._id)
+            region = Region.objects.filter(_id=institution._id).all()
         else:
             region = Region.objects.first()
             region.name = ''
+        
+        list_providers = utils.get_providers()
+        list_providers_configed = []
 
-        provider_name = region.waterbutler_settings['storage']['provider']
-        provider_name = provider_name if provider_name != 'filesystem' else 'osfstorage'
-
+        for i in range(len(region)):
+            provider_name = region[i].waterbutler_settings['storage']['provider']
+            provider_name = provider_name if provider_name != 'filesystem' else 'osfstorage'
+            for provider in list_providers:
+                if (provider.__dict__['name'].split('.')[-1]) == provider_name:
+                    list_providers_configed.append({'region': region[i], 'provider': provider})
+                            
         kwargs['institution'] = institution
         kwargs['region'] = region
-        kwargs['providers'] = utils.get_providers()
+        kwargs['providers'] = list_providers # utils.get_providers()
+        kwargs['providers_configed'] = list_providers_configed # utils.get_providers()
         kwargs['selected_provider_short_name'] = provider_name
         kwargs['have_storage_name'] = utils.have_storage_name(provider_name)
         kwargs['osf_domain'] = osf_settings.DOMAIN
@@ -195,7 +202,6 @@ class SaveCredentialsView(InstitutionalStorageBaseView, View):
             }, status=http_status.HTTP_400_BAD_REQUEST)
 
         result = None
-
         if provider_short_name == 's3':
             result = utils.save_s3_credentials(
                 institution_id,

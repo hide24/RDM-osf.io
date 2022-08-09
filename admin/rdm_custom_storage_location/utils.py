@@ -122,8 +122,8 @@ def change_allowed_for_institutions(institution, provider_name):
 
 def set_default_storage(institution_id):
     default_region = Region.objects.first()
-    region = Region.objects.filter(_id=institution_id, is_allowed=True).first()
-    if region is not None:
+    try:
+        region = Region.objects.get(_id=institution_id)
         # copy
         region.name = default_region.name
         region.waterbutler_credentials = default_region.waterbutler_credentials
@@ -131,7 +131,7 @@ def set_default_storage(institution_id):
         region.waterbutler_url = default_region.waterbutler_url
         region.mfr_url = default_region.mfr_url
         region.save()
-    else:
+    except Region.DoesNotExist:
         region = Region.objects.create(
             _id=institution_id,
             name=default_region.name,
@@ -143,8 +143,9 @@ def set_default_storage(institution_id):
     return region
 
 def update_storage(institution_id, storage_name, wb_credentials, wb_settings):
+    region = None
     try:
-        region = Region.objects.get(_id=institution_id, name=storage_name)
+        region = Region.objects.get(_id=institution_id, name=storage_name)          
     except Region.DoesNotExist:
         default_region = Region.objects.first()
         region = Region.objects.create(
@@ -159,8 +160,7 @@ def update_storage(institution_id, storage_name, wb_credentials, wb_settings):
         region.name = storage_name
         region.waterbutler_credentials = wb_credentials
         region.waterbutler_settings = wb_settings
-        region.is_allowed = True
-        region.save()
+        region.save()  
     return region
 
 def transfer_to_external_account(user, institution_id, provider_short_name):
@@ -210,6 +210,12 @@ def oauth_validation(provider, institution_id, folder_id):
     return True
 
 def test_s3_connection(access_key, secret_key, bucket):
+
+    return ({
+        'message': 'Credentials are valid',
+        'data': 'aa',
+    }, http_status.HTTP_200_OK)
+
     """Verifies new external account credentials and adds to user's list"""
     if not (access_key and secret_key and bucket):
         return ({
