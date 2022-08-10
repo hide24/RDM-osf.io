@@ -27,7 +27,7 @@
         font-size: large;
     }
 
-    .table tbody tr .storage_input {
+    .table tbody tr .storage_input_content {
         width: 300px;
     }
 </style>
@@ -70,45 +70,50 @@
                     </thead>
                     <tbody>  
                         {% for provider_item in providers_configed %}
-                        <tr>
-                            <td class="storage_input">
-                                <div>
-                                    <input {% if provider_item.region.name != 'osfstorage' %}
-                                               value="{{provider_item.region.name}}"
-                                           {% else %}
-                                               disabled
-                                               value=""
-                                           {% endif %}
-                                           class="form-control" required type="text" name="{{provider_item.provider.short_name}}" id="{{provider_item.region.name}}" >
-                                </div>
-                            </td>
-                            <td>
-                                <div>
-                                    <h4>
-                                        <img src="{{provider_item.provider.icon_url_admin}}">
-                                        <span>{{provider_item.provider.full_name}}</span>
-                                    </h4>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="input-group form-check">
-                                    <input type="checkbox" name="login_availability" checked="checked"
-                                           onchange="{this.classList.toggle('checked'); this.value = this.classList.contains('checked') ? 'on' : 'off'; this.checked = true;}"
-                                           {% if provider_item.region.is_allowed == True %}
-                                               value="on"
-                                           {% else %}
-                                               value="off"
-                                           {% endif%}
-                                           data-toggle="toggle" data-onstyle="success" class="btn apple-switch checked">
-                                </div>
-                            </td>
-                            <td style="width: 30px;">
-                                <button class="btn btn-default">{% trans "Cancel" %}</button>
-                            </td>
-                            <td style="width: 30px;">
-                                <button class="btn btn-success" type="submit">{% trans "Save" %}</button>
-                            </td>
-                        </tr>
+                            <form role="form" id="change_institutional_storage_form" name="{{provider_item.region.id}}">
+                                {% csrf_token %}
+                                <tr>
+                                    <td class="storage_input_content">
+                                        <div>
+                                            <input {% if provider_item.provider.short_name != 'osfstorage' %}
+                                                    value="{{provider_item.region.name}}"
+                                                {% else %}
+                                                    disabled
+                                                    value=""
+                                                {% endif %}
+                                                class="form-control storage_input_value" required type="text" name="{{provider_item.provider.short_name}}" id="{{provider_item.region.id}}">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <h4>
+                                                <img src="{{provider_item.provider.icon_url_admin}}">
+                                                <span>{{provider_item.provider.full_name}}</span>
+                                            </h4>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="input-group form-check">
+                                            <input type="checkbox" name="{{provider_item.provider.short_name}}" checked="checked" id="{{provider_item.region.id}}"
+                                                onchange="{this.classList.toggle('checked'); this.value = this.classList.contains('checked') ? 'on' : 'off'; this.checked = true;}"
+                                                {% if provider_item.region.is_allowed == True %}
+                                                    value="on"
+                                                    class="btn apple-switch checked changed_allowed"
+                                                {% else %}
+                                                    value="off"
+                                                    class="btn apple-switch changed_allowed"
+                                                {% endif%}
+                                                data-toggle="toggle" data-onstyle="success" >
+                                        </div>
+                                    </td>
+                                    <td style="width: 30px;">
+                                        <button class="btn btn-default" type="reset" id="{{provider_item.region.id}}">{% trans "Cancel" %}</button>
+                                    </td>
+                                    <td style="width: 30px;">
+                                        <button class="btn btn-success" type="submit">{% trans "Save" %}</button>
+                                    </td>
+                                </tr>
+                            </form>
                         {% endfor %}
                     </tbody>
                 </table>
@@ -119,7 +124,7 @@
 <input type="hidden" id="osf_domain" value="{{ osf_domain }}">
 <br class="clear">
 {% for provider_item in providers %}
-{% include provider_item.modal_path %}
+    {% include provider_item.modal_path %}
 {% endfor %}
 {% endblock content %}
 {% block bottom_js %}
