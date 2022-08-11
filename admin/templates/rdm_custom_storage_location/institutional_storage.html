@@ -70,8 +70,7 @@
                     </thead>
                     <tbody>  
                         {% for provider_item in providers_configed %}
-                            <form role="form" id="change_institutional_storage_form" name="{{provider_item.region.id}}">
-                                {% csrf_token %}
+                            <form role="form">
                                 <tr>
                                     <td class="storage_input_content">
                                         <div>
@@ -110,7 +109,7 @@
                                         <button class="btn btn-default" type="reset" id="{{provider_item.region.id}}">{% trans "Cancel" %}</button>
                                     </td>
                                     <td style="width: 30px;">
-                                        <button class="btn btn-success" type="submit">{% trans "Save" %}</button>
+                                        <button class="btn btn-success save_button" id="{{provider_item.region.id}}" type="button">{% trans "Save" %}</button>
                                     </td>
                                 </tr>
                             </form>

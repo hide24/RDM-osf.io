@@ -86,18 +86,29 @@ $('.changed_allowed').change(function () {
     ajaxRequest(params, providerShortName, 'change_allowed', null);
 });
 
+$('button[type=reset]').click(function (){
+    NEW_NAME_CURRENT = null;
+    NAME_CURRENT = null;
+});
+
+$('button[data-dismiss="modal"]').click(function (){
+    NEW_NAME_CURRENT = null;
+    NAME_CURRENT = null;
+});
+
 $('#institutional_storage_form').submit(function (e) {
-    console.log('add storage call');
+    NEW_NAME_CURRENT = null;
+    NAME_CURRENT = null;
     if ($('#institutional_storage_form')[0].checkValidity()) {
         var provider = selectedProvider();
         var new_storage_name = $('#storage_name').val().trim();
         var check_exsting_name = false;
         $('input[type=text][class="form-control storage_input_value"]').each(function() {
-            if($(this).val().trim() == new_storage_name){
+            if($(this).val().trim() === new_storage_name){
                 check_exsting_name = true;
             }
         });
-        if(check_exsting_name == true)
+        if(check_exsting_name === true)
             $osf.growl('Failed', `The name ${new_storage_name} is existing`);
         else{
             preload(provider, null);
@@ -123,24 +134,22 @@ $('#institutional_storage_form').submit(function (e) {
             }
         }
         e.preventDefault();
-        NEW_NAME_CURRENT = null;
-        NAME_CURRENT = null;
     }
 });
 
-$('#change_institutional_storage_form').submit(function (e) {
+$('.save_button').click(function () {
     console.log('change storage call');
-    var id = $(this).attr('name');
+    var id = $(this).attr('id');
     var provider = $(`input[type=text][id=${id}]`).attr('name');
     NEW_NAME_CURRENT = $(`input[type=text][id=${id}]`).val().trim();
     NAME_CURRENT = $(`input[type=text][id=${id}]`).attr('value').trim();
     var check_exsting_name = false;
     $('input[type=text][class="form-control storage_input_value"]').each(function() {
-        if($(this).val().trim() == NEW_NAME_CURRENT && $(this).attr('id') != id){
+        if($(this).val().trim() === NEW_NAME_CURRENT && $(this).attr('id') !== id){
             check_exsting_name = true;
         }
     });
-    if(check_exsting_name == true)
+    if(check_exsting_name === true)
         $osf.growl('Failed', `The name ${NEW_NAME_CURRENT} is existing`);
     else{
         preload(provider, null);
@@ -165,7 +174,6 @@ $('#change_institutional_storage_form').submit(function (e) {
             });
         }
     }
-    e.preventDefault();
 });
 
 $('#s3_modal input').keyup(function () {
@@ -356,13 +364,13 @@ function buttonClicked(button, route) {
     };
     getParameters(params);
     if(NEW_NAME_CURRENT != null) {
-        params.new_storage_name = NEW_NAME_CURRENT
-        params.storage_name = NAME_CURRENT
+        params.new_storage_name = NEW_NAME_CURRENT;
+        params.storage_name = NAME_CURRENT;
     }
     ajaxRequest(params, providerShortName, route, null);
 }
 
-var csrftoken = $('[name=csrfmiddlewaretoken]').val()
+var csrftoken = $('[name=csrfmiddlewaretoken]').val();
 
 function csrfSafeMethod(method) {
     return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));

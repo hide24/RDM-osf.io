@@ -40,24 +40,26 @@ class InstitutionalStorageView(InstitutionalStorageBaseView, TemplateView):
     def get_context_data(self, *args, **kwargs):
         institution = self.request.user.affiliated_institutions.first()
         region = None
+        list_region = []
         if Region.objects.filter(_id=institution._id).exists():
             region = Region.objects.filter(_id=institution._id).all()
+            list_region = region
         else:
             region = Region.objects.first()
             region.name = ''
+            list_region.append(region)
         
         list_providers = utils.get_providers()
         list_providers_configed = []
 
-        for i in range(len(region)):
-            provider_name = region[i].waterbutler_settings['storage']['provider']
+        for i in range(len(list_region)):
+            provider_name = list_region[i].waterbutler_settings['storage']['provider']
             provider_name = provider_name if provider_name != 'filesystem' else 'osfstorage'
             for provider in list_providers:
                 if (provider.__dict__['name'].split('.')[-1]) == provider_name:
-                    list_providers_configed.append({'region': region[i], 'provider': provider})
-        logger.info(region[0].__dict__)                    
+                    list_providers_configed.append({'region': list_region[i], 'provider': provider})
         kwargs['institution'] = institution
-        kwargs['region'] = region
+        kwargs['region'] = list_region
         kwargs['providers'] = list_providers # utils.get_providers()
         kwargs['providers_configed'] = list_providers_configed # utils.get_providers()
         kwargs['selected_provider_short_name'] = provider_name
