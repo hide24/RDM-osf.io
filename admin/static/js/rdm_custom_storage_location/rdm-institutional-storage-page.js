@@ -50,10 +50,6 @@ function disable_storage_name(provider) {
 			    no_storage_name_providers.indexOf(provider) >= 0);
 }
 
-//function selectedProvider() {
-//     return $('input[name=\'options\']:checked').val();
-//}
-
 function selectedProvider() {
      return $('select[name=\'options\']').val();
 }

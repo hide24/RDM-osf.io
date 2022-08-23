@@ -469,6 +469,7 @@ class OsfStorageFolder(OsfStorageFileNode, Folder):
         for child in self.children.all().prefetch_related('versions'):
             child.update_region_from_latest_version(destination_parent)
 
+
 class Region(models.Model):
     # GRDM ver.: Region._id may be Institution._id
     _id = models.CharField(max_length=255, db_index=True)
@@ -477,6 +478,8 @@ class Region(models.Model):
     waterbutler_url = models.URLField(default=website_settings.WATERBUTLER_URL)
     mfr_url = models.URLField(default=website_settings.MFR_SERVER_URL)
     waterbutler_settings = DateTimeAwareJSONField(default=dict)
+    is_allowed = models.BooleanField(default=True)
+    is_primary = models.BooleanField(default=False)
 
     def __unicode__(self):
         return '{}'.format(self.name)
@@ -492,6 +495,37 @@ class Region(models.Model):
     class Meta:
         unique_together = ('_id', 'name')
 
+    @property
+    def provider_name(self):
+        waterbutler_settings = self.waterbutler_settings
+        provider_name = None
+        # json path storage/provider
+        if "storage" in waterbutler_settings:
+            storage = waterbutler_settings["storage"]
+            if "provider" in storage:
+                provider_name = storage["provider"]
+
+        return provider_name if provider_name != 'filesystem' else 'osfstorage'
+
+    @property
+    def addon(self):
+        for addon in website_settings.ADDONS_AVAILABLE:
+            if addon.short_name == self.provider_name:
+                return addon
+        return None
+
+    @property
+    def provider_short_name(self):
+        if hasattr(self.addon, 'short_name'):
+            return self.addon.short_name
+        return None
+
+    @property
+    def provider_full_name(self):
+        if hasattr(self.addon, 'full_name'):
+            return self.addon.full_name
+        return None
+
 
 class UserSettings(BaseUserSettings):
     default_region = models.ForeignKey(Region, null=True, on_delete=models.CASCADE)
@@ -505,7 +539,9 @@ class UserSettings(BaseUserSettings):
         NodeSettings.objects.filter(user_settings=user_settings).update(user_settings=self)
 
     def set_region(self, region_id):
-        region = Region.objects.filter(_id=region_id, is_allowed=True).first()
+        # if existing certificates for the institution's region
+        # get and use the default (one) region
+        region = Region.objects.filter(_id=region_id, is_allowed=True, is_primary=True).first()
         if region.exists() is False:
             raise ValueError('Region cannot be found.')
 
@@ -523,6 +559,8 @@ class NodeSettings(BaseNodeSettings, BaseStorageAddon):
 
     region = models.ForeignKey(Region, null=True, on_delete=models.CASCADE)
     user_settings = models.ForeignKey(UserSettings, null=True, blank=True, on_delete=models.CASCADE)
+    owner = models.ForeignKey(AbstractNode, related_name='%(app_label)s_node_settings',
+                              null=True, blank=True, on_delete=models.CASCADE)
 
     @property
     def folder_name(self):

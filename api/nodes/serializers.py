@@ -98,7 +98,7 @@ def update_institutions(node, new_institutions, user, post=False):
 class RegionRelationshipField(RelationshipField):
 
     def to_internal_value(self, data):
-        region_id = Region.objects.filter(_id=data, is_allowed=True).values_list('id', flat=True).first()
+        region_id = Region.objects.filter(_id=data, is_allowed=True, is_primary=True).values_list('id', flat=True).first()
         if region_id is None:
             raise exceptions.ValidationError(detail='Region {} is invalid.'.format(data))
         return {'region_id': region_id}

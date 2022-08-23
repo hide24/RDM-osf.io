@@ -110,6 +110,8 @@ class UserListByInstitutionStorageID(RdmPermissionMixin, QuotaUserList):
         query = 'select name ' \
                 'from addons_osfstorage_region ' \
                 'where addons_osfstorage_region._id = osf_institution._id ' \
+                '  and addons_osfstorage_region.is_allowed = true ' \
+                '  and addons_osfstorage_region.is_primary = true ' \
                 'order by id limit 1'
         institution = Institution.objects.filter(
             id=self.kwargs['institution_id']

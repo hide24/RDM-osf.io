@@ -31,13 +31,13 @@ class RegionMixin(object):
                 # use computed property if region annotation does not exist
                 # i.e. after creating a node
                 region_id = node.osfstorage_region._id
-        reg = Region.objects.filter(_id=region_id, is_allowed=True).first()
-        if reg is None:
+        region = Region.objects.filter(_id=region_id, is_allowed=True, is_primary=True).first()
+        if region is None:
             raise NotFound(
                 detail='No region matching that region_id could be found.',
             )
-        self.check_object_permissions(self.request, reg)
-        return reg
+        self.check_object_permissions(self.request, region)
+        return region
 
 
 class RegionList(JSONAPIBaseView, generics.ListAPIView, ListFilterMixin):

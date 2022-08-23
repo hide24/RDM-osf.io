@@ -297,7 +297,7 @@ class NodeList(JSONAPIBaseView, bulk_views.BulkUpdateJSONAPIView, bulk_views.Bul
         context = super(NodeList, self).get_serializer_context()
         region_id = self.request.query_params.get('region', None)
         if region_id:
-            region_id = Region.objects.filter(_id=region_id, is_allowed=True).values_list('id', flat=True).first()
+            region_id = Region.objects.filter(_id=region_id, is_allowed=True, is_primary=True).values_list('id', flat=True).first()
             if region_id is None:
                 raise InvalidQueryStringError('Region {} is invalid.'.format(region_id))
             context.update({

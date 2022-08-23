@@ -2,130 +2,141 @@
 {% load render_bundle from webpack_loader %}
 {% load static %}
 {% load i18n %}
+
 {% block top_includes %}
-<link rel="stylesheet" type="text/css" href="/static/css/institutions.css" />
-<link rel="stylesheet" href="/static/css/rdm_addons.css">
-<link rel="stylesheet" href="/static/css/rdm_institutional_storage.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/institutions.css"/>
+    <link rel="stylesheet" href="/static/css/rdm_addons.css">
+    <link rel="stylesheet" href="/static/css/rdm_institutional_storage.css">
 {% endblock %}
+
 {% load user_extras %}
 {% load spam_extras %}
+
 {% block title %}
-<title>{% trans "Institutional Storage" %}</title>
+    <title>{% trans "Institutional Storage" %}</title>
 {% endblock title %}
+
 {% block content %}
-<style>
-    .table > tbody > tr > td {
-        vertical-align: middle;
-    }
-    
-    .table {
-        margin-bottom: 0;   
-    }
+    <style>
+        .table > tbody > tr > td {
+            vertical-align: middle;
+        }
 
-    .table > thead > tr > th {
-        border: none;
-        font-size: large;
-    }
+        .table {
+            margin-bottom: 0;
+        }
 
-    .table tbody tr .storage_input_content {
-        width: 300px;
-    }
-</style>
-<h2 style="margin-bottom:40px;">{% trans "Institutional Storage " %}<small>({{ institution.name }})</small></h2>
-<form role="form" id="institutional_storage_form">
-    {% csrf_token %}
-    <div class="row form-inline storage-name">
-        <div class="form-group">
-            <label for="storage_name" style="width:80px;" class="label-large">{% trans "Name: " %}</label>
-            <input type="text" required class="form-control" id="storage_name" name="storage_name" oninvalid="this.setCustomValidity('This field is required.') " oninput="setCustomValidity('')">
-        </div>
-    </div>
-    <div class="row form-inline storage-name" style="margin-top:20px;">
-        <div class="form-group">
-            <label for="storage_name" style="width:80px;" class="label-large">{% trans "Provider: " %}</label>
-            <select id="providers" name="options" class="form-control">
-                {% for provider_item in providers %}
-                    <option value="{{ provider_item.short_name }}">{{ provider_item.full_name }}</option>
-                {% endfor %}
-            </select>
-        </div>
-    </div>
-    <button style="width:90px; margin-bottom:30px; margin-top:10px" class="btn btn-success" type="submit">{% trans "Add" %}</button>
-</form>
+        .table > thead > tr > th {
+            border: none;
+            font-size: large;
+        }
 
-<div class="row">
-    <div class="col-md-12">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title label-large">{% trans "Institutional Storage Configurations" %}</h3>
+        .table tbody tr .storage_input_content {
+            width: 300px;
+        }
+    </style>
+    <h2 style="margin-bottom:40px;">{% trans "Institutional Storage " %}<small>({{ institution.name }})</small></h2>
+    <form role="form" id="institutional_storage_form">
+        {% csrf_token %}
+        <div class="row form-inline storage-name">
+            <div class="form-group">
+                <label for="storage_name" style="width:80px;" class="label-large">{% trans "Name: " %}</label>
+                <input type="text" required class="form-control" id="storage_name" name="storage_name"
+                       oninvalid="this.setCustomValidity('This field is required.') " oninput="setCustomValidity('')">
             </div>
-            <div class="panel-body">
-                <table class="table table-condensed">
-                    <thead>
+        </div>
+        <div class="row form-inline storage-name" style="margin-top:20px;">
+            <div class="form-group">
+                <label for="storage_name" style="width:80px;" class="label-large">{% trans "Provider: " %}</label>
+                <select id="providers" name="options" class="form-control">
+                    {% for provider_item in providers %}
+                        <option value="{{ provider_item.short_name }}">{{ provider_item.full_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <button style="width:90px; margin-bottom:30px; margin-top:10px" class="btn btn-success" type="submit">{% trans "Add" %}</button>
+    </form>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title label-large">{% trans "Institutional Storage Configurations" %}</h3>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-condensed">
+                        <thead>
                         <tr>
                             <th>{% trans "Name" %}</th>
                             <th>{% trans "Provider" %}</th>
                             <th>{% trans "Allow" %}</th>
                         </tr>
-                    </thead>
-                    <tbody>  
-                        {% for provider_item in providers_configed %}
+                        </thead>
+                        <tbody>
+                        {% for provider_item in providers_configured %}
                             <form role="form">
                                 <tr>
                                     <td class="storage_input_content">
                                         <div>
                                             <input {% if provider_item.provider.short_name != 'osfstorage' %}
-                                                    value="{{provider_item.region.name}}"
-                                                {% else %}
-                                                    disabled
-                                                    value=""
-                                                {% endif %}
-                                                class="form-control storage_input_value" required type="text" name="{{provider_item.provider.short_name}}" id="{{provider_item.region.id}}">
+                                                value="{{ provider_item.region.name }}"
+                                            {% else %}
+                                                disabled
+                                                value=""
+                                            {% endif %}
+                                                class="form-control storage_input_value" required type="text"
+                                                name="{{ provider_item.provider.short_name }}" id="{{ provider_item.region.id }}">
                                         </div>
                                     </td>
                                     <td>
                                         <div>
                                             <h4>
-                                                <img src="{{provider_item.provider.icon_url_admin}}">
-                                                <span>{{provider_item.provider.full_name}}</span>
+                                                <img src="{{ provider_item.provider.icon_url_admin }}">
+                                                <span>{{ provider_item.provider.full_name }}</span>
                                             </h4>
                                         </div>
                                     </td>
                                     <td>
                                         <div class="input-group form-check">
-                                            <input type="checkbox" name="{{provider_item.provider.short_name}}" checked="checked" id="{{provider_item.region.id}}"
-                                                onchange="{this.classList.toggle('checked'); this.value = this.classList.contains('checked') ? 'on' : 'off'; this.checked = true;}"
-                                                {% if provider_item.region.is_allowed == True %}
-                                                    value="on"
-                                                    class="btn apple-switch checked changed_allowed"
-                                                {% else %}
-                                                    value="off"
-                                                    class="btn apple-switch changed_allowed"
-                                                {% endif%}
-                                                data-toggle="toggle" data-onstyle="success" >
+                                            <input type="checkbox" name="{{ provider_item.provider.short_name }}" checked="checked"
+                                                   id="{{ provider_item.region.id }}"
+                                                   onchange="{this.classList.toggle('checked'); this.value = this.classList.contains('checked') ? 'on' : 'off'; this.checked = true;}"
+                                                    {% if provider_item.region.is_allowed == True %}
+                                                   value="on"
+                                                   class="btn apple-switch checked changed_allowed"
+                                                    {% else %}
+                                                   value="off"
+                                                   class="btn apple-switch changed_allowed"
+                                                    {% endif %}
+                                                   data-toggle="toggle" data-onstyle="success">
                                         </div>
                                     </td>
                                     <td style="width: 30px;">
-                                        <button class="btn btn-default" type="reset" id="{{provider_item.region.id}}">{% trans "Cancel" %}</button>
+                                        <button class="btn btn-default" type="reset" id="{{ provider_item.region.id }}">{% trans "Cancel" %}</button>
                                     </td>
                                     <td style="width: 30px;">
-                                        <button class="btn btn-success save_button" id="{{provider_item.region.id}}" type="button">{% trans "Save" %}</button>
+                                        <button class="btn btn-success save_button" id="{{ provider_item.region.id }}"
+                                                type="button">{% trans "Save" %}</button>
                                     </td>
                                 </tr>
                             </form>
                         {% endfor %}
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
-</div>
-<input type="hidden" id="osf_domain" value="{{ osf_domain }}">
-<br class="clear">
-{% for provider_item in providers %}
-    {% include provider_item.modal_path %}
-{% endfor %}
+    {% for provider_item in providers %}
+        {% include provider_item.modal_path %}
+    {% endfor %}
+
+    <input type="hidden" id="osf_domain" value="{{ osf_domain }}">
+
+    <br class="clear">
 {% endblock content %}
+
 {% block bottom_js %}
-{% render_bundle 'rdm-institutional-storage-page' %}
+    {% render_bundle 'rdm-institutional-storage-page' %}
 {% endblock %}

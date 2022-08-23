@@ -286,7 +286,9 @@ def update_default_storage(user):
         institution = user.affiliated_institutions.first()
         if institution is not None:
             # logger.info(u'Institution: {}'.format(institution.name))
-            region = Region.objects.filter(_id=institution._id, is_allowed=True).first()
+            # if existing certificates for the institution's region
+            # get and use the default (one) region
+            region = institution.get_default_region()
             if region is None:
                 # logger.info('Inside update_default_storage: region does not exist.')
                 pass
