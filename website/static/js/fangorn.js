@@ -395,7 +395,7 @@ function resolveconfigOption(item, option, args) {
  * @param {Object} parent A Treebeard _item object. Node information is inside item.data
  * @this Treebeard.controller
  */
-var inheritedFields = ['nodeId', 'nodeUrl', 'nodeApiUrl', 'permissions', 'provider', 'accept'];
+var inheritedFields = ['nodeId', 'nodeUrl', 'nodeApiUrl', 'permissions', 'provider', 'accept', 'regionId', 'type'];
 function inheritFromParent(item, parent, fields) {
     inheritedFields.concat(fields || []).forEach(function(field) {
         item.data[field] = item.data[field] || parent.data[field];
@@ -645,6 +645,9 @@ function doItemOp(operation, to, from, rename, conflict) {
         options.branch = from.data.branch;
         moveSpec.branch = from.data.branch;
     }
+    if(from.data.regionId) {
+        options.region_id = from.data.regionId;
+    }
 
     from.inProgress = true;
     tb.clearMultiselect();
@@ -695,6 +698,8 @@ function doItemOp(operation, to, from, rename, conflict) {
         }
         // no need to redraw because fangornOrderFolder does it
         orderFolder.call(tb, from.parent());
+        // order content of from
+        orderFolder.call(tb, from);
     }).fail(function(xhr, textStatus) {
         if (to.data.provider === from.provider) {
             tb.pendingFileOps.pop();
@@ -764,7 +769,12 @@ function _fangornResolveUploadUrl(item, file) {
     $.each(filenames, function( i, filename ) {
         $.each(item.children, function( index, value ) {
             if (filename === value.data.name) {
-                updateUrl = waterbutler.buildTreeBeardUpload(value);
+                if(value.data.hasOwnProperty('regionId')){
+                    updateUrl = waterbutler.buildTreeBeardUpload(value, {region_id: value.data.regionId});
+                }
+                else {
+                    updateUrl = waterbutler.buildTreeBeardUpload(value);
+                }
                 return false;
             }
         });
@@ -772,6 +782,9 @@ function _fangornResolveUploadUrl(item, file) {
             return false;
         }
     });
+    if(item.data.hasOwnProperty('regionId')){
+        return updateUrl || waterbutler.buildTreeBeardUpload(item, {name: file.name, region_id: item.data.regionId});
+    }
 
     return updateUrl || waterbutler.buildTreeBeardUpload(item, {name: file.name});
 }
@@ -1100,7 +1113,12 @@ function _downloadEvent (event, item, col) {
     } catch (e) {
         window.event.cancelBubble = true;
     }
-    window.location = waterbutler.buildTreeBeardDownload(item);
+    if (item.data.regionId) {
+        window.location = waterbutler.buildTreeBeardDownload(item, {region_id: item.data.regionId});
+    }
+    else {
+        window.location = waterbutler.buildTreeBeardDownload(item);
+    }
 }
 
 function _downloadZipEvent (event, item, col) {
@@ -1109,7 +1127,12 @@ function _downloadZipEvent (event, item, col) {
     } catch (e) {
         window.event.cancelBubble = true;
     }
-    window.location = waterbutler.buildTreeBeardDownloadZip(item);
+    if (item.data.regionId) {
+        window.location = waterbutler.buildTreeBeardDownloadZip(item, {region_id: item.data.regionId});
+    }
+    else {
+        window.location = waterbutler.buildTreeBeardDownloadZip(item);
+    }
 }
 
 function _createFolder(event, dismissCallback, helpText) {
@@ -1132,6 +1155,10 @@ function _createFolder(event, dismissCallback, helpText) {
     var extra = {};
     var path = parent.data.path || '/';
     var options = {name: val, kind: 'folder', waterbutlerURL: parent.data.waterbutlerURL};
+
+    if(parent.data.hasOwnProperty('regionId')) {
+        options.region_id = parent.data.regionId;
+    }
 
     if ((parent.data.provider === 'github') || (parent.data.provider === 'gitlab')) {
         extra.branch = parent.data.branch;
@@ -1178,7 +1205,12 @@ function _removeEvent (event, items, col) {
         tb.select('.modal-footer .btn-danger').html(gettext('<i> Deleting...</i>')).removeClass('btn-danger').addClass('btn-default disabled');
         // delete from server, if successful delete from view
         var url = resolveconfigOption.call(this, item, 'resolveDeleteUrl', [item]);
-        url = url || waterbutler.buildTreeBeardDelete(item);
+        if (item.data.regionId) {
+            url = url || waterbutler.buildTreeBeardDelete(item, {region_id: item.data.regionId} );
+        }
+        else {
+            url = url || waterbutler.buildTreeBeardDelete(item);
+        }
         $.ajax({
             url: url,
             type: 'DELETE',
@@ -1370,6 +1402,9 @@ function _fangornResolveLazyLoad(item) {
 
     if (item.data.provider === undefined) {
         return false;
+    }
+    if(item.data.hasOwnProperty('regionId')) {
+        return waterbutler.buildTreeBeardMetadata(item, {region_id: item.data.regionId});
     }
     return waterbutler.buildTreeBeardMetadata(item);
 }

@@ -815,8 +815,14 @@ def addon_view_or_download_file(auth, path, provider, **kwargs):
         raise HTTPError(http_status.HTTP_400_BAD_REQUEST)
 
     if hasattr(target, 'get_addon'):
-
-        node_addon = target.get_addon(provider)
+        _id = path.split('/')[0]
+        file_node = None
+        while True:
+            file_node = BaseFileNode.objects.filter(_id=_id).first()
+            if file_node is None or file_node.is_root is True:
+                break
+            _id = BaseFileNode.objects.get(id=file_node.parent_id)._id
+        node_addon = target.get_addon(provider, root_id=file_node.id)
 
         if not isinstance(node_addon, BaseStorageAddon):
             object_text = markupsafe.escape(getattr(target, 'project_or_component', 'this object'))

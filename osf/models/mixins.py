@@ -547,7 +547,7 @@ class AddonModelMixin(models.Model):
             return addon
         return self.add_addon(name, *args, **kwargs)
 
-    def get_addon(self, name, is_deleted=False, region_id=None):
+    def get_addon(self, name, is_deleted=False, region_id=None, root_id=None):
         try:
             settings_model = self._settings_model(name)
         except LookupError:
@@ -555,10 +555,12 @@ class AddonModelMixin(models.Model):
         if not settings_model:
             return None
         try:
-            if region_id:
+            if root_id:
+                settings_obj = settings_model.objects.get(owner=self, root_node_id=root_id)
+            elif region_id:
                 settings_obj = settings_model.objects.get(owner=self, region_id=region_id)
             else:
-                settings_obj = settings_model.objects.get(owner=self)
+                settings_obj = settings_model.objects.filter(owner=self).first()
             if not settings_obj.is_deleted or is_deleted:
                 return settings_obj
         except ObjectDoesNotExist:
