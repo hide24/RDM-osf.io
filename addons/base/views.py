@@ -5,6 +5,8 @@ import uuid
 import markupsafe
 from future.moves.urllib.parse import quote
 from django.utils import timezone
+from urllib.parse import urlparse
+from urllib.parse import parse_qs
 
 from distutils.util import strtobool
 from flask import make_response
@@ -291,6 +293,7 @@ def get_auth(auth, **kwargs):
         action = data['action']
         node_id = data['nid']
         provider_name = data['provider']
+        region_id = data['region_id']
     except KeyError:
         raise HTTPError(http_status.HTTP_400_BAD_REQUEST)
 
@@ -303,7 +306,7 @@ def get_auth(auth, **kwargs):
     check_access(node, auth, action, cas_resp)
     provider_settings = None
     if hasattr(node, 'get_addon'):
-        provider_settings = node.get_addon(provider_name)
+        provider_settings = node.get_addon(provider_name, region_id=region_id)
         if not provider_settings:
             raise HTTPError(http_status.HTTP_400_BAD_REQUEST)
 
@@ -366,8 +369,8 @@ def get_auth(auth, **kwargs):
             )
     # If they haven't been set by version region, use the NodeSettings or Preprint directly
     if not (credentials and waterbutler_settings):
-        credentials = node.serialize_waterbutler_credentials(provider_name)
-        waterbutler_settings = node.serialize_waterbutler_settings(provider_name)
+        credentials = node.serialize_waterbutler_credentials(provider_name, region_id=region_id)
+        waterbutler_settings = node.serialize_waterbutler_settings(provider_name, region_id=region_id)
 
     if isinstance(credentials.get('token'), bytes):
         credentials['token'] = credentials.get('token').decode()
@@ -437,6 +440,11 @@ def create_waterbutler_log(payload, **kwargs):
 
             dest = payload['destination']
             src = payload['source']
+            try:
+                parsed_url = urlparse(payload['request_meta']['url'])
+                region_id = parse_qs(parsed_url.query)['region_id'][0]
+            except KeyError:
+                pass
             if src is not None and dest is not None:
                 dest_path = dest['materialized']
                 src_path = src['materialized']
@@ -456,10 +464,10 @@ def create_waterbutler_log(payload, **kwargs):
             # We return provider fullname so we need to load node settings, if applicable
             source = None
             if hasattr(source_node, 'get_addon'):
-                source = source_node.get_addon(payload['source']['provider'])
+                source = source_node.get_addon(payload['source']['provider'], region_id=region_id)
             destination = None
             if hasattr(node, 'get_addon'):
-                destination = node.get_addon(payload['destination']['provider'])
+                destination = node.get_addon(payload['destination']['provider'], region_id=region_id)
 
             payload['source'].update({
                 'materialized': payload['source']['materialized'].lstrip('/'),

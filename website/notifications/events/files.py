@@ -9,7 +9,8 @@ FileEvent and ComplexFileEvent are parent classes with shared functionality.
 """
 from furl import furl
 import markupsafe
-
+from urllib.parse import urlparse
+from urllib.parse import parse_qs
 from website.notifications import emails
 from website.notifications.constants import NOTIFICATION_TYPES
 from website.notifications import utils
@@ -133,8 +134,13 @@ class ComplexFileEvent(FileEvent):
         super(ComplexFileEvent, self).__init__(user, node, event, payload=payload)
 
         source_nid = self.payload['source']['node']['_id']
+        try:
+            parsed_url = urlparse(self.payload['request_meta']['url'])
+            region_id = parse_qs(parsed_url.query)['region_id'][0]
+        except KeyError:
+            pass
         self.source_node = AbstractNode.load(source_nid) or Preprint.load(source_nid)
-        self.addon = self.node.get_addon(self.payload['destination']['provider'])
+        self.addon = self.node.get_addon(self.payload['destination']['provider'], region_id=region_id)
 
     def _build_message(self, lang, html=False):
         addon, f_type, action = tuple(self.action.split('_'))

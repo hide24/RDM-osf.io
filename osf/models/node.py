@@ -6,6 +6,8 @@ import re
 from future.moves.urllib.parse import urljoin
 import warnings
 from rest_framework import status as http_status
+from urllib.parse import urlparse
+from urllib.parse import parse_qs
 
 import bson
 from django.db.models import Q
@@ -84,7 +86,7 @@ from .base import BaseModel, GuidMixin, GuidMixinQuerySet
 from api.caching.tasks import update_storage_usage
 from api.caching import settings as cache_settings
 from api.caching.utils import storage_usage_cache
-
+from django.db.models.query import QuerySet
 
 logger = logging.getLogger(__name__)
 
@@ -1003,10 +1005,20 @@ class AbstractNode(DirtyFieldsMixin, TypedModel, AddonModelMixin, IdentifierMixi
         from addons.osfstorage.models import Region
         osfs_settings = self._settings_model('osfstorage')
         region_subquery = osfs_settings.objects.filter(owner=self.id).values('region_id')
-        try:
-            return Region.objects.get(id=region_subquery)
-        except Exception:
+        if isinstance(region_subquery, QuerySet):
+            for id in region_subquery:
+                try:
+                    region = Region.objects.get(id=id['region_id'])
+                    if region and region.is_allow and region.is_primary:
+                        return region
+                except Exception:
+                    continue
             return Region.objects.first()
+        else:
+            try:
+                return Region.objects.get(id=region_subquery)
+            except Exception:
+                return Region.objects.first()
 
     @property
     def parent_id(self):
@@ -1048,6 +1060,16 @@ class AbstractNode(DirtyFieldsMixin, TypedModel, AddonModelMixin, IdentifierMixi
         QuerySet.
         """
         return self.all_tags.filter(system=True).values_list('name', flat=True)
+
+    def get_short_name(self, addons):
+        short_names = []
+        for addon in addons:
+            if isinstance(addon, QuerySet):
+                for setting in addon:
+                    short_names.append(setting.short_name)
+            else:
+                short_names.append(addon.short_name)
+        return short_names
 
     # Override Taggable
     def add_tag_log(self, tag, auth):
@@ -2363,16 +2385,22 @@ class AbstractNode(DirtyFieldsMixin, TypedModel, AddonModelMixin, IdentifierMixi
     def is_registration_of(self, other):
         return self.is_derived_from(other, 'registered_from')
 
-    def serialize_waterbutler_credentials(self, provider_name):
-        return self.get_addon(provider_name).serialize_waterbutler_credentials()
+    def serialize_waterbutler_credentials(self, provider_name, region_id=None):
+        return self.get_addon(provider_name, region_id=region_id).serialize_waterbutler_credentials()
 
-    def serialize_waterbutler_settings(self, provider_name):
-        return self.get_addon(provider_name).serialize_waterbutler_settings()
+    def serialize_waterbutler_settings(self, provider_name, region_id=None):
+        return self.get_addon(provider_name, region_id=region_id).serialize_waterbutler_settings()
 
     def create_waterbutler_log(self, auth, action, payload):
         try:
             metadata = payload['metadata']
-            node_addon = self.get_addon(payload['provider'])
+            try:
+                url = payload['request_meta']['url']
+                parsed_url = urlparse(url)
+                region_id = parse_qs(parsed_url.query)['region_id'][0]
+            except KeyError:
+                region_id = None
+            node_addon = self.get_addon(payload['provider'], region_id=region_id)
         except KeyError:
             raise HTTPError(http_status.HTTP_400_BAD_REQUEST)
 

@@ -120,6 +120,7 @@ def build_addon_root(node_settings, name, permissions=None,
 
     if hasattr(node_settings, 'region'):
         ret.update({'nodeRegion': node_settings.region.name})
+        ret.update({'regionId': node_settings.region.id})
         ret.update({'waterbutlerURL': node_settings.region.waterbutler_url})
 
     return ret
@@ -251,22 +252,27 @@ class NodeFileCollector(object):
         rv = []
         region_disabled = False
         region_provider = None
-        osfstorage = node.get_addon('osfstorage')
+        osfstorage = node.get_addon_osfstorage()
+        data = {}
         if osfstorage:
-            region = osfstorage.region
-            if region and region.waterbutler_settings:
-                region_disabled = region.waterbutler_settings.get(
-                    'disabled', False)
-                storage = region.waterbutler_settings.get('storage', None)
-                if storage:
-                    region_provider = storage.get('provider', None)
-
+            for osf in osfstorage:
+                region = osf.region
+                if region and region.waterbutler_settings:
+                    region_disabled = region.waterbutler_settings.get(
+                        'disabled', False)
+                    storage = region.waterbutler_settings.get('storage', None)
+                    if storage:
+                        region_provider = storage.get('provider', None)
+                data[osf.id] = {
+                    'region_disabled': region_disabled,
+                    'region_provider': region_provider
+                }
         for addon in node.get_addons():
             if addon.config.has_hgrid_files:
-                if addon == osfstorage and region_disabled:
+                if addon.short_name == 'osfstorage' and data[addon.id]['region_disabled']:
                     continue  # skip (hide osfstorage)
                 if addon.config.for_institutions:
-                    if region_provider != addon.config.short_name:
+                    if data[addon.id]['region_provider'] != addon.config.short_name:
                         continue  # skip (hide this *institutions)
 
                 # WARNING: get_hgrid_data can return None if the addon is added but has no credentials.

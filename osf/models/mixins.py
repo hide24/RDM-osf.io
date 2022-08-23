@@ -513,10 +513,18 @@ class AddonModelMixin(models.Model):
         return self.get_addons()
 
     def get_addons(self):
-        return [_f for _f in [
-            self.get_addon(config.short_name)
-            for config in self.ADDONS_AVAILABLE
-        ] if _f]
+        addons = []
+        for config in self.ADDONS_AVAILABLE:
+            if config.short_name == 'osfstorage':
+                osfs = self.get_addon_osfstorage()
+                if osfs:
+                    for osf in osfs:
+                        addons.append(osf)
+            else:
+                addon = self.get_addon(config.short_name)
+                if addon:
+                    addons.append(addon)
+        return addons
 
     def get_oauth_addons(self):
         # TODO: Using hasattr is a dirty hack - we should be using issubclass().
@@ -539,7 +547,7 @@ class AddonModelMixin(models.Model):
             return addon
         return self.add_addon(name, *args, **kwargs)
 
-    def get_addon(self, name, is_deleted=False):
+    def get_addon(self, name, is_deleted=False, region_id=None):
         try:
             settings_model = self._settings_model(name)
         except LookupError:
@@ -547,8 +555,26 @@ class AddonModelMixin(models.Model):
         if not settings_model:
             return None
         try:
-            settings_obj = settings_model.objects.get(owner=self)
+            if region_id:
+                settings_obj = settings_model.objects.get(owner=self, region_id=region_id)
+            else:
+                settings_obj = settings_model.objects.get(owner=self)
             if not settings_obj.is_deleted or is_deleted:
+                return settings_obj
+        except ObjectDoesNotExist:
+            pass
+        return None
+
+    def get_addon_osfstorage(self, is_deleted=False):
+        try:
+            settings_model = self._settings_model('osfstorage')
+        except LookupError:
+            return None
+        if not settings_model:
+            return None
+        try:
+            settings_obj = settings_model.objects.filter(owner=self, is_deleted=False)
+            if settings_obj and not is_deleted:
                 return settings_obj
         except ObjectDoesNotExist:
             pass
