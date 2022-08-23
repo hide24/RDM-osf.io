@@ -68,9 +68,11 @@
                     <table class="table table-condensed">
                         <thead>
                         <tr>
-                            <th>{% trans "Name" %}</th>
-                            <th>{% trans "Provider" %}</th>
-                            <th>{% trans "Allow" %}</th>
+                            <th style="width: 25%;">{% trans "Name" %}</th>
+                            <th style="width: 20%;">{% trans "Provider" %}</th>
+                            <th style="width: 15%;">{% trans "Allow" %}</th>
+                            <th style="width: 15%;">{% trans "Primary" %}</th>
+                            <th style="width: auto;"></th>
                         </tr>
                         </thead>
                         <tbody>
@@ -99,23 +101,28 @@
                                     </td>
                                     <td>
                                         <div class="input-group form-check">
-                                            <input type="checkbox" name="{{ provider_item.provider.short_name }}" checked="checked"
-                                                   id="{{ provider_item.region.id }}"
-                                                   onchange="{this.classList.toggle('checked'); this.value = this.classList.contains('checked') ? 'on' : 'off'; this.checked = true;}"
-                                                    {% if provider_item.region.is_allowed == True %}
-                                                   value="on"
-                                                   class="btn apple-switch checked changed_allowed"
-                                                    {% else %}
-                                                   value="off"
-                                                   class="btn apple-switch changed_allowed"
-                                                    {% endif %}
+                                            <input type="checkbox" checked="checked"
+                                                   data-provider="{{ provider_item.provider.short_name }}"
+                                                   data-id="{{ provider_item.region.id }}"
+                                                   value="{% if provider_item.region.is_allowed %}on{% else %}off{% endif %}"
+                                                   class="btn apple-switch change_allow {% if provider_item.region.is_allowed %} checked {% endif %}{% if provider_item.region.is_primary %} disabled {% endif %}"
+                                                   {% if provider_item.region.is_primary %} disabled {% endif %}
                                                    data-toggle="toggle" data-onstyle="success">
                                         </div>
                                     </td>
-                                    <td style="width: 30px;">
-                                        <button class="btn btn-default" type="reset" id="{{ provider_item.region.id }}">{% trans "Cancel" %}</button>
+                                    <td>
+                                        <div class="input-group form-check">
+                                            <input type="checkbox" checked="checked"
+                                                   data-provider="{{ provider_item.provider.short_name }}"
+                                                   data-id="{{ provider_item.region.id }}"
+                                                   value="{% if provider_item.region.is_primary %}on{% else %}off{% endif %}"
+                                                   class="btn apple-switch change_primary {% if provider_item.region.is_primary %} checked {% endif %}{% if provider_item.region.is_primary %} disabled {% endif %}"
+                                                   {% if provider_item.region.is_primary %} disabled {% endif %}
+                                                   data-toggle="toggle" data-onstyle="success">
+                                        </div>
                                     </td>
-                                    <td style="width: 30px;">
+                                    <td>
+                                        <button class="btn btn-default" type="reset" id="{{ provider_item.region.id }}">{% trans "Cancel" %}</button>
                                         <button class="btn btn-success save_button" id="{{ provider_item.region.id }}"
                                                 type="button">{% trans "Save" %}</button>
                                     </td>

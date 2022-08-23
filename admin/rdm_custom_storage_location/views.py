@@ -24,6 +24,7 @@ logger = logging.getLogger(__name__)
 
 SITE_KEY = 'rdm_custom_storage_location'
 
+
 class InstitutionalStorageBaseView(RdmPermissionMixin, UserPassesTestMixin):
     """ Base class for all the Institutional Storage Views """
     def test_func(self):
@@ -38,17 +39,10 @@ class InstitutionalStorageView(InstitutionalStorageBaseView, TemplateView):
     template_name = 'rdm_custom_storage_location/institutional_storage.html'
 
     def get_context_data(self, *args, **kwargs):
-        institution = self.request.user.affiliated_institutions.first()
+        institution = self.request.user.representative_affiliated_institution
 
-        list_region = []
-        if Region.objects.filter(_id=institution._id).exists():
-            region = Region.objects.filter(_id=institution._id).all()
-            list_region = region
-        else:
-            region = Region.objects.first()
-            region.name = ''
-            list_region.append(region)
-        
+        list_region = institution.get_institutional_storage()
+
         list_providers = utils.get_providers()
         list_providers_configured = []
         provider_name = None
@@ -185,16 +179,41 @@ class TestConnectionView(InstitutionalStorageBaseView, View):
 class ChangeAllowedViews(InstitutionalStorageBaseView, View):
     def post(self, request):
         data = json.loads(request.body)
-        is_allowed = True if data.get('is_allowed') == 'on' else False
-        provider_short_name = data.get('provider_short_name')
-        if not provider_short_name:
+        region_id = data.get('id')
+        is_allowed = data.get('is_allowed')
+        if not region_id:
             response = {
-                'message': 'Provider is missing.'
+                'message': 'Storage id is missing.'
             }
             return JsonResponse(response, status=http_status.HTTP_400_BAD_REQUEST)
-        Region.objects.filter(id=data.get('id')).all().update(is_allowed=is_allowed)
+        regions = Region.objects.filter(id=region_id)
+        regions.update(is_allowed=is_allowed)
         return JsonResponse({
-                'message': 'Set allow for successfully'
+                'message': 'Set allow successfully'
+            }, status=http_status.HTTP_200_OK)
+
+
+class ChangePrimaryViews(InstitutionalStorageBaseView, View):
+    def post(self, request):
+        data = json.loads(request.body)
+        region_id = data.get('id')
+        is_primary = data.get('is_primary')
+        if not region_id:
+            response = {
+                'message': 'Storage id is missing.'
+            }
+            return JsonResponse(response, status=http_status.HTTP_400_BAD_REQUEST)
+        if not is_primary:
+            response = {
+                'message': 'Please turn on another.'
+            }
+            return JsonResponse(response, status=http_status.HTTP_400_BAD_REQUEST)
+        regions = Region.objects.filter(id=region_id)
+        other_regions = Region.objects.exclude(id=region_id)
+        other_regions.update(is_primary=False)
+        regions.update(is_allowed=True, is_primary=is_primary)
+        return JsonResponse({
+                'message': 'Set primary successfully'
             }, status=http_status.HTTP_200_OK)
 
 
@@ -431,6 +450,7 @@ class RemoveTemporaryAuthData(InstitutionalStorageBaseView, View):
             'message': 'Garbage data removed!!'
         }, status=http_status.HTTP_200_OK)
 
+
 def external_acc_update(request, access_token):
     if hashlib.sha512(SITE_KEY.encode('utf-8')).hexdigest() != access_token.lower():
         return HttpResponse(
@@ -447,6 +467,7 @@ def external_acc_update(request, access_token):
 
 def to_bool(val):
     return val.lower() in ['true']
+
 
 class UserMapView(InstitutionalStorageBaseView, View):
     def post(self, request, *args, **kwargs):
