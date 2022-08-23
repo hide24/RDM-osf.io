@@ -42,6 +42,9 @@ class InstitutionalStorageView(InstitutionalStorageBaseView, TemplateView):
         institution = self.request.user.representative_affiliated_institution
 
         list_region = institution.get_institutional_storage()
+        if not list_region:
+            region = utils.set_default_storage(institution.guid)
+            list_region = [region]
 
         list_providers = utils.get_providers()
         list_providers_configured = []
