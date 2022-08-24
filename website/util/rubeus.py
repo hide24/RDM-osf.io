@@ -265,11 +265,12 @@ class NodeFileCollector(object):
                         region_provider = storage.get('provider', None)
                 data[osf.id] = {
                     'region_disabled': region_disabled,
-                    'region_provider': region_provider
+                    'region_provider': region_provider,
+                    'is_allowed': region.is_allowed
                 }
         for addon in node.get_addons():
             if addon.config.has_hgrid_files:
-                if addon.short_name == 'osfstorage' and data[addon.id]['region_disabled']:
+                if (addon.short_name == 'osfstorage' and data[addon.id]['region_disabled']) or data[addon.id]['is_allowed'] is False:
                     continue  # skip (hide osfstorage)
                 if addon.config.for_institutions:
                     if data[addon.id]['region_provider'] != addon.config.short_name:

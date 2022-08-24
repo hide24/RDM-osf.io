@@ -2312,8 +2312,8 @@ class AbstractNode(DirtyFieldsMixin, TypedModel, AddonModelMixin, IdentifierMixi
 
         return True
 
-    def add_addon(self, name, auth, log=True):
-        ret = super(AbstractNode, self).add_addon(name, auth)
+    def add_addon(self, name, auth, log=True, region_id=None):
+        ret = super(AbstractNode, self).add_addon(name, auth, region_id=region_id)
         if ret and log:
             self.add_log(
                 action=NodeLog.ADDON_ADDED,

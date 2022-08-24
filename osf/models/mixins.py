@@ -582,7 +582,7 @@ class AddonModelMixin(models.Model):
             pass
         return None
 
-    def add_addon(self, addon_name, auth=None, override=False, _force=False):
+    def add_addon(self, addon_name, auth=None, override=False, _force=False, region_id=None):
         """Add an add-on to the node.
 
         :param str addon_name: Name of add-on
@@ -598,7 +598,7 @@ class AddonModelMixin(models.Model):
             return False
 
         # Reactivate deleted add-on if present
-        addon = self.get_addon(addon_name, is_deleted=True)
+        addon = self.get_addon(addon_name, is_deleted=True, region_id=region_id)
         if addon:
             if addon.deleted:
                 addon.undelete(save=True)
@@ -610,6 +610,10 @@ class AddonModelMixin(models.Model):
         model = self._settings_model(addon_name, config=config)
         ret = model(owner=self)
         ret.on_add()
+        # update new region
+        if region_id:
+            ret.region_id = region_id
+
         ret.save(clean=False)  # TODO This doesn't feel right
         return ret
 

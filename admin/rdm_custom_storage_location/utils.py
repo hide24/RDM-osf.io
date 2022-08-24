@@ -11,6 +11,7 @@ from swiftclient import exceptions as swift_exceptions
 import os
 import owncloud
 from django.core.exceptions import ValidationError
+from framework.auth import Auth
 
 from admin.rdm_addons.utils import get_rdm_addon_option
 from addons.googledrive.client import GoogleDriveClient
@@ -40,6 +41,7 @@ from framework.exceptions import HTTPError
 from website import settings as osf_settings
 from osf.models.external import ExternalAccountTemporary, ExternalAccount
 from osf.utils import external_util
+from osf.models.node import Node
 import datetime
 
 
@@ -156,6 +158,11 @@ def update_storage(institution_id, storage_name, wb_credentials, wb_settings, ne
             mfr_url=default_region.mfr_url,
             waterbutler_settings=wb_settings,
         )
+        # create node_settings for all projects affiliate to the institution
+        nodes = Node.objects.filter(affiliated_institutions=institution_id)
+        if nodes:
+            for node in nodes:
+                node.add_addon('osfstorage', auth=Auth(node.creator), region.id)
     else:
         region.name = storage_name if new_storage_name is None else new_storage_name
         region.waterbutler_credentials = wb_credentials
