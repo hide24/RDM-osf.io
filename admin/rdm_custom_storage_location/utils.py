@@ -38,6 +38,7 @@ from addons.base.institutions_utils import (KEYNAME_BASE_FOLDER,
                                             KEYNAME_USERMAP_TMP,
                                             sync_all)
 from framework.exceptions import HTTPError
+from osf.models import Institution
 from website import settings as osf_settings
 from osf.models.external import ExternalAccountTemporary, ExternalAccount
 from osf.utils import external_util
@@ -158,11 +159,12 @@ def update_storage(institution_id, storage_name, wb_credentials, wb_settings, ne
             mfr_url=default_region.mfr_url,
             waterbutler_settings=wb_settings,
         )
-        # create node_settings for all projects affiliate to the institution
-        nodes = Node.objects.filter(affiliated_institutions=institution_id)
-        if nodes:
-            for node in nodes:
-                node.add_addon('osfstorage', auth=Auth(node.creator), region.id)
+        institution = Institution.objects.filter(_id=institution_id).first()
+        if institution:
+            nodes = Node.objects.filter(affiliated_institutions=institution.id)
+            if nodes:
+                for node in nodes:
+                    node.add_addon('osfstorage', auth=Auth(node.creator), region_id=region.id)
     else:
         region.name = storage_name if new_storage_name is None else new_storage_name
         region.waterbutler_credentials = wb_credentials
