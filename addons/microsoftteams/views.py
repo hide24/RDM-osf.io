@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from flask import request
 import logging
-import requests
 import json
 from addons.microsoftteams import SHORT_NAME
 from addons.base import generic_views

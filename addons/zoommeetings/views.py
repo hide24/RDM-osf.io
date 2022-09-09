@@ -6,6 +6,7 @@ from addons.zoommeetings import SHORT_NAME
 from addons.base import generic_views
 from framework.auth.decorators import must_be_logged_in
 from addons.zoommeetings.serializer import ZoomMeetingsSerializer
+from osf.models import ExternalAccount
 from osf.utils.permissions import WRITE
 from website.project.decorators import (
     must_have_addon,

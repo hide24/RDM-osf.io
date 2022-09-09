@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import json
+import requests
 from addons.microsoftteams import models
 from addons.microsoftteams import settings
 import logging
