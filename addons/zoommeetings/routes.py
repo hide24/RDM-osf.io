@@ -3,8 +3,6 @@
 """
 
 from framework.routing import Rule, json_renderer
-from website.routes import notemplate
-
 from addons.zoommeetings import views
 
 # JSON endpoints

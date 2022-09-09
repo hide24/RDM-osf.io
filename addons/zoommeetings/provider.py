@@ -59,7 +59,7 @@ class ZoomMeetingsProvider(ExternalProvider):
             service_name=self.short_name,
             _absolute=True
         )
-        redirect_uri_encoded = urllib.parse.quote(redirect_uri, safe="*")
+        redirect_uri_encoded = urllib.parse.quote(redirect_uri, safe='*')
         state = generate_token()
 
         oauth_authorization_url = '{}?response_type={}&client_id={}&redirect_uri={}&state={}'.format(self.auth_url_base, response_type, client_id, redirect_uri_encoded, state)

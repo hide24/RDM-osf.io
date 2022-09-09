@@ -10,7 +10,6 @@ from addons.microsoftteams.serializer import MicrosoftTeamsSerializer
 from addons.microsoftteams.provider import MicrosoftTeamsProvider
 
 from framework.auth.core import Auth
-from osf.utils.fields import EncryptedTextField
 from addons.microsoftteams import settings
 
 logger = logging.getLogger(__name__)

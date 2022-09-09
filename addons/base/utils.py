@@ -77,4 +77,3 @@ def getInstitutionUsers(user):
     ret = json.dumps(institutionUsers)
 
     return ret
-

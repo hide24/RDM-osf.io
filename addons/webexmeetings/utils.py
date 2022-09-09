@@ -1,13 +1,9 @@
 # -*- coding: utf-8 -*-
 import json
 import requests
-from osf.models import ExternalAccount
 from addons.webexmeetings import models
 from addons.webexmeetings import settings
-from django.core import serializers
 import logging
-from datetime import timedelta
-import dateutil.parser
 from django.db import transaction
 logger = logging.getLogger(__name__)
 
@@ -131,7 +127,7 @@ def grdm_create_webex_meeting(addon, account, createdData, guestOrNot):
                 attendee_id=attendeeId,
                 meeting_id=createData.id,
                 webex_meetings_invitee_id=invitee['id']
-                )
+            )
             relation.save()
 
         createData.attendees = attendeeIds
@@ -163,14 +159,12 @@ def api_update_webex_meeting_attendees(requestData, account):
         'Authorization': requestToken,
         'Content-Type': 'application/json'
     }
-    requestBody = json.dumps(requestData)
 
     createInvitees = requestData['createInvitees']
     deleteInvitees = requestData['deleteInvitees']
 
     createdInvitees = []
     deletedInvitees = []
-    attendeeIdsFormer = []
 
     for createInvitee in createInvitees:
         createInvitee = json.dumps(createInvitee)

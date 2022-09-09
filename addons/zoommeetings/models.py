@@ -8,12 +8,8 @@ from addons.base.models import (BaseOAuthNodeSettings, BaseOAuthUserSettings,
                                 BaseStorageAddon)
 from addons.zoommeetings.serializer import ZoomMeetingsSerializer
 from addons.zoommeetings.provider import ZoomMeetingsProvider
-
 from addons.zoommeetings import settings
-
 from framework.auth.core import Auth
-from osf.utils.fields import EncryptedTextField
-
 logger = logging.getLogger(__name__)
 
 class UserSettings(BaseOAuthUserSettings):
@@ -108,4 +104,3 @@ class Meetings(ObjectIDMixin, BaseModel):
     app_name = models.CharField(max_length=128, default=settings.ZOOM_MEETINGS)
     external_account = models.ForeignKey(ExternalAccount, null=True, blank=True, default=None)
     node_settings = models.ForeignKey(NodeSettings, null=False, blank=False, default=None)
-

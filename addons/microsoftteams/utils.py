@@ -1,13 +1,8 @@
 # -*- coding: utf-8 -*-
 import json
-import requests
-from osf.models import ExternalAccount
 from addons.microsoftteams import models
 from addons.microsoftteams import settings
-from django.core import serializers
 import logging
-from datetime import timedelta
-import dateutil.parser
 from django.db import transaction
 from django.core.exceptions import ObjectDoesNotExist
 logger = logging.getLogger(__name__)

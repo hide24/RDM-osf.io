@@ -3,35 +3,20 @@ from flask import request
 import logging
 import requests
 import json
-import time
-import pytz
-from datetime import datetime, timedelta
-from addons.microsoftteams import SHORT_NAME, FULL_NAME
-from django.db import transaction
+from addons.microsoftteams import SHORT_NAME
 from addons.base import generic_views
 from framework.auth.decorators import must_be_logged_in
 from addons.microsoftteams.serializer import MicrosoftTeamsSerializer
 from osf.models import ExternalAccount, OSFUser
-from django.core.exceptions import ValidationError
-from framework.exceptions import HTTPError
-from addons.base.exceptions import InvalidAuthError
-from rest_framework import status as http_status
-from osf.utils.permissions import ADMIN, WRITE, READ
+from osf.utils.permissions import WRITE
 from website.project.decorators import (
     must_have_addon,
     must_be_valid_project,
     must_have_permission,
 )
 from admin.rdm_addons.decorators import must_be_rdm_addons_allowed
-from website.ember_osf_web.views import use_ember_app
-from api.base.utils import waterbutler_api_url_for
-from addons.microsoftteams import settings
 from addons.microsoftteams import models
 from addons.microsoftteams import utils
-from django.core import serializers
-from django.core.exceptions import ObjectDoesNotExist
-from framework.auth.core import Auth
-from admin.rdm import utils as rdm_utils
 from website.oauth.utils import get_service
 logger = logging.getLogger(__name__)
 

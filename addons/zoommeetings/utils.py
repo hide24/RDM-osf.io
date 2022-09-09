@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
 import json
 import requests
-from osf.models import ExternalAccount
 from addons.zoommeetings import models
 from addons.zoommeetings import settings
-from django.core import serializers
 import logging
 from datetime import timedelta
 import dateutil.parser
@@ -40,7 +38,7 @@ def get_user_info(user_id, jwt_token):
 
     if status_code != 200:
         if status_code == 404:
-            logger.info('Failed to authenticate Zoom account' + '[' + str(status_code) + ']' + ':' + message)
+            logger.info('Failed to authenticate Zoom account' + '[' + str(status_code) + ']' + ':' + response.message)
     else:
         userInfo['id'] = responseData['id']
         userInfo['first_name'] = responseData['first_name']
@@ -74,7 +72,6 @@ def grdm_create_zoom_meeting(addon, account, createdData):
     content = createdData['agenda']
     joinUrl = createdData['join_url']
     meetingId = createdData['id']
-    host_id = createdData['host_id']
     organizer_fullname = account.display_name
 
     with transaction.atomic():
