@@ -138,7 +138,9 @@ INSTALLED_APPS = (
     'addons.s3compatinstitutions',
     'addons.ociinstitutions',
     'addons.onedrivebusiness',
-    'addons.metadata',
+    'addons.zoommeetings',
+    'addons.microsoftteams',
+    'addons.webexmeetings'
 )
 
 MIGRATION_MODULES = {
@@ -174,6 +176,9 @@ MIGRATION_MODULES = {
     'addons_s3compatinstitutions': None,
     'addons_ociinstitutions': None,
     'addons_onedrivebusiness': None,
+    'addons_zoom': None,
+    'addons_microsoftteams': None,
+    'addons_webexmeetings': None
 }
 
 UNSUPPORTED_FORCE_TO_USE_ADDONS = [

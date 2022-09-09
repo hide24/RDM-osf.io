@@ -1,5 +1,8 @@
+import json
 import markupsafe
+from admin.rdm import utils as rdm_utils
 from os.path import basename
+from osf.models import OSFUser
 from website.settings import MFR_SERVER_URL
 
 from website import settings
@@ -54,3 +57,24 @@ def format_last_known_metadata(auth, node, file, error_type):
         ]
         return ''.join(parts)
     return msg
+
+
+def getInstitutionUsers(user):
+
+    info = {}
+    institutionUsers = []
+
+    institutionId = rdm_utils.get_institution_id(user)
+    users = OSFUser.objects.filter(affiliated_institutions__id=institutionId)
+
+    for user in users:
+        info = {}
+        info['guid'] = user._id
+        info['fullname'] = user.fullname
+        info['username'] = user.username
+        institutionUsers.append(info)
+
+    ret = json.dumps(institutionUsers)
+
+    return ret
+
