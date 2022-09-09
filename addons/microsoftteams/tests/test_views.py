@@ -113,7 +113,6 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         AttendeesFactory = MicrosoftTeamsAttendeesFactory(node_settings=self.node_settings)
         url = self.project.api_url_for('microsoftteams_request_api')
 
-        expected_appName = 
         expected_action = 'create'
         expected_UpdateMeetinId = ''
         expected_DeleteMeetinId = ''
