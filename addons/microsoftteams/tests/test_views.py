@@ -166,7 +166,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
             'organizer': {
                 'emailAddress': {
                     'name': 'Teams Test User1',
-                    'address': 'teamstestorganizer@test.onmicrosoft.com'.
+                    'address': 'teamstestorganizer@test.onmicrosoft.com',
                 }
             },
             'onlineMeeting': {
