@@ -151,7 +151,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         expected_guestOrNot =={'testuser1@test.onmicrosoft.com': False}
 
         mock_api_create_teams_meeting.return_value = {
-            'id': expected_meetingId
+            'id': expected_meetingId,
             'subject': expected_subject,
             'start': {
                 'dateTime': expected_startDatetime,
