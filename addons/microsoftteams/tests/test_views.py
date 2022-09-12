@@ -45,39 +45,6 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
     def tearDown(self):
         super(TestMicrosoftTeamsViews, self).tearDown()
 
-    @mock.patch('addons.microsoftteams.views.authMicrosoftTeams')
-    def test_microsoftteams_settings_input_empty_access_key(self, mock_auth_microsoftteams):
-        mock_auth_microsoftteams.return_value = {}
-
-        institution = InstitutionFactory()
-        self.user.affiliated_institutions.add(institution)
-        self.user.save()
-        rdm_addon_option = get_rdm_addon_option(institution.id, self.ADDON_SHORT_NAME)
-        rdm_addon_option.is_allowed = True
-        rdm_addon_option.save()
-
-        url = self.project.api_url_for('microsoftteams_add_user_account')
-        rv = self.app.post_json(url, {
-            'microsoftteams_api_token': '',
-        }, auth=self.user.auth, expect_errors=True)
-        assert_equals(rv.status_int, http_status.HTTP_400_BAD_REQUEST)
-
-    @mock.patch('addons.microsoftteams.views.authMicrosoftTeams')
-    def test_microsoftteams_settings_rdm_addons_denied(self, mock_auth_microsoftteams):
-        mock_auth_microsoftteams.return_value = {'id': '1234567890', 'name': 'microsoftteams.user'}
-        institution = InstitutionFactory()
-        self.user.affiliated_institutions.add(institution)
-        self.user.save()
-        rdm_addon_option = get_rdm_addon_option(institution.id, self.ADDON_SHORT_NAME)
-        rdm_addon_option.is_allowed = False
-        rdm_addon_option.save()
-        url = self.project.api_url_for('microsoftteams_add_user_account')
-        rv = self.app.post_json(url,{
-            'microsoftteams_api_token': 'aldkjf',
-        }, auth=self.user.auth, expect_errors=True)
-        assert_equal(rv.status_int, http_status.HTTP_403_FORBIDDEN)
-        assert_in('You are prohibited from using this add-on.', rv.body.decode())
-
     def test_microsoftteams_remove_node_settings_owner(self):
         url = self.node_settings.owner.api_url_for('microsoftteams_deauthorize_node')
         self.app.delete(url, auth=self.user.auth)
@@ -215,7 +182,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         osfGuidsSerializer = serializers.serialize('json', osfGuids, ensure_ascii=False)
         osfGuidsJson = json.loads(osfGuidsSerializer)
         osfUserGuid = osfGuidsJson[0]['fields']['_id']
-        url = self.project.api_url_for('microsoftteams_register_emai')
+        url = self.project.api_url_for('microsoftteams_register_email')
 
         _id = None
         expected_guid = osfUserGuid
