@@ -32,7 +32,7 @@ from addons.microsoftteams.tests.factories import (
     MicrosoftTeamsNodeSettingsFactory,
     MicrosoftTeamsAccountFactory,
     MicrosoftTeamsAttendeesFactory,
-    MicrosoftTeamsMeetings
+    MicrosoftTeamsMeetingsFactory
 )
 from api_tests import utils as api_utils
 
