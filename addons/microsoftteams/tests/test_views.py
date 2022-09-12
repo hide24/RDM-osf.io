@@ -75,7 +75,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         assert_equal(ret.status_code, 403)
 
     @mock.patch('addons.microsoftteams.utils.api_create_teams_meeting')
-    def test_microsoftteams_request_api_create(self):
+    def test_microsoftteams_request_api_create(self, mock_api_create_teams_meeting):
 
         AttendeesFactory = MicrosoftTeamsAttendeesFactory(node_settings=self.node_settings)
         url = self.project.api_url_for('microsoftteams_request_api')
@@ -173,8 +173,123 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         #Attendees table clean
         Attendees.objects.all().delete()
 
+    @mock.patch('addons.microsoftteams.utils.api_update_teams_meeting')
+    def test_microsoftteams_request_api_update(self, mock_api_update_teams_meeting):
+
+        updateEmailAddress = 'teamstestuser2@test.onmicrosoft.com'
+        updateDisplayName = 'Teams Test User2'
+
+        AttendeesFactory2 = MicrosoftTeamsAttendeesFactory(node_settings=self.node_settings, user_guid='teamstestuser2', fullname='TEAMS TEST USER 2', email_address=updateEmailAddress, display_name=updateDisplayName)
+        MeetingsFactory = MicrosoftTeamsMeetingsFactory(node_settings=self.node_settings)
+
+        url = self.project.api_url_for('microsoftteams_request_api')
+
+        expected_action = 'update'
+        expected_UpdateMeetinId = 'qwertyuiopasdfghjklzxcvbnm'
+        expected_DeleteMeetinId = ''
+
+        expected_subject = 'My Test Meeting EDIT'
+        expected_attendees_id = Attendees.objects.get(user_guid='teamstestuser').id
+        expected_attendees = {
+                    'emailAddress': {
+                        'address': 'teamstestuser1@test.onmicrosoft.com',
+                        'name': 'Teams Test User1'
+                    },
+                    'emailAddress': {
+                        'address': updateEmailAddress,
+                        'name': updateDisplayName
+                    },
+                }
+        expected_startDatetime = datetime.now().isoformat()
+        expected_endDatetime = (datetime.now() + timedelta(hours=1)).isoformat()
+        expected_content = 'My Test Content EDIT'
+        expected_contentExtract = expected_content
+        expected_joinUrl = 'teams/microsoft.com/321'
+        expected_meetingId = '1234567890qwertyuiopasdfghjkl'
+        expected_body = {
+                'subject': expected_subject,
+                start: {
+                    dateTime: expected_startDatetime,
+                    timeZone: 'Asia/Tokyo',
+                },
+                end: {
+                    dateTime: expected_endDatetime,
+                    timeZone: 'Asia/Tokyo',
+                },
+                body: {
+                    contentType: 'HTML',
+                    content: expected_content,
+                },
+                attendees: expected_attendees,
+                isOnlineMeeting: True,
+            };
+        expected_guestOrNot =={'testuser1@test.onmicrosoft.com': False, updateEmailAddress: False}
+
+        mock_api_update_teams_meeting.return_value = {
+            'id': expected_meetingId,
+            'subject': expected_subject,
+            'start': {
+                'dateTime': expected_startDatetime,
+                'timeZone': 'Asia/Tokyo'
+            },
+            'end': {
+                'dateTime': expected_endDatetime,
+                'timeZone': 'Asia/Tokyo'
+            },
+            'attendees': [expected_attendees],
+            'bodyPreview': expected_content,
+            'organizer': {
+                'emailAddress': {
+                    'name': 'Teams Test User1',
+                    'address': 'teamstestorganizer@test.onmicrosoft.com',
+                },
+                'emailAddress': {
+                    'name': updateDisplayName,
+                    'address': updateEmailAddress,
+                }
+            },
+            'onlineMeeting': {
+                'joinUrl': expected_joinUrl
+            }
+        }
+
+        rv = self.app.post_json(url, {
+            'action': expected_action,
+            'updateMeetingId': expected_UpdateMeetinId,
+            'deleteMeetingId': expected_DeleteMeetinId,
+            'contentExtract': expected_contentExtract,
+            'body': expected_body,
+            'guestOrNot': expected_guestOrNot,
+        }, auth=self.user.auth)
+        rvBodyJson = json.loads(rv.body)
+
+        result = Meetings.objects.get(meetingid=expected_meetingId)
+
+        expected_startDatetime_format = date_parse.parse(expected_startDatetime).strftime('%Y/%m/%d %H:%M:%S')
+        expected_endDatetime_format = date_parse.parse(expected_endDatetime).strftime('%Y/%m/%d %H:%M:%S')
+
+        assert_equals(result.subject, expected_subject)
+        assert_equals(result.organizer, expected_organizer)
+        assert_equals(result.organizer_fullname, expected_organizer)
+        assert_equals(result.start_datetime.strftime('%Y/%m/%d %H:%M:%S'), expected_startDatetime_format)
+        assert_equals(result.end_datetime.strftime('%Y/%m/%d %H:%M:%S'), expected_endDatetime_format)
+        assert_equals(result.attendees.all()[0].id, expected_attendees_id)
+        assert_equals(result.content, expected_content)
+        assert_equals(result.join_url, expected_joinUrl)
+        assert_equals(result.meetingid, expected_meetingId)
+        assert_equals(result.app_name, microsoftteams_settings.MICROSOFT_TEAMS)
+        assert_equals(result.external_account.id, self.account.id)
+        assert_equals(result.node_settings.id, self.node_settings.id)
+        assert_equals(rvBodyJson, {})
+
+        #Attendees table clean
+        Attendees.objects.all().delete()
+        Meetings.objects.all().delete()
+
     def test_microsoftteams_register_email(self):
 
+        self.node_settings.set_auth(self.external_account, self.user)
+        self.node_settings.save()
         MeetingsFactory = MicrosoftTeamsMeetingsFactory(node_settings=self.node_settings)
 
         osfUser = OSFUser.objects.get(username=self.user.username)
