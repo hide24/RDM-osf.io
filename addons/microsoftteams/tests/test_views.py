@@ -77,7 +77,6 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
     @mock.patch('addons.microsoftteams.utils.api_create_teams_meeting')
     def test_microsoftteams_request_api_create(self, mock_api_create_teams_meeting):
 
-        AttendeesFactory = MicrosoftTeamsAttendeesFactory(node_settings=self.node_settings)
         url = self.project.api_url_for('microsoftteams_request_api')
 
         expected_action = 'create'
@@ -100,20 +99,20 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         expected_meetingId = '1234567890qwertyuiopasdfghjkl'
         expected_body = {
                 'subject': expected_subject,
-                start: {
-                    dateTime: expected_startDatetime,
-                    timeZone: 'Asia/Tokyo',
+                'start': {
+                    'dateTime': expected_startDatetime,
+                    'timeZone': 'Asia/Tokyo',
                 },
-                end: {
-                    dateTime: expected_endDatetime,
-                    timeZone: 'Asia/Tokyo',
+                'end': {
+                    'dateTime': expected_endDatetime,
+                    'timeZone': 'Asia/Tokyo',
                 },
-                body: {
-                    contentType: 'HTML',
-                    content: expected_content,
+                'body': {
+                    'contentType': 'HTML',
+                    'content': expected_content,
                 },
-                attendees: expected_attendees,
-                isOnlineMeeting: True,
+                'attendees': expected_attendees,
+                'isOnlineMeeting': True,
             };
         expected_guestOrNot =={'testuser1@test.onmicrosoft.com': False}
 
@@ -169,9 +168,6 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         assert_equals(result.external_account.id, self.account.id)
         assert_equals(result.node_settings.id, self.node_settings.id)
         assert_equals(rvBodyJson, {})
-
-        #Attendees table clean
-        Attendees.objects.all().delete()
 
     @mock.patch('addons.microsoftteams.utils.api_update_teams_meeting')
     def test_microsoftteams_request_api_update(self, mock_api_update_teams_meeting):
@@ -282,12 +278,10 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         assert_equals(result.node_settings.id, self.node_settings.id)
         assert_equals(rvBodyJson, {})
 
-        #Attendees table clean
-        Attendees.objects.all().delete()
-        Meetings.objects.all().delete()
-
     @mock.patch('addons.microsoftteams.utils.api_delete_teams_meeting')
-    def test_microsoftteams_request_api_delete(self):
+    def test_microsoftteams_request_api_delete(self, mock_api_delete_teams_meeting):
+
+        mock_api_update_teams_meeting.return_value = {}
 
         expected_action = 'delete'
         MeetingsFactory = MicrosoftTeamsMeetingsFactory(node_settings=self.node_settings)
@@ -306,12 +300,10 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
 
         assert_equals(result.count(), 0)
         assert_equals(rvBodyJson, {})
-        #clear
-        AllMeetingInformation.objects.all().delete()
 
     @mock.patch('addons.microsoftteams.utils.api_get_microsoft_username')
     def test_microsoftteams_register_email_create(self, mock_api_get_microsoft_username):
-        mock_api_update_teams_meeting.return_value = 'Teams Test User A'
+        mock_api_get_microsoft_username.return_value = 'Teams Test User A'
         self.node_settings.set_auth(self.external_account, self.user)
         self.node_settings.save()
 
@@ -325,7 +317,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         _id = None
         expected_guid = osfUserGuid
         expected_email = 'teamstestusera@test.onmicrosoft.com'
-        expected_username = mock_api_update_teams_meeting.return_value
+        expected_username = mock_api_get_microsoft_username.return_value
         expected_is_guest = False
         expected_fullname = osfUser.fullname
         expected_actionType = 'create'
@@ -353,22 +345,12 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         assert_equals(result.external_account.id, self.account.id)
         assert_equals(result.node_settings.id, self.node_settings.id)
         assert_equals(rvBodyJson, {})
-        #clear
-        Meetings.objects.all().delete()
 
     @mock.patch('addons.microsoftteams.utils.api_get_microsoft_username')
     def test_microsoftteams_register_email_update(self, mock_api_get_microsoft_username):
-        mock_api_update_teams_meeting.return_value = 'Teams Test User B EDIT'
+        mock_api_get_microsoft_username.return_value = 'Teams Test User B EDIT'
         self.node_settings.set_auth(self.external_account, self.user)
         self.node_settings.save()
-        AttendeesFactory = MicrosoftTeamsAttendeesFactory(node_settings=self.node_settings)
-
-        osfUser = OSFUser.objects.get(username=self.user.username)
-        osfGuids = osfUser._prefetched_objects_cache['guids'].only()
-        osfGuidsSerializer = serializers.serialize('json', osfGuids, ensure_ascii=False)
-        osfGuidsJson = json.loads(osfGuidsSerializer)
-        osfUserGuid = osfGuidsJson[0]['fields']['_id']
-        url = self.project.api_url_for('microsoftteams_register_email')
 
         expected_id = '1234567890qwertyuiop'
         expected_guid = 'teamstestuser'
@@ -390,7 +372,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
 
         rvBodyJson = json.loads(rv.body)
 
-        result = Attendees.objects.get(user_guid=osfUserGuid)
+        result = Attendees.objects.get(user_guid=expected_guid)
 
         assert_equals(result.user_guid, expected_guid)
         assert_equals(result.fullname, expected_fullname)
@@ -400,13 +382,11 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         assert_equals(result.external_account.id, self.account.id)
         assert_equals(result.node_settings.id, self.node_settings.id)
         assert_equals(rvBodyJson, {})
-        #clear
-        Attendees.objects.all().delete()
 
     def test_microsoftteams_register_email_delete(self):
 
-        AttendeesFactory = MicrosoftTeamsAttendeesFactory(node_settings=self.node_settings)
-
+        self.node_settings.set_auth(self.external_account, self.user)
+        self.node_settings.save()
         url = self.project.api_url_for('microsoftteams_register_email')
 
         expected_id = '1234567890qwertyuiop'
