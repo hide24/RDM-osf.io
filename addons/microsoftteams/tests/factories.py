@@ -43,7 +43,7 @@ class MicrosoftTeamsAttendeesFactory(DjangoModelFactory):
 
     _id = '1234567890qwertyuiop'
     user_guid = 'teamstestuser'
-    fullname = 'TEST RDM USER'
+    fullname = 'MicrosoftTeams Fake User'
     email_address = 'teamstestuser1@test.onmicrosoft.com'
     display_name = 'Teams Test User1'
     is_guest = False
