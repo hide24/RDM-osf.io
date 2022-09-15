@@ -114,7 +114,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
                 'attendees': expected_attendees,
                 'isOnlineMeeting': True,
             };
-        expected_guestOrNot =={'testuser1@test.onmicrosoft.com': False}
+        expected_guestOrNot = {'testuser1@test.onmicrosoft.com': False}
 
         mock_api_create_teams_meeting.return_value = {
             'id': expected_meetingId,
@@ -141,7 +141,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         }
 
         rv = self.app.post_json(url, {
-            'action': expected_action,
+            'actionType': expected_action,
             'updateMeetingId': expected_UpdateMeetinId,
             'deleteMeetingId': expected_DeleteMeetinId,
             'contentExtract': expected_contentExtract,
@@ -205,20 +205,20 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         expected_meetingId = '1234567890qwertyuiopasdfghjkl'
         expected_body = {
                 'subject': expected_subject,
-                start: {
-                    dateTime: expected_startDatetime,
-                    timeZone: 'Asia/Tokyo',
+                'start': {
+                    'dateTime': expected_startDatetime,
+                    'timeZone': 'Asia/Tokyo',
                 },
-                end: {
-                    dateTime: expected_endDatetime,
-                    timeZone: 'Asia/Tokyo',
+                'end': {
+                    'dateTime': expected_endDatetime,
+                    'timeZone': 'Asia/Tokyo',
                 },
-                body: {
-                    contentType: 'HTML',
-                    content: expected_content,
+                'body': {
+                    'contentType': 'HTML',
+                    'content': expected_content,
                 },
-                attendees: expected_attendees,
-                isOnlineMeeting: True,
+                'attendees': expected_attendees,
+                'isOnlineMeeting': True,
             };
         expected_guestOrNot =={'testuser1@test.onmicrosoft.com': False, updateEmailAddress: False}
 
@@ -251,7 +251,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         }
 
         rv = self.app.post_json(url, {
-            'action': expected_action,
+            'actionType': expected_action,
             'updateMeetingId': expected_UpdateMeetinId,
             'deleteMeetingId': expected_DeleteMeetinId,
             'contentExtract': expected_contentExtract,
@@ -292,7 +292,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         expected_DeleteMeetinId = 'qwertyuiopasdfghjklzxcvbnm'
 
         rv = self.app.post_json(url, {
-            'action': expected_action,
+            'actionType': expected_action,
             'deleteMeetingId': expected_DeleteMeetinId,
         }, auth=self.user.auth)
         rvBodyJson = json.loads(rv.body)
@@ -343,7 +343,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         assert_equals(result.email_address, expected_email)
         assert_equals(result.display_name, expected_username)
         assert_equals(result.is_guest, expected_is_guest)
-        assert_equals(result.external_account.id, self.external_account_id)
+        assert_equals(result.external_account.id, self.external_account.id)
         assert_equals(result.node_settings.id, self.node_settings.id)
         assert_equals(rvBodyJson, {})
 
@@ -352,6 +352,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         mock_api_get_microsoft_username.return_value = 'Teams Test User B EDIT'
         self.node_settings.set_auth(self.external_account, self.user)
         self.node_settings.save()
+        url = self.project.api_url_for('microsoftteams_register_email')
 
         expected_id = '1234567890qwertyuiop'
         expected_guid = 'teamstestuser'
@@ -398,7 +399,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
 
         rvBodyJson = json.loads(rv.body)
 
-        result = Attendees.objects.get(node_settings_id=self.node_settings.id, expected_id=_id)
+        result = Attendees.objects.get(node_settings_id=self.node_settings.id, _id=expected_id)
 
         assert_equals(result.count(), 0)
         assert_equals(rvBodyJson, {})
