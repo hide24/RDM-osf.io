@@ -76,6 +76,8 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
 
     @mock.patch('addons.microsoftteams.utils.api_create_teams_meeting')
     def test_microsoftteams_request_api_create(self, mock_api_create_teams_meeting):
+        self.node_settings.set_auth(self.external_account, self.user)
+        self.node_settings.save()
         AttendeesFactory = MicrosoftTeamsAttendeesFactory(node_settings=self.node_settings)
         url = self.project.api_url_for('microsoftteams_request_api')
 
@@ -171,6 +173,9 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
 
     @mock.patch('addons.microsoftteams.utils.api_update_teams_meeting')
     def test_microsoftteams_request_api_update(self, mock_api_update_teams_meeting):
+
+        self.node_settings.set_auth(self.external_account, self.user)
+        self.node_settings.save()
 
         updateEmailAddress = 'teamstestuser2@test.onmicrosoft.com'
         updateDisplayName = 'Teams Test User2'
@@ -289,10 +294,12 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
 
         url = self.project.api_url_for('microsoftteams_request_api')
 
+        expected_UpdateMeetinId = ''
         expected_DeleteMeetinId = 'qwertyuiopasdfghjklzxcvbnm'
 
         rv = self.app.post_json(url, {
             'actionType': expected_action,
+            'updateMeetingId': expected_UpdateMeetinId,
             'deleteMeetingId': expected_DeleteMeetinId,
         }, auth=self.user.auth)
         rvBodyJson = json.loads(rv.body)
@@ -399,7 +406,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
 
         rvBodyJson = json.loads(rv.body)
 
-        result = Attendees.objects.get(node_settings_id=self.node_settings.id, _id=expected_id)
+        result = Attendees.objects.filter(node_settings_id=self.node_settings.id, _id=expected_id)
 
         assert_equals(result.count(), 0)
         assert_equals(rvBodyJson, {})
