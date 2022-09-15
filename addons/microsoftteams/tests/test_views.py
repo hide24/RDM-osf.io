@@ -86,6 +86,8 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         expected_DeleteMeetinId = ''
 
         expected_subject = 'My Test Meeting'
+        expected_organizer = 'teamstestuser1@test.onmicrosoft.com'
+        expected_organizer_fullname = 'TEST RDM USER'
         expected_attendees_id = Attendees.objects.get(user_guid='teamstestuser').id
         expected_attendees = {
                     'emailAddress': {
@@ -159,7 +161,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
 
         assert_equals(result.subject, expected_subject)
         assert_equals(result.organizer, expected_organizer)
-        assert_equals(result.organizer_fullname, expected_organizer)
+        assert_equals(result.organizer_fullname, expected_organizer_fullname)
         assert_equals(result.start_datetime.strftime('%Y/%m/%d %H:%M:%S'), expected_startDatetime_format)
         assert_equals(result.end_datetime.strftime('%Y/%m/%d %H:%M:%S'), expected_endDatetime_format)
         assert_equals(result.attendees.all()[0].id, expected_attendees_id)
@@ -225,7 +227,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
                 'attendees': expected_attendees,
                 'isOnlineMeeting': True,
             };
-        expected_guestOrNot =={'testuser1@test.onmicrosoft.com': False, updateEmailAddress: False}
+        expected_guestOrNot = {'testuser1@test.onmicrosoft.com': False, updateEmailAddress: False}
 
         mock_api_update_teams_meeting.return_value = {
             'id': expected_meetingId,
@@ -297,10 +299,30 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         expected_UpdateMeetinId = ''
         expected_DeleteMeetinId = 'qwertyuiopasdfghjklzxcvbnm'
 
+        expected_body = {
+                'subject': '',
+                'start': {
+                    'dateTime': '',
+                    'timeZone': 'Asia/Tokyo',
+                },
+                'end': {
+                    'dateTime': '',
+                    'timeZone': 'Asia/Tokyo',
+                },
+                'body': {
+                    'contentType': 'HTML',
+                    'content': '',
+                },
+                'attendees': [],
+                'isOnlineMeeting': True,
+            };
+
         rv = self.app.post_json(url, {
             'actionType': expected_action,
             'updateMeetingId': expected_UpdateMeetinId,
             'deleteMeetingId': expected_DeleteMeetinId,
+            'body': expected_body,
+            'guestOrNot': {}
         }, auth=self.user.auth)
         rvBodyJson = json.loads(rv.body)
 
@@ -356,6 +378,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
 
     @mock.patch('addons.microsoftteams.utils.api_get_microsoft_username')
     def test_microsoftteams_register_email_update(self, mock_api_get_microsoft_username):
+        AttendeesFactory = MicrosoftTeamsAttendeesFactory(node_settings=self.node_settings)
         mock_api_get_microsoft_username.return_value = 'Teams Test User B EDIT'
         self.node_settings.set_auth(self.external_account, self.user)
         self.node_settings.save()
