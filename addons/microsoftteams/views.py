@@ -134,6 +134,7 @@ def microsoftteams_register_email(**kwargs):
                 attendee.fullname = OSFUser.objects.get(guids___id=attendee.user_guid).fullname
                 attendee.displayName = utils.api_get_microsoft_username(account, email)
             attendee.email_address = email
+            logger.info('register email update: ' + str(attendee.email_address))
             attendee.save()
     elif actionType == 'delete':
         attendee = models.Attendees.objects.get(node_settings_id=nodeSettings.id, _id=_id)

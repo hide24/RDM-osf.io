@@ -136,7 +136,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
             'organizer': {
                 'emailAddress': {
                     'name': 'Teams Test User1',
-                    'address': 'teamstestorganizer@test.onmicrosoft.com',
+                    'address': 'teamstestuser1@test.onmicrosoft.com',
                 }
             },
             'onlineMeeting': {
@@ -175,6 +175,8 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
 
     @mock.patch('addons.microsoftteams.utils.api_update_teams_meeting')
     def test_microsoftteams_request_api_update(self, mock_api_update_teams_meeting):
+
+        MeetingsFactory = MicrosoftTeamsMeetingsFactory(node_settings=self.node_settings)
 
         self.node_settings.set_auth(self.external_account, self.user)
         self.node_settings.save()
@@ -289,6 +291,9 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
     @mock.patch('addons.microsoftteams.utils.api_delete_teams_meeting')
     def test_microsoftteams_request_api_delete(self, mock_api_delete_teams_meeting):
 
+        MeetingsFactory = MicrosoftTeamsMeetingsFactory(node_settings=self.node_settings)
+        self.node_settings.set_auth(self.external_account, self.user)
+        self.node_settings.save()
         mock_api_delete_teams_meeting.return_value = {}
 
         expected_action = 'delete'
