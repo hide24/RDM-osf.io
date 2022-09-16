@@ -167,7 +167,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         assert_equals(result.organizer_fullname, expected_organizer_fullname)
         assert_equals(result.start_datetime.strftime('%Y/%m/%d %H:%M:%S'), expected_startDatetime_format)
         assert_equals(result.end_datetime.strftime('%Y/%m/%d %H:%M:%S'), expected_endDatetime_format)
-        assert_equals(result.attendees[0], expected_attendees_id)
+        assert_equals(result.attendees, expected_attendees_id)
         assert_equals(result.content, expected_content)
         assert_equals(result.join_url, expected_joinUrl)
         assert_equals(result.meetingid, expected_meetingId)
@@ -231,7 +231,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
                 'attendees': expected_attendees,
                 'isOnlineMeeting': True,
             };
-        expected_guestOrNot = {'testuser1@test.onmicrosoft.com': False, updateEmailAddress: False}
+        expected_guestOrNot = {'teamstestuser1@test.onmicrosoft.com': False, updateEmailAddress: False}
 
         mock_api_update_teams_meeting.return_value = {
             'id': expected_UpdateMeetinId,
@@ -396,7 +396,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         self.node_settings.save()
         url = self.project.api_url_for('microsoftteams_register_email')
 
-        expected_id = '1234567890qwertyuiop'
+        expected_id = AttendeesFactory._id
         expected_guid = 'teamstestuser'
         expected_email = 'teamstestuserbedit@test.onmicrosoft.com'
         expected_username = mock_api_get_microsoft_username.return_value
@@ -440,7 +440,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         self.node_settings.save()
         url = self.project.api_url_for('microsoftteams_register_email')
 
-        expected_id = '1234567890qwertyuiop'
+        expected_id = AttendeesFactory._id
 
         rv = self.app.post_json(url, {
             '_id': expected_id,

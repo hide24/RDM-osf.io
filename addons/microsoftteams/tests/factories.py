@@ -41,7 +41,6 @@ class MicrosoftTeamsAttendeesFactory(DjangoModelFactory):
     class Meta:
         model = Attendees
 
-    _id = '1234567890qwertyuiop'
     user_guid = 'teamstestuser'
     fullname = 'MicrosoftTeams Fake User'
     email_address = 'teamstestuser1@test.onmicrosoft.com'
@@ -56,7 +55,7 @@ class MicrosoftTeamsMeetingsFactory(DjangoModelFactory):
 
 
     subject = 'My Test Meeting'
-    organizer = 'testUser1@test.onmicrosoft.com'
+    organizer = 'teamstestUser1@test.onmicrosoft.com'
     organizer_fullname = 'TEST USER'
     start_datetime = datetime.now().isoformat()
     end_datetime = (datetime.now() + timedelta(hours=1)).isoformat()
