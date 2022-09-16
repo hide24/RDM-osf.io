@@ -36,6 +36,9 @@ from addons.microsoftteams.tests.factories import (
 )
 from api_tests import utils as api_utils
 
+import logging
+logger = logging.getLogger(__name__)
+
 pytestmark = pytest.mark.django_db
 
 class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViewsTestCaseMixin, OsfTestCase):
@@ -164,7 +167,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         assert_equals(result.organizer_fullname, expected_organizer_fullname)
         assert_equals(result.start_datetime.strftime('%Y/%m/%d %H:%M:%S'), expected_startDatetime_format)
         assert_equals(result.end_datetime.strftime('%Y/%m/%d %H:%M:%S'), expected_endDatetime_format)
-        assert_equals(result.attendees.all().id, expected_attendees_id)
+        assert_equals(result.attendees[0], expected_attendees_id)
         assert_equals(result.content, expected_content)
         assert_equals(result.join_url, expected_joinUrl)
         assert_equals(result.meetingid, expected_meetingId)
@@ -193,6 +196,8 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         expected_DeleteMeetinId = ''
 
         expected_subject = 'My Test Meeting EDIT'
+        expected_organizer = 'teamstestuser1@test.onmicrosoft.com'
+        expected_organizer_fullname = 'MicrosoftTeams Fake User'
         expected_attendees_id = Attendees.objects.get(user_guid='teamstestuser').id
         expected_attendees = {
                     'emailAddress': {
@@ -273,7 +278,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
 
         assert_equals(result.subject, expected_subject)
         assert_equals(result.organizer, expected_organizer)
-        assert_equals(result.organizer_fullname, expected_organizer)
+        assert_equals(result.organizer_fullname, expected_organizer_fullname)
         assert_equals(result.start_datetime.strftime('%Y/%m/%d %H:%M:%S'), expected_startDatetime_format)
         assert_equals(result.end_datetime.strftime('%Y/%m/%d %H:%M:%S'), expected_endDatetime_format)
         assert_equals(result.attendees.all()[0].id, expected_attendees_id)
