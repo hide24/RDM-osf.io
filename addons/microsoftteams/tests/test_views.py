@@ -164,7 +164,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         assert_equals(result.organizer_fullname, expected_organizer_fullname)
         assert_equals(result.start_datetime.strftime('%Y/%m/%d %H:%M:%S'), expected_startDatetime_format)
         assert_equals(result.end_datetime.strftime('%Y/%m/%d %H:%M:%S'), expected_endDatetime_format)
-        assert_equals(result.attendees.all()[0].id, expected_attendees_id)
+        assert_equals(result.attendees.all().id, expected_attendees_id)
         assert_equals(result.content, expected_content)
         assert_equals(result.join_url, expected_joinUrl)
         assert_equals(result.meetingid, expected_meetingId)
@@ -175,8 +175,6 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
 
     @mock.patch('addons.microsoftteams.utils.api_update_teams_meeting')
     def test_microsoftteams_request_api_update(self, mock_api_update_teams_meeting):
-
-        MeetingsFactory = MicrosoftTeamsMeetingsFactory(node_settings=self.node_settings)
 
         self.node_settings.set_auth(self.external_account, self.user)
         self.node_settings.save()
@@ -211,7 +209,6 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         expected_content = 'My Test Content EDIT'
         expected_contentExtract = expected_content
         expected_joinUrl = 'teams/microsoft.com/321'
-        expected_meetingId = '1234567890qwertyuiop'
         expected_body = {
                 'subject': expected_subject,
                 'start': {
@@ -232,7 +229,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         expected_guestOrNot = {'testuser1@test.onmicrosoft.com': False, updateEmailAddress: False}
 
         mock_api_update_teams_meeting.return_value = {
-            'id': expected_meetingId,
+            'id': expected_UpdateMeetinId,
             'subject': expected_subject,
             'start': {
                 'dateTime': expected_startDatetime,
@@ -269,7 +266,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         }, auth=self.user.auth)
         rvBodyJson = json.loads(rv.body)
 
-        result = Meetings.objects.get(meetingid=expected_meetingId)
+        result = Meetings.objects.get(meetingid=expected_UpdateMeetinId)
 
         expected_startDatetime_format = date_parse.parse(expected_startDatetime).strftime('%Y/%m/%d %H:%M:%S')
         expected_endDatetime_format = date_parse.parse(expected_endDatetime).strftime('%Y/%m/%d %H:%M:%S')
@@ -295,7 +292,6 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
     @mock.patch('addons.microsoftteams.utils.api_delete_teams_meeting')
     def test_microsoftteams_request_api_delete(self, mock_api_delete_teams_meeting):
 
-        MeetingsFactory = MicrosoftTeamsMeetingsFactory(node_settings=self.node_settings)
         self.node_settings.set_auth(self.external_account, self.user)
         self.node_settings.save()
         mock_api_delete_teams_meeting.return_value = {}
@@ -414,6 +410,10 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         }, auth=self.user.auth)
 
         rvBodyJson = json.loads(rv.body)
+
+        tst = Attendees.objects.all()
+        tst = serializers.serialize('json', tst, ensure_ascii=False)
+        logger.info('tst:' + str(tst))
 
         result = Attendees.objects.get(_id=expected_id)
 
