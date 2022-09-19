@@ -47,6 +47,9 @@ from osf.models import (
     Preprint,
 )
 
+import logging
+
+logger = logging.getLogger(__name__)
 
 class CollectionMixin(object):
     """Mixin with convenience methods for retrieving the current collection based on the
@@ -469,7 +472,10 @@ class LinkedNodesList(BaseLinkedList, CollectionMixin, NodeOptimizationMixin):
 
     ordering = ('-modified',)
 
+    logger.info('75')
+
     def get_queryset(self):
+        logger.info('75')
         auth = get_user_auth(self.request)
         node_ids = self.get_collection().guid_links.filter(content_type_id=ContentType.objects.get_for_model(Node).id).values_list('object_id', flat=True)
         nodes = Node.objects.filter(id__in=node_ids, is_deleted=False).can_view(user=auth.user, private_link=auth.private_link).order_by('-modified')
@@ -477,6 +483,7 @@ class LinkedNodesList(BaseLinkedList, CollectionMixin, NodeOptimizationMixin):
 
     # overrides APIView
     def get_parser_context(self, http_request):
+        logger.info('75')
         """
         Tells parser that we are creating a relationship
         """
