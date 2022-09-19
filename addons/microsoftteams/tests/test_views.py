@@ -81,7 +81,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
     def test_microsoftteams_request_api_create(self, mock_api_create_teams_meeting):
         self.node_settings.set_auth(self.external_account, self.user)
         self.node_settings.save()
-        AttendeesFactory = MicrosoftTeamsAttendeesFactory(node_settings=self.node_settings)
+#        AttendeesFactory = MicrosoftTeamsAttendeesFactory(node_settings=self.node_settings)
         url = self.project.api_url_for('microsoftteams_request_api')
 
         expected_action = 'create'
@@ -185,7 +185,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         updateEmailAddress = 'teamstestuser2@test.onmicrosoft.com'
         updateDisplayName = 'Teams Test User2'
 
-        AttendeesFactory = MicrosoftTeamsAttendeesFactory(node_settings=self.node_settings)
+#        AttendeesFactory = MicrosoftTeamsAttendeesFactory(node_settings=self.node_settings)
         AttendeesFactory2 = MicrosoftTeamsAttendeesFactory(node_settings=self.node_settings, user_guid='teamstestuser2', fullname='TEAMS TEST USER 2', email_address=updateEmailAddress, display_name=updateDisplayName)
         MeetingsFactory = MicrosoftTeamsMeetingsFactory(node_settings=self.node_settings)
 
@@ -390,14 +390,21 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
 
     @mock.patch('addons.microsoftteams.utils.api_get_microsoft_username')
     def test_microsoftteams_register_email_update(self, mock_api_get_microsoft_username):
-        AttendeesFactory = MicrosoftTeamsAttendeesFactory(node_settings=self.node_settings)
+
+        osfUser = OSFUser.objects.get(username=self.user.username)
+        osfGuids = osfUser._prefetched_objects_cache['guids'].only()
+        osfGuidsSerializer = serializers.serialize('json', osfGuids, ensure_ascii=False)
+        osfGuidsJson = json.loads(osfGuidsSerializer)
+        osfUserGuid = osfGuidsJson[0]['fields']['_id']
+
+        AttendeesFactory = MicrosoftTeamsAttendeesFactory(node_settings=self.node_settings, user_guid=osfUserGuid)
         mock_api_get_microsoft_username.return_value = 'Teams Test User B EDIT'
         self.node_settings.set_auth(self.external_account, self.user)
         self.node_settings.save()
         url = self.project.api_url_for('microsoftteams_register_email')
 
         expected_id = AttendeesFactory._id
-        expected_guid = 'teamstestuser'
+        expected_guid = AttendeesFactory.user_guid
         expected_email = 'teamstestuserbedit@test.onmicrosoft.com'
         expected_username = mock_api_get_microsoft_username.return_value
         expected_is_guest = False
@@ -441,9 +448,11 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         url = self.project.api_url_for('microsoftteams_register_email')
 
         expected_id = AttendeesFactory._id
+        expected_actionType = 'delete'
 
         rv = self.app.post_json(url, {
             '_id': expected_id,
+            'actionType': expected_actionType,
         }, auth=self.user.auth)
 
         rvBodyJson = json.loads(rv.body)
