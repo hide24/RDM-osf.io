@@ -259,8 +259,6 @@ class NodeList(JSONAPIBaseView, bulk_views.BulkUpdateJSONAPIView, bulk_views.Bul
 
     ordering = ('-modified', )  # default ordering
 
-    logger.info('80')
-
     # overrides NodesFilterMixin
     def get_default_queryset(self):
         logger.info('80')
@@ -399,7 +397,6 @@ class NodeDetail(JSONAPIBaseView, generics.RetrieveUpdateDestroyAPIView, NodeMix
     serializer_class = NodeDetailSerializer
     view_category = 'nodes'
     view_name = 'node-detail'
-    logger.info('86')
 
     # overrides RetrieveUpdateDestroyAPIView
     def get_object(self):
@@ -744,10 +741,10 @@ class NodeRegistrationsList(JSONAPIBaseView, generics.ListCreateAPIView, NodeMix
     view_name = 'node-registrations'
 
     ordering = ('-modified',)
-    logger.info('94')
 
     def get_serializer_class(self):
         logger.info('94')
+        logger.info('95')
         if self.request.method in ('PUT', 'POST'):
             return RegistrationCreateSerializer
         return RegistrationSerializer
@@ -756,6 +753,8 @@ class NodeRegistrationsList(JSONAPIBaseView, generics.ListCreateAPIView, NodeMix
     # TODO: Filter out withdrawals by default
     def get_queryset(self):
         logger.info('94')
+
+        logger.info('95')
         nodes = self.get_node().registrations_all
         auth = get_user_auth(self.request)
         registrations = [node for node in nodes if node.can_view(auth)]
@@ -764,6 +763,8 @@ class NodeRegistrationsList(JSONAPIBaseView, generics.ListCreateAPIView, NodeMix
     # overrides ListCreateJSONAPIView
     def perform_create(self, serializer):
         logger.info('94')
+
+        logger.info('95')
         """Create a registration from a draft.
         """
         # On creation, make sure that current user is the creator
@@ -787,7 +788,6 @@ class NodeChildrenList(BaseChildrenList, bulk_views.ListBulkCreateJSONAPIView, N
     view_category = 'nodes'
     view_name = 'node-children'
     model_class = Node
-    logger.info('78')
 
     def get_serializer_context(self):
         logger.info('78')
@@ -1065,7 +1065,6 @@ class NodeForksList(JSONAPIBaseView, generics.ListCreateAPIView, NodeMixin, Node
     view_name = 'node-forks'
 
     ordering = ('-forked_date',)
-    logger.info('87')
 
     # overrides ListCreateAPIView
     def get_queryset(self):
@@ -1105,8 +1104,6 @@ class NodeLinkedByNodesList(JSONAPIBaseView, generics.ListAPIView, NodeMixin):
         base_permissions.TokenHasScope,
     )
 
-    logger.info('79')
-
     required_read_scopes = [CoreScopes.NODE_BASE_READ]
     required_write_scopes = [CoreScopes.NULL]
 
@@ -1138,12 +1135,12 @@ class NodeLinkedByRegistrationsList(JSONAPIBaseView, generics.ListAPIView, NodeM
     view_category = 'nodes'
     view_name = 'node-linked-by-registrations'
     ordering = ('-modified',)
-    logger.info('90')
 
     serializer_class = RegistrationSerializer
 
     def get_queryset(self):
         logger.info('90')
+        logger.info('91')
         node = self.get_node()
         auth = get_user_auth(self.request)
         node_relation_subquery = node._parents.filter(is_node_link=True).values_list('parent', flat=True)
@@ -2103,15 +2100,18 @@ class NodeLinkedRegistrationsList(BaseLinkedList, NodeMixin):
     serializer_class = RegistrationSerializer
     view_category = 'nodes'
     view_name = 'linked-registrations'
-    logger.info('92')
 
     def get_queryset(self):
         logger.info('92')
+
+        logger.info('93')
         return super(NodeLinkedRegistrationsList, self).get_queryset().filter(type='osf.registration')
 
     # overrides APIView
     def get_parser_context(self, http_request):
         logger.info('92')
+
+        logger.info('93')
         """
         Tells parser that we are creating a relationship
         """

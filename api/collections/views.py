@@ -472,9 +472,6 @@ class LinkedNodesList(BaseLinkedList, CollectionMixin, NodeOptimizationMixin):
 
     ordering = ('-modified',)
 
-    logger.info('75')
-    logger.info('77')
-
     def get_queryset(self):
         logger.info('75')
         logger.info('77')
@@ -570,8 +567,6 @@ class LinkedRegistrationsList(BaseLinkedList, CollectionMixin):
     view_name = 'linked-registrations'
 
     ordering = ('-modified',)
-
-    logger.info('88')
 
     def get_queryset(self):
         logger.info('88')

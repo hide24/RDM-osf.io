@@ -44,20 +44,40 @@ class BaseSearchView(JSONAPIBaseView, generics.ListCreateAPIView):
 
     @property
     def search_fields(self):
+
+        logger.info('82')
+
+        logger.info('83')
+        logger.info('100')
         # Should be overridden in subclasses to provide a list of keys found
         # in the relevant elastic doc.
         raise NotImplementedError
 
     def __init__(self):
+
+        logger.info('82')
+
+        logger.info('83')
+        logger.info('100')
         super(BaseSearchView, self).__init__()
         self.doc_type = getattr(self, 'doc_type', None)
 
     def get_parsers(self):
+
+        logger.info('82')
+
+        logger.info('83')
+        logger.info('100')
         if self.request.method == 'POST':
             return (SearchParser(), )
         return super(BaseSearchView, self).get_parsers()
 
     def get_queryset(self, query=None):
+
+        logger.info('82')
+
+        logger.info('83')
+        logger.info('100')
         page = int(self.request.query_params.get('page', '1'))
         page_size = min(int(self.request.query_params.get('page[size]', REST_FRAMEWORK['PAGE_SIZE'])), MAX_PAGE_SIZE)
         start = (page - 1) * page_size
@@ -129,7 +149,6 @@ class Search(BaseSearchView):
     # This Request/Response
 
     """
-    logger.info('81')
 
     serializer_class = SearchSerializer
 
@@ -243,7 +262,6 @@ class SearchComponents(BaseSearchView):
     #This Request/Response
 
     """
-    logger.info('82')
 
     model_class = AbstractNode
     serializer_class = NodeSerializer
@@ -473,8 +491,6 @@ class SearchProjects(BaseSearchView):
     #This Request/Response
 
     """
-
-    logger.info('83')
 
     model_class = AbstractNode
     serializer_class = NodeSerializer

@@ -67,7 +67,6 @@ class ViewOnlyLinkNodes(JSONAPIBaseView, generics.ListAPIView):
     view_name = 'view-only-link-nodes'
 
     ordering = ('-modified',)
-    logger.info('84')
 
     def get_serializer_class(self):
         logger.info('84')

@@ -75,6 +75,8 @@ class RegistrationMixin(NodeMixin):
     node_lookup_url_kwarg = 'node_id'
 
     def get_node(self, check_object_permissions=True):
+        logger.info('98')
+        logger.info('99')
         node = get_object_or_error(
             AbstractNode,
             self.kwargs[self.node_lookup_url_kwarg],
@@ -111,7 +113,6 @@ class RegistrationList(JSONAPIBaseView, generics.ListCreateAPIView, bulk_views.B
     model_class = Registration
 
     parser_classes = (JSONAPIMultipleRelationshipsParser, JSONAPIMultipleRelationshipsParserForRegularJSON,)
-    logger.info('97')
 
     # overrides BulkUpdateJSONAPIView
     def get_serializer_class(self):
@@ -319,7 +320,6 @@ class RegistrationImplicitContributorsList(JSONAPIBaseView, generics.ListAPIView
 class RegistrationChildrenList(BaseChildrenList, generics.ListAPIView, RegistrationMixin):
     """The documentation for this endpoint can be found [here](https://developer.osf.io/#operation/registrations_children_list).
     """
-    logger.info('96')
     view_category = 'registrations'
     view_name = 'registration-children'
     serializer_class = RegistrationSerializer
@@ -526,13 +526,11 @@ class RegistrationLinkedByNodesList(NodeLinkedByNodesList, RegistrationMixin):
 
 
 class RegistrationLinkedByRegistrationsList(NodeLinkedByRegistrationsList, RegistrationMixin):
-    logger('91')
     view_category = 'registrations'
     view_name = 'registration-linked-by-registrations'
 
 
 class RegistrationRegistrationsList(NodeRegistrationsList, RegistrationMixin):
-    logger.info('95')
     """List of registrations of a registration."""
     view_category = 'registrations'
     view_name = 'registration-registrations'
@@ -751,7 +749,6 @@ class RegistrationLinkedRegistrationsList(NodeLinkedRegistrationsList, Registrat
 
     #This Request/Response
     """
-    logger.info('93')
     serializer_class = RegistrationSerializer
     view_category = 'registrations'
     view_name = 'linked-registrations'

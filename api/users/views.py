@@ -86,6 +86,9 @@ from osf.models import (
 )
 from website import mails, settings
 from website.project.views.contributor import send_claim_email, send_claim_registered_email
+import logging
+
+logger = logging.getLogger(__name__)
 
 class UserMixin(object):
     """Mixin with convenience methods for retrieving the current user based on the
@@ -476,6 +479,8 @@ class UserRegistrations(JSONAPIBaseView, generics.ListAPIView, UserMixin, NodesF
 
     # overrides NodesFilterMixin
     def get_default_queryset(self):
+        logger.info('101')
+        logger.info('102')
         user = self.get_user()
         current_user = self.request.user
         qs = default_node_list_permission_queryset(user=current_user, model_cls=Registration)
@@ -484,6 +489,8 @@ class UserRegistrations(JSONAPIBaseView, generics.ListAPIView, UserMixin, NodesF
 
     # overrides ListAPIView
     def get_queryset(self):
+        logger.info('101')
+        logger.info('102')
         return self.get_queryset_from_request().select_related('node_license').include('contributor__user__guids', 'root__guids', limit_includes=10)
 
 class UserDraftRegistrations(JSONAPIBaseView, generics.ListAPIView, UserMixin):

@@ -77,10 +77,8 @@ class AddonListView(RdmPermissionMixin, UserPassesTestMixin, TemplateView):
     """View for Addon Summary Screen"""
     template_name = 'rdm_addons/addon_list.html'
     raise_exception = True
-    logger.info('73')
 
     def test_func(self):
-        logger.info('73')
         """check user permissions"""
         institution_id = int(self.kwargs.get('institution_id'))
         return self.has_auth(institution_id)

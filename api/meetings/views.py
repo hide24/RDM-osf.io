@@ -114,7 +114,6 @@ class BaseMeetingSubmission(JSONAPIBaseView, MeetingMixin):
 
 
 class MeetingSubmissionList(BaseMeetingSubmission, generics.ListAPIView, ListFilterMixin):
-    logger.info('85')
     view_name = 'meeting-submissions'
 
     ordering = ('-created', )  # default ordering
