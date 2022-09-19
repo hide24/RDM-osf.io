@@ -126,6 +126,7 @@ def project_new(**kwargs):
 
 @must_be_logged_in
 def project_new_post(auth, **kwargs):
+    logger.info('7')
     user = auth.user
     data = request.get_json()
     title = strip_html(data.get('title'))
