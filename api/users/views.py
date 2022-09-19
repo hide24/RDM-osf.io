@@ -86,6 +86,8 @@ from osf.models import (
 )
 from website import mails, settings
 from website.project.views.contributor import send_claim_email, send_claim_registered_email
+import logging
+
 logger = logging.getLogger(__name__)
 
 class UserMixin(object):
@@ -324,6 +326,7 @@ class UserNodes(JSONAPIBaseView, generics.ListAPIView, UserMixin, UserNodesFilte
     # overrides NodesFilterMixin
 
     def get_default_queryset(self):
+        logger.info('113')
         user = self.get_user()
         # Nodes the requested user has read_permissions on
         default_queryset = user.nodes_contributor_or_group_member_to
@@ -334,6 +337,7 @@ class UserNodes(JSONAPIBaseView, generics.ListAPIView, UserMixin, UserNodesFilte
 
     # overrides ListAPIView
     def get_queryset(self):
+        logger.info('113')
         return (
             self.get_queryset_from_request()
             .select_related('node_license')
@@ -396,6 +400,7 @@ class UserQuickFiles(JSONAPIBaseView, generics.ListAPIView, WaterButlerMixin, Us
 
     # overrides ListAPIView
     def get_queryset(self):
+        logger.info('116')
         return self.get_queryset_from_request()
 
 
@@ -480,6 +485,8 @@ class UserRegistrations(JSONAPIBaseView, generics.ListAPIView, UserMixin, NodesF
 
     # overrides NodesFilterMixin
     def get_default_queryset(self):
+        logger.info('101')
+        logger.info('102')
         user = self.get_user()
         current_user = self.request.user
         qs = default_node_list_permission_queryset(user=current_user, model_cls=Registration)
@@ -488,6 +495,8 @@ class UserRegistrations(JSONAPIBaseView, generics.ListAPIView, UserMixin, NodesF
 
     # overrides ListAPIView
     def get_queryset(self):
+        logger.info('101')
+        logger.info('102')
         return self.get_queryset_from_request().select_related('node_license').include('contributor__user__guids', 'root__guids', limit_includes=10)
 
 class UserDraftRegistrations(JSONAPIBaseView, generics.ListAPIView, UserMixin):
@@ -722,12 +731,14 @@ class UserSettings(JSONAPIBaseView, generics.RetrieveUpdateAPIView, UserMixin):
 
     # overrides RetrieveUpdateAPIView
     def get_serializer_class(self):
+        logger.info('138')
         if self.request.method in ('PUT', 'PATCH'):
             return UserSettingsUpdateSerializer
         return UserSettingsSerializer
 
     # overrides RetrieveUpdateAPIView
     def get_object(self):
+        logger.info('138')
         return self.get_user()
 
 
@@ -830,6 +841,7 @@ class UserEmailsList(JSONAPIBaseView, generics.ListAPIView, generics.CreateAPIVi
     serializer_class = UserEmailsSerializer
 
     def get_default_queryset(self):
+        logger.info('141')
         user = self.get_user()
         serialized_emails = []
         for email in user.emails.all():
@@ -854,6 +866,7 @@ class UserEmailsList(JSONAPIBaseView, generics.ListAPIView, generics.CreateAPIVi
 
     # overrides ListAPIView
     def get_queryset(self):
+        logger.info('141')
         return self.get_queryset_from_request()
 
 
@@ -874,6 +887,7 @@ class UserEmailsDetail(JSONAPIBaseView, generics.RetrieveUpdateDestroyAPIView, U
 
     # Overrides RetrieveUpdateDestroyAPIView
     def get_object(self):
+        logger.info('140')
         email_id = self.kwargs['email_id']
         user = self.get_user()
         email = None
@@ -918,6 +932,7 @@ class UserEmailsDetail(JSONAPIBaseView, generics.RetrieveUpdateDestroyAPIView, U
         return UserEmail(email_id=email_id, address=address, confirmed=confirmed, verified=verified, primary=primary, is_merge=is_merge)
 
     def get(self, request, *args, **kwargs):
+        logger.info('140')
         response = super(UserEmailsDetail, self).get(request, *args, **kwargs)
         if is_truthy(self.request.query_params.get('resend_confirmation')):
             user = self.get_user()
@@ -928,6 +943,7 @@ class UserEmailsDetail(JSONAPIBaseView, generics.RetrieveUpdateDestroyAPIView, U
 
     # Overrides RetrieveUpdateDestroyAPIView
     def perform_destroy(self, instance):
+        logger.info('140')
         user = self.get_user()
         email = instance.address
         if instance.confirmed and instance.verified:

@@ -777,7 +777,6 @@ class IndexView(TemplateView):
     """index view of statistics module."""
     template_name = 'rdm_statistics/index.html'
     raise_exception = True
-    logger.info('74')
 
     def find_bookmark_collection(self, user):
         logger.info('74')

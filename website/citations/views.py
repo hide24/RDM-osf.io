@@ -11,6 +11,8 @@ from website.project.decorators import (
     must_have_permission, must_not_be_registration,
     must_be_valid_project, must_be_contributor_or_public
 )
+import logging
+logger = logging.getLogger(__name__)
 
 def list_citation_styles():
     query = request.args.get('q')
@@ -130,6 +132,10 @@ class GenericCitationViews(object):
         return _set_config
 
     def import_auth(self):
+        logger.info('124')
+        logger.info('125')
+        logger.info('126')
+        logger.info('127')
         addon_short_name = self.addon_short_name
         Provider = self.Provider
 

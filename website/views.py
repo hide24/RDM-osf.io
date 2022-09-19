@@ -191,6 +191,7 @@ def dashboard(auth):
 @must_be_logged_in
 @ember_flag_is_active(features.EMBER_MY_PROJECTS)
 def my_projects(auth):
+    logger.info('148')
     user = auth.user
 
     region_list = get_storage_region_list(user)

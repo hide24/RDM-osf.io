@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from rest_framework import status as http_status
-import logging
 from framework.auth.decorators import must_be_logged_in
 from framework.exceptions import HTTPError
 
 from addons.base import utils as addon_utils
 from admin.rdm_addons import utils as rdm_addons_utils
 from admin.rdm import utils as rdm_utils
-
+import logging
 logger = logging.getLogger(__name__)
 
 @must_be_logged_in
@@ -34,6 +33,7 @@ def user_addons(auth):
 
 @must_be_logged_in
 def import_admin_account(auth, addon_name=None):
+    logger.info('144')
     user = auth.user
 
     institution_id = rdm_utils.get_institution_id(user)

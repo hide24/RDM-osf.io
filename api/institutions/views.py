@@ -116,7 +116,6 @@ class InstitutionDetail(JSONAPIBaseView, generics.RetrieveAPIView, InstitutionMi
 class InstitutionNodeList(JSONAPIBaseView, generics.ListAPIView, InstitutionMixin, NodesFilterMixin):
     """The documentation for this endpoint can be found [here](https://developer.osf.io/#operation/institutions_node_list).
     """
-    logger.info('76')
 
     permission_classes = (
         drf_permissions.IsAuthenticatedOrReadOnly,
@@ -216,10 +215,12 @@ class InstitutionRegistrationList(InstitutionNodeList):
     ordering = ('-modified', )
 
     def get_default_queryset(self):
+        logger.info('89')
         institution = self.get_institution()
         return institution.nodes.filter(is_deleted=False, is_public=True, type='osf.registration', retraction__isnull=True)
 
     def get_queryset(self):
+        logger.info('89')
         return self.get_queryset_from_request()
 
 class InstitutionRegistrationsRelationship(JSONAPIBaseView, generics.RetrieveDestroyAPIView, generics.CreateAPIView, InstitutionMixin):
