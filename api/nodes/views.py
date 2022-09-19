@@ -744,8 +744,10 @@ class NodeRegistrationsList(JSONAPIBaseView, generics.ListCreateAPIView, NodeMix
     view_name = 'node-registrations'
 
     ordering = ('-modified',)
+    logger.info('94')
 
     def get_serializer_class(self):
+        logger.info('94')
         if self.request.method in ('PUT', 'POST'):
             return RegistrationCreateSerializer
         return RegistrationSerializer
@@ -753,6 +755,7 @@ class NodeRegistrationsList(JSONAPIBaseView, generics.ListCreateAPIView, NodeMix
     # overrides ListCreateAPIView
     # TODO: Filter out withdrawals by default
     def get_queryset(self):
+        logger.info('94')
         nodes = self.get_node().registrations_all
         auth = get_user_auth(self.request)
         registrations = [node for node in nodes if node.can_view(auth)]
@@ -760,6 +763,7 @@ class NodeRegistrationsList(JSONAPIBaseView, generics.ListCreateAPIView, NodeMix
 
     # overrides ListCreateJSONAPIView
     def perform_create(self, serializer):
+        logger.info('94')
         """Create a registration from a draft.
         """
         # On creation, make sure that current user is the creator
@@ -1134,10 +1138,12 @@ class NodeLinkedByRegistrationsList(JSONAPIBaseView, generics.ListAPIView, NodeM
     view_category = 'nodes'
     view_name = 'node-linked-by-registrations'
     ordering = ('-modified',)
+    logger.info('90')
 
     serializer_class = RegistrationSerializer
 
     def get_queryset(self):
+        logger.info('90')
         node = self.get_node()
         auth = get_user_auth(self.request)
         node_relation_subquery = node._parents.filter(is_node_link=True).values_list('parent', flat=True)
@@ -2097,12 +2103,15 @@ class NodeLinkedRegistrationsList(BaseLinkedList, NodeMixin):
     serializer_class = RegistrationSerializer
     view_category = 'nodes'
     view_name = 'linked-registrations'
+    logger.info('92')
 
     def get_queryset(self):
+        logger.info('92')
         return super(NodeLinkedRegistrationsList, self).get_queryset().filter(type='osf.registration')
 
     # overrides APIView
     def get_parser_context(self, http_request):
+        logger.info('92')
         """
         Tells parser that we are creating a relationship
         """

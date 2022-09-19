@@ -571,12 +571,16 @@ class LinkedRegistrationsList(BaseLinkedList, CollectionMixin):
 
     ordering = ('-modified',)
 
+    logger.info('88')
+
     def get_queryset(self):
+        logger.info('88')
         auth = get_user_auth(self.request)
         return Registration.objects.filter(guids__in=self.get_collection().guid_links.all(), is_deleted=False).can_view(user=auth.user, private_link=auth.private_link).order_by('-modified')
 
     # overrides APIView
     def get_parser_context(self, http_request):
+        logger.info('88')
         """
         Tells parser that we are creating a relationship
         """

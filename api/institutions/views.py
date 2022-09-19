@@ -214,12 +214,15 @@ class InstitutionRegistrationList(InstitutionNodeList):
     view_name = 'institution-registrations'
 
     ordering = ('-modified', )
+    logger.info('89')
 
     def get_default_queryset(self):
+        logger.info('89')
         institution = self.get_institution()
         return institution.nodes.filter(is_deleted=False, is_public=True, type='osf.registration', retraction__isnull=True)
 
     def get_queryset(self):
+        logger.info('89')
         return self.get_queryset_from_request()
 
 class InstitutionRegistrationsRelationship(JSONAPIBaseView, generics.RetrieveDestroyAPIView, generics.CreateAPIView, InstitutionMixin):
