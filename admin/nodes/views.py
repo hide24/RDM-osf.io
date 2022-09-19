@@ -36,6 +36,8 @@ from admin.nodes.serializers import serialize_node, serialize_simple_user_and_no
 from website.project.tasks import update_node_share
 from website.project.views.register import osf_admin_change_status_identifier
 from website.util import quota
+import logging
+logger = logging.getLogger(__name__)
 
 
 class NodeFormView(PermissionRequiredMixin, GuidFormView):
@@ -519,6 +521,7 @@ class RestartStuckRegistrationsView(StuckRegistrationsView):
     template_name = 'nodes/restart_registrations_modal.html'
 
     def post(self, request, *args, **kwargs):
+        logger.info('118')
         # Prevents circular imports that cause admin app to hang at startup
         from osf.management.commands.force_archive import archive, verify
         stuck_reg = self.get_object()

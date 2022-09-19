@@ -16,6 +16,8 @@ from api.registrations.views import (
 )
 
 from api.users.views import UserNodes, UserRegistrations
+import logging
+logger = logging.getLogger(__name__)
 
 
 class BaseSparseMixin(object):
@@ -51,6 +53,7 @@ class SparseRegistrationMixin(BaseSparseMixin):
 
 
 class SparseNodeList(SparseNodeMixin, NodeList):
+    logger.info('111')
     pass
 
 
@@ -63,6 +66,7 @@ class SparseLinkedRegistrationsList(SparseRegistrationMixin, RegistrationLinkedR
 
 
 class SparseUserNodeList(SparseNodeMixin, UserNodes):
+    logger.info('112')
     pass
 
 

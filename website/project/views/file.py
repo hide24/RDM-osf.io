@@ -10,11 +10,15 @@ from website.project.decorators import must_be_contributor_or_public, must_not_b
 from website.project.views.node import _view_project
 from website.ember_osf_web.decorators import ember_flag_is_active
 from addons.osfstorage.models import NodeSettings
+import logging
+logger = logging.getLogger(__name__)
 
 @must_not_be_retracted_registration
 @must_be_contributor_or_public
 @ember_flag_is_active(features.EMBER_PROJECT_FILES)
 def collect_file_trees(auth, node, **kwargs):
+    logger.info('151')
+    logger.info('152')
     """Collect file trees for all add-ons implementing HGrid views, then
     format data as appropriate.
     """
@@ -26,6 +30,10 @@ def collect_file_trees(auth, node, **kwargs):
 
 @must_be_contributor_or_public
 def open_directory_link(auth, node, provider, **kwargs):
+    logger.info('153')
+    logger.info('154')
+    logger.info('155')
+    logger.info('156')
     path = '/'
     if kwargs.get('path'):
         path = path + kwargs['path']

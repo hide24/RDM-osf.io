@@ -18,6 +18,9 @@ from website.project.decorators import (
 )
 
 from admin.rdm_addons.decorators import must_be_rdm_addons_allowed
+import logging
+
+logger = logging.getLogger(__name__)
 
 SHORT_NAME = 'swift'
 FULL_NAME = 'OpenStack Swift'
@@ -63,6 +66,7 @@ def swift_folder_list(node_addon, **kwargs):
 @must_be_logged_in
 @must_be_rdm_addons_allowed(SHORT_NAME)
 def swift_add_user_account(auth, **kwargs):
+    logger.info('135')
     """Verifies new external account credentials and adds to user's list"""
     try:
         auth_version = request.json['auth_version']

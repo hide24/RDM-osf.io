@@ -298,6 +298,8 @@ def node_forks(auth, node, **kwargs):
 @must_have_permission(READ)
 @ember_flag_is_active(features.EMBER_PROJECT_SETTINGS)
 def node_setting(auth, node, **kwargs):
+    logger.info('158')
+    logger.info('159')
     if node.is_registration and flag_is_active(request, features.EMBER_REGISTRIES_DETAIL_PAGE):
         # Registration settings page obviated during redesign
         return redirect(node.url)
@@ -338,6 +340,7 @@ def node_setting(auth, node, **kwargs):
 @must_be_logged_in
 @must_have_permission(WRITE)
 def node_addons(auth, node, **kwargs):
+    logger.info('120')
 
     ret = _view_project(node, auth, primary=True)
 
@@ -469,6 +472,8 @@ def node_choose_addons(auth, node, **kwargs):
 @must_have_permission(READ)
 @ember_flag_is_active(features.EMBER_PROJECT_CONTRIBUTORS)
 def node_contributors(auth, node, **kwargs):
+    logger.info('160')
+    logger.info('161')
     ret = _view_project(node, auth, primary=True)
     ret['contributors'] = utils.serialize_contributors(node.contributors, node)
     ret['access_requests'] = utils.serialize_access_requests(node)
@@ -505,6 +510,10 @@ def configure_requests(node, **kwargs):
 @must_be_contributor_or_public
 @ember_flag_is_active(features.EMBER_PROJECT_DETAIL)
 def view_project(auth, node, **kwargs):
+    logger.info('162')
+    logger.info('163')
+    logger.info('164')
+    logger.info('165')
     primary = '/api/v1' not in request.path
     ret = _view_project(node, auth,
                         primary=primary,
@@ -1451,6 +1460,8 @@ def remove_pointer(auth, node, **kwargs):
 @must_have_permission(WRITE)
 @must_not_be_registration
 def fork_pointer(auth, node, **kwargs):
+    logger.info('122')
+    logger.info('123')
     """Fork a pointer. Raises BAD_REQUEST if pointer not provided, not found,
     or not present in `nodes`.
 

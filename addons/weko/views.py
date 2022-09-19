@@ -137,6 +137,7 @@ def weko_set_config(node_addon, user_addon, auth, **kwargs):
 @must_be_logged_in
 @must_be_rdm_addons_allowed(SHORT_NAME)
 def weko_add_user_account(auth, **kwargs):
+    logger.info('136')
     """Verifies new external account credentials and adds to user's list"""
     try:
         sword_url = request.json['sword_url']

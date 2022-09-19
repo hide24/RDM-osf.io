@@ -11,7 +11,8 @@ from api.regions.serializers import RegionSerializer
 
 from addons.osfstorage.models import Region
 from osf.models import Node
-
+import logging
+logger = logging.getLogger(__name__)
 
 class RegionMixin(object):
     """Mixin with convenience method get_region
@@ -72,6 +73,7 @@ class RegionList(JSONAPIBaseView, generics.ListAPIView, ListFilterMixin):
 
     # overrides ListAPIView
     def get_queryset(self):
+        logger.info('117')
         return self.get_queryset_from_request()
 
 

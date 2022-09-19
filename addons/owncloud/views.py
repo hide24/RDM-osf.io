@@ -19,6 +19,9 @@ from addons.owncloud.serializer import OwnCloudSerializer
 from addons.owncloud import settings
 
 from admin.rdm_addons.decorators import must_be_rdm_addons_allowed
+import logging
+
+logger = logging.getLogger(__name__)
 
 SHORT_NAME = 'owncloud'
 FULL_NAME = 'OwnCloud'
@@ -42,6 +45,7 @@ owncloud_deauthorize_node = generic_views.deauthorize_node(
 @must_be_logged_in
 @must_be_rdm_addons_allowed(SHORT_NAME)
 def owncloud_add_user_account(auth, **kwargs):
+    logger.info('131')
     """
         Verifies new external account credentials and adds to user's list
 
