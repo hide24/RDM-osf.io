@@ -335,6 +335,7 @@ def user_profile(auth, **kwargs):
 @must_be_logged_in
 @ember_flag_is_active(features.EMBER_USER_SETTINGS_ACCOUNTS)
 def user_account(auth, **kwargs):
+    logger.info('13')
     user = auth.user
     user_addons = addon_utils.get_addons_by_config_type('user', user)
     if 'password_reset' in request.args:
@@ -353,6 +354,7 @@ def user_account(auth, **kwargs):
 
 @must_be_logged_in_without_checking_email
 def user_account_email(auth, **kwargs):
+    logger.info('14')
     user = auth.user
     user_addons = addon_utils.get_addons_by_config_type('user', user)
 
@@ -409,7 +411,7 @@ def user_account_password(auth, **kwargs):
 @must_be_logged_in
 @ember_flag_is_active(features.EMBER_USER_SETTINGS_ADDONS)
 def user_addons(auth, **kwargs):
-
+    logger.info('14')
     user = auth.user
 
     ret = {

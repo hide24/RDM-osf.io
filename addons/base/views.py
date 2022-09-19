@@ -140,7 +140,8 @@ def disable_addon(auth, **kwargs):
 
 @must_be_logged_in
 def get_addon_user_config(**kwargs):
-
+    logger.info('17')
+    logger.info('26')
     user = kwargs['auth'].user
 
     addon_name = kwargs.get('addon')
@@ -257,6 +258,7 @@ def get_metric_class_for_action(action, from_mfr):
 
 @collect_auth
 def get_auth(auth, **kwargs):
+    logger.info('27')
     cas_resp = None
     if not auth.user:
         # Central Authentication Server OAuth Bearer Token
@@ -406,6 +408,8 @@ DOWNLOAD_ACTIONS = set([
 @no_auto_transaction
 @must_be_valid_project(quickfiles_valid=True, preprints_valid=True)
 def create_waterbutler_log(payload, **kwargs):
+    logger.info('28')
+    logger.info('29')
     file_created_or_updated = False
     file_node_moved = False
     with transaction.atomic():
@@ -622,6 +626,38 @@ def addon_delete_file_node(self, target, user, event_type, payload):
 
 @must_be_valid_project
 def addon_view_or_download_file_legacy(**kwargs):
+    logger.info('38')
+    logger.info('39')
+    logger.info('40')
+    logger.info('41')
+    logger.info('42')
+    logger.info('43')
+    logger.info('44')
+    logger.info('45')
+    logger.info('46')
+    logger.info('47')
+    logger.info('48')
+    logger.info('49')
+    logger.info('50')
+    logger.info('51')
+    logger.info('52')
+    logger.info('53')
+    logger.info('54')
+    logger.info('55')
+    logger.info('56')
+    logger.info('57')
+    logger.info('58')
+    logger.info('59')
+    logger.info('60')
+    logger.info('61')
+    logger.info('62')
+    logger.info('63')
+    logger.info('64')
+    logger.info('65')
+    logger.info('66')
+    logger.info('67')
+    logger.info('68')
+    logger.info('69')
     query_params = request.args.to_dict()
     node = kwargs.get('node') or kwargs['project']
 
@@ -667,6 +703,8 @@ def addon_view_or_download_file_legacy(**kwargs):
 
 @must_be_contributor_or_public
 def addon_deleted_file(auth, target, error_type='BLAME_PROVIDER', **kwargs):
+    logger.info('36')
+    logger.info('37')
     """Shows a nice error message to users when they try to view a deleted file
     """
     # Allow file_node to be passed in so other views can delegate to this one
@@ -793,6 +831,12 @@ def verify_timestamp(auth, path, provider, **kwargs):
 @must_be_contributor_or_public
 @ember_flag_is_active(features.EMBER_FILE_DETAIL)
 def addon_view_or_download_file(auth, path, provider, **kwargs):
+    logger.info('30')
+    logger.info('31')
+    logger.info('32')
+    logger.info('33')
+    logger.info('34')
+    logger.info('35')
     extras = request.args.to_dict()
     extras.pop('_', None)  # Clean up our url params a bit
     action = extras.get('action', 'view')

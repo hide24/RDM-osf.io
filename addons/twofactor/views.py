@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from rest_framework import status as http_status
-
+import logging
 from flask import request
 
 from framework.auth.decorators import must_be_logged_in
@@ -9,6 +9,8 @@ from framework.exceptions import HTTPError
 from website.project.decorators import must_have_addon
 
 from addons.twofactor.utils import serialize_settings
+
+logger = logging.getLogger(__name__)
 
 @must_be_logged_in
 @must_have_addon('twofactor', 'user')
@@ -29,6 +31,7 @@ def twofactor_settings_put(user_addon, *args, **kwargs):
 
 @must_be_logged_in
 def twofactor_settings_get(auth, *args, **kwargs):
+    logger.info('19')
     return {
         'result': serialize_settings(auth),
     }
@@ -36,6 +39,7 @@ def twofactor_settings_get(auth, *args, **kwargs):
 
 @must_be_logged_in
 def twofactor_enable(auth, *args, **kwargs):
+    logger.info('18')
     user = auth.user
 
     if user.has_addon('twofactor'):

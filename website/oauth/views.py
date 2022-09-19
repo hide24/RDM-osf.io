@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from rest_framework import status as http_status
-
+import logging
 from flask import redirect, request
 
 from framework.auth.decorators import must_be_logged_in
@@ -12,9 +12,12 @@ from website.oauth.utils import get_service
 from website.oauth.signals import oauth_complete
 from admin.rdm_addons.utils import validate_rdm_addons_allowed
 
+logger = logging.getLogger(__name__)
+
 
 @must_be_logged_in
 def oauth_disconnect(external_account_id, auth):
+    logger.info('12')
     account = ExternalAccount.load(external_account_id)
     user = auth.user
 

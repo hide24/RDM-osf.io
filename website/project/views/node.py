@@ -173,6 +173,7 @@ def project_new_post(auth, **kwargs):
 @must_be_logged_in
 @must_be_valid_project
 def project_new_from_template(auth, node, **kwargs):
+    logger.info('8')
     new_node = node.use_as_template(
         auth=auth,
         changes=dict(),
@@ -266,6 +267,7 @@ def project_before_fork(auth, node, **kwargs):
 @must_be_logged_in
 @must_be_valid_project
 def project_before_template(auth, node, **kwargs):
+    logger.info('22')
     prompts = []
 
     for addon in node.get_addons():
@@ -338,7 +340,8 @@ def node_setting(auth, node, **kwargs):
 @must_be_logged_in
 @must_have_permission(WRITE)
 def node_addons(auth, node, **kwargs):
-
+    logger.info('23')
+    logger.info('24')
     ret = _view_project(node, auth, primary=True)
 
     addon_settings = serialize_addons(node, auth)

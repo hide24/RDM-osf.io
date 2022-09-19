@@ -178,6 +178,7 @@ class SaveCredentialsView(InstitutionalStorageBaseView, View):
     Called when clicking the 'Save' Button.
     """
     def post(self, request):
+        logger.info('9')
         institution = request.user.affiliated_institutions.first()
         institution_id = institution._id
         data = json.loads(request.body)

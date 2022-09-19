@@ -1372,6 +1372,7 @@ class NodeAddonList(JSONAPIBaseView, generics.ListAPIView, ListFilterMixin, Node
     ordering = ('-id',)
 
     def get_default_queryset(self):
+        logger.info('4')
         qs = []
         for addon in ADDONS_OAUTH:
             obj = self.get_addon_settings(provider=addon, fail_if_absent=False, check_object_permissions=False)
@@ -1403,6 +1404,7 @@ class NodeAddonDetail(JSONAPIBaseView, generics.RetrieveUpdateDestroyAPIView, ge
     view_name = 'node-addon-detail'
 
     def get_object(self):
+        logger.info('5')
         return self.get_addon_settings(check_object_permissions=False)
 
     def perform_create(self, serializer):
@@ -1455,6 +1457,7 @@ class NodeAddonFolderList(JSONAPIBaseView, generics.ListAPIView, NodeMixin, Addo
     view_name = 'node-addon-folders'
 
     def get_queryset(self):
+        logger.info('6')
         # TODO: [OSF-6120] refactor this/NS models to be generalizable
         node_addon = self.get_addon_settings()
         if not node_addon.has_auth:

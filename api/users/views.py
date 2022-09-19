@@ -1,5 +1,5 @@
 import pytz
-
+import logging
 from django.apps import apps
 from django.db.models import F
 from guardian.shortcuts import get_objects_for_user
@@ -86,6 +86,7 @@ from osf.models import (
 )
 from website import mails, settings
 from website.project.views.contributor import send_claim_email, send_claim_registered_email
+logger = logging.getLogger(__name__)
 
 class UserMixin(object):
     """Mixin with convenience methods for retrieving the current user based on the
@@ -248,6 +249,7 @@ class UserAddonDetail(JSONAPIBaseView, generics.RetrieveAPIView, UserMixin, Addo
     view_name = 'user-addon-detail'
 
     def get_object(self):
+        logger.info('1')
         return self.get_addon_settings(check_object_permissions=False)
 
 
@@ -270,6 +272,7 @@ class UserAddonAccountList(JSONAPIBaseView, generics.ListAPIView, UserMixin, Add
     ordering = ('-date_last_refreshed',)
 
     def get_queryset(self):
+        logger.info('3')
         return self.get_addon_settings(check_object_permissions=False).external_accounts
 
 class UserAddonAccountDetail(JSONAPIBaseView, generics.RetrieveAPIView, UserMixin, AddonSettingsMixin):
@@ -289,6 +292,7 @@ class UserAddonAccountDetail(JSONAPIBaseView, generics.RetrieveAPIView, UserMixi
     view_name = 'user-external_account-detail'
 
     def get_object(self):
+        logger.info('2')
         user_settings = self.get_addon_settings(check_object_permissions=False)
         account_id = self.kwargs['account_id']
 
