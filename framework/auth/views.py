@@ -322,6 +322,8 @@ def login_and_register_handler(auth, login=True, campaign=None, next_url=None, l
 
 @collect_auth
 def auth_login(auth):
+    logger.info('149')
+    logger.info('150')
     logger.info('-----{}::{}({})from:{}::{}({})'.format(inspect.getframeinfo(inspect.currentframe())[0], inspect.getframeinfo(inspect.currentframe())[2], inspect.getframeinfo(inspect.currentframe())[1], inspect.stack()[1][1], inspect.stack()[1][3], inspect.stack()[1][2]))
     """
     View (no template) for OSF Login.
@@ -612,6 +614,7 @@ def external_login_confirm_email_get(auth, uid, token):
 @block_bing_preview
 @collect_auth
 def confirm_email_get(token, auth=None, **kwargs):
+    logger.info('142')
     """
     View for email confirmation links. Authenticates and redirects to user settings page if confirmation is successful,
     otherwise shows an "Expired Link" error.
@@ -713,6 +716,7 @@ def unconfirmed_email_remove(auth=None):
 
 @must_be_logged_in_without_checking_email
 def unconfirmed_email_add(auth=None):
+    logger.info('143')
     """
     Called at login if user confirms their merge or email add.
     HTTP Method: PUT

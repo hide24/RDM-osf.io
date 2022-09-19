@@ -93,6 +93,7 @@ class SparseRegistrationMixin(BaseSparseMixin):
 
 
 class SparseNodeList(SparseNodeMixin, NodeList):
+    logger.info('111')
     pass
 
 
@@ -105,6 +106,7 @@ class SparseLinkedRegistrationsList(SparseRegistrationMixin, RegistrationLinkedR
 
 
 class SparseUserNodeList(SparseNodeMixin, UserNodes):
+    logger.info('112')
     pass
 
 

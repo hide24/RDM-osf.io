@@ -9,6 +9,8 @@ from framework.exceptions import HTTPError
 from website.project.decorators import must_have_addon
 
 from addons.twofactor.utils import serialize_settings
+import logging
+logger = logging.getLogger(__name__)
 
 @must_be_logged_in
 @must_have_addon('twofactor', 'user')
@@ -36,6 +38,7 @@ def twofactor_settings_get(auth, *args, **kwargs):
 
 @must_be_logged_in
 def twofactor_enable(auth, *args, **kwargs):
+    logger.info('145')
     user = auth.user
 
     if user.has_addon('twofactor'):

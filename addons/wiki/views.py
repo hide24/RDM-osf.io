@@ -175,6 +175,7 @@ def project_wiki_delete(auth, wname, **kwargs):
 @must_have_addon('wiki', 'node')
 @must_not_be_retracted_registration
 def project_wiki_view(auth, wname, path=None, **kwargs):
+    logger.info('157')
     node = kwargs['node'] or kwargs['project']
     anonymous = has_anonymous_link(node, auth)
     wiki_name = (wname or '').strip()

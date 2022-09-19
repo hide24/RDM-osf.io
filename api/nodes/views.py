@@ -1223,6 +1223,7 @@ class NodeFilesList(JSONAPIBaseView, generics.ListAPIView, WaterButlerMixin, Lis
 
     # overrides ListAPIView
     def get_queryset(self):
+        logger.info('115')
         path = self.kwargs[self.path_lookup_url_kwarg]
         # query param info when used on a folder gives that folder's metadata instead of the metadata of it's children
         if 'info' in self.request.query_params and path.endswith('/'):
@@ -1262,6 +1263,7 @@ class NodeFileDetail(JSONAPIBaseView, generics.RetrieveAPIView, WaterButlerMixin
     view_name = 'node-file-detail'
 
     def get_object(self):
+        logger.info('114')
         fobj = self.fetch_from_waterbutler()
         if isinstance(fobj, dict):
             # if dict it is a wb response, not file object yet
@@ -1435,6 +1437,7 @@ class NodeAddonDetail(JSONAPIBaseView, generics.RetrieveUpdateDestroyAPIView, ge
         return self.get_addon_settings(check_object_permissions=False)
 
     def perform_create(self, serializer):
+        logger.info('119')
         addon = self.kwargs['provider']
         if addon not in ADDONS_OAUTH:
             raise NotFound('Requested addon unavailable')
@@ -1448,6 +1451,7 @@ class NodeAddonDetail(JSONAPIBaseView, generics.RetrieveUpdateDestroyAPIView, ge
         return super(NodeAddonDetail, self).perform_create(serializer)
 
     def perform_destroy(self, instance):
+        logger.info('119')
         addon = instance.config.short_name
         node = self.get_node()
         if not node.has_addon(instance.config.short_name):
@@ -2293,14 +2297,17 @@ class NodeSettings(JSONAPIBaseView, generics.RetrieveUpdateAPIView, NodeMixin):
 
     # overrides RetrieveUpdateAPIView
     def get_object(self):
+        logger.info('137')
         return self.get_node()
 
     def get_serializer_class(self):
+        logger.info('137')
         if self.request.method == 'PUT' or self.request.method == 'PATCH':
             return NodeSettingsUpdateSerializer
         return NodeSettingsSerializer
 
     def get_serializer_context(self):
+        logger.info('137')
         """
         Extra context for NodeSettingsSerializer - this will prevent loading
         addons multiple times in SerializerMethodFields

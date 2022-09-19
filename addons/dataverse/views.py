@@ -26,6 +26,8 @@ from website.project.decorators import (
 from website.util import rubeus, api_url_for
 
 from admin.rdm_addons.decorators import must_be_rdm_addons_allowed
+import logging
+logger = logging.getLogger(__name__)
 
 SHORT_NAME = 'dataverse'
 FULL_NAME = 'Dataverse'
@@ -79,6 +81,7 @@ def dataverse_user_config_get(auth, **kwargs):
 @must_be_logged_in
 @must_be_rdm_addons_allowed(SHORT_NAME)
 def dataverse_add_user_account(auth, **kwargs):
+    logger.info('128')
     """Verifies new external account credentials and adds to user's list"""
     user = auth.user
     provider = DataverseProvider()
