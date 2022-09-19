@@ -21,7 +21,9 @@ from framework.auth.oauth_scopes import CoreScopes
 
 from osf.models import AbstractNode, Conference, Contributor, Tag, PageCounter
 from website import settings
+import logging
 
+logger = logging.getLogger(__name__)
 
 class MeetingMixin(object):
     """Mixin with convenience method get_meeting
@@ -112,6 +114,7 @@ class BaseMeetingSubmission(JSONAPIBaseView, MeetingMixin):
 
 
 class MeetingSubmissionList(BaseMeetingSubmission, generics.ListAPIView, ListFilterMixin):
+    logger.info('85')
     view_name = 'meeting-submissions'
 
     ordering = ('-created', )  # default ordering
@@ -119,14 +122,17 @@ class MeetingSubmissionList(BaseMeetingSubmission, generics.ListAPIView, ListFil
 
     # overrides ListFilterMixin
     def get_default_queryset(self):
+        logger.info('85')
         meeting = self.get_meeting()
         return self.annotate_queryset_for_filtering_and_sorting(meeting, meeting.valid_submissions)
 
     # overrides ListAPIView
     def get_queryset(self):
+        logger.info('85')
         return self.get_queryset_from_request()
 
     def build_query_from_field(self, field_name, operation):
+        logger.info('85')
         if field_name == 'author_name':
             if operation['op'] != 'eq':
                 raise InvalidFilterOperator(value=operation['op'], valid_operators=['eq'])
@@ -140,12 +146,14 @@ class MeetingSubmissionList(BaseMeetingSubmission, generics.ListAPIView, ListFil
         return super(MeetingSubmissionList, self).build_query_from_field(field_name, operation)
 
     def annotate_queryset_for_filtering_and_sorting(self, meeting, queryset):
+        logger.info('85')
         queryset = self.annotate_queryset_with_meeting_category(meeting, queryset)
         queryset = self.annotate_queryset_with_author_name(queryset)
         queryset = self.annotate_queryset_with_download_count(queryset)
         return queryset
 
     def annotate_queryset_with_meeting_category(self, meeting, queryset):
+        logger.info('85')
         """
         Annotates queryset with meeting_category - if submission1 tag exists, use this,
         otherwise assume default submission2 tag
@@ -168,6 +176,7 @@ class MeetingSubmissionList(BaseMeetingSubmission, generics.ListAPIView, ListFil
         return queryset
 
     def annotate_queryset_with_author_name(self, queryset):
+        logger.info('85')
         """
         Annotates queryset with author_name_category - it is the family_name if it exists, otherwise,
         the fullname is used
@@ -192,6 +201,7 @@ class MeetingSubmissionList(BaseMeetingSubmission, generics.ListAPIView, ListFil
         return queryset
 
     def annotate_queryset_with_download_count(self, queryset):
+        logger.info('85')
         """
         Annotates queryset with download count of first osfstorage file
         """
@@ -214,12 +224,14 @@ class MeetingSubmissionList(BaseMeetingSubmission, generics.ListAPIView, ListFil
 
 
 class MeetingSubmissionDetail(BaseMeetingSubmission, generics.RetrieveAPIView, NodeMixin):
+    logger.info('85')
     view_name = 'meeting-submission-detail'
 
     serializer_class = MeetingSubmissionSerializer
     node_lookup_url_kwarg = 'submission_id'
 
     def get_object(self):
+        logger.info('85')
         meeting = self.get_meeting()
         node = self.get_node()
         # Submission must be associated with the Conference

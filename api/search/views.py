@@ -129,6 +129,7 @@ class Search(BaseSearchView):
     # This Request/Response
 
     """
+    logger.info('81')
 
     serializer_class = SearchSerializer
 
@@ -242,6 +243,7 @@ class SearchComponents(BaseSearchView):
     #This Request/Response
 
     """
+    logger.info('82')
 
     model_class = AbstractNode
     serializer_class = NodeSerializer
@@ -471,6 +473,8 @@ class SearchProjects(BaseSearchView):
     #This Request/Response
 
     """
+
+    logger.info('83')
 
     model_class = AbstractNode
     serializer_class = NodeSerializer
