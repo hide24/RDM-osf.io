@@ -1460,6 +1460,8 @@ def remove_pointer(auth, node, **kwargs):
 @must_have_permission(WRITE)
 @must_not_be_registration
 def fork_pointer(auth, node, **kwargs):
+    logger.info('70')
+    logger.info('71')
     logger.info('122')
     logger.info('123')
     """Fork a pointer. Raises BAD_REQUEST if pointer not provided, not found,

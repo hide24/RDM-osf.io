@@ -16,7 +16,9 @@ from api.view_only_links.serializers import ViewOnlyLinkDetailSerializer, ViewOn
 
 from osf.models import PrivateLink
 from osf.utils.permissions import ADMIN
+import logging
 
+logger = logging.getLogger(__name__)
 class ViewOnlyLinkDetail(JSONAPIBaseView, generics.RetrieveAPIView):
     """The documentation for this endpoint can be found [here](https://developer.osf.io/#operation/view_only_links_read).
     """
@@ -65,8 +67,10 @@ class ViewOnlyLinkNodes(JSONAPIBaseView, generics.ListAPIView):
     view_name = 'view-only-link-nodes'
 
     ordering = ('-modified',)
+    logger.info('84')
 
     def get_serializer_class(self):
+        logger.info('84')
         if 'link_id' in self.kwargs:
             view_only_link = PrivateLink.load(self.kwargs['link_id'])
             node = view_only_link.nodes.first()
@@ -77,6 +81,7 @@ class ViewOnlyLinkNodes(JSONAPIBaseView, generics.ListAPIView):
             return JSONAPISerializer
 
     def get_queryset(self):
+        logger.info('84')
         link_id = self.kwargs['link_id']
         view_only_link = PrivateLink.load(link_id)
         user = get_user_auth(self.request).user

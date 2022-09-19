@@ -62,7 +62,9 @@ from api.wikis.serializers import RegistrationWikiSerializer
 from api.base.utils import get_object_or_error
 from framework.sentry import log_exception
 from osf.utils.permissions import ADMIN
+import logging
 
+logger = logging.getLogger(__name__)
 
 class RegistrationMixin(NodeMixin):
     """Mixin with convenience methods for retrieving the current registration based on the
@@ -109,9 +111,11 @@ class RegistrationList(JSONAPIBaseView, generics.ListCreateAPIView, bulk_views.B
     model_class = Registration
 
     parser_classes = (JSONAPIMultipleRelationshipsParser, JSONAPIMultipleRelationshipsParserForRegularJSON,)
+    logger.info('97')
 
     # overrides BulkUpdateJSONAPIView
     def get_serializer_class(self):
+        logger.info('97')
         """
         Use RegistrationDetailSerializer which requires 'id'
         """
@@ -124,9 +128,11 @@ class RegistrationList(JSONAPIBaseView, generics.ListCreateAPIView, bulk_views.B
 
     # overrides NodesFilterMixin
     def get_default_queryset(self):
+        logger.info('97')
         return default_node_list_permission_queryset(user=self.request.user, model_cls=Registration)
 
     def is_blacklisted(self):
+        logger.info('97')
         query_params = self.parse_query_params(self.request.query_params)
         for key, field_names in query_params.items():
             for field_name, data in field_names.items():
@@ -137,6 +143,7 @@ class RegistrationList(JSONAPIBaseView, generics.ListCreateAPIView, bulk_views.B
 
     # overrides ListAPIView, ListBulkCreateJSONAPIView
     def get_queryset(self):
+        logger.info('97')
         # For bulk requests, queryset is formed from request body.
         if is_bulk_request(self.request):
             auth = get_user_auth(self.request)
@@ -168,6 +175,7 @@ class RegistrationList(JSONAPIBaseView, generics.ListCreateAPIView, bulk_views.B
 
     # overrides ListCreateJSONAPIView
     def perform_create(self, serializer):
+        logger.info('97')
         """Create a registration from a draft.
         """
         draft_id = self.request.data.get('draft_registration', None) or self.request.data.get('draft_registration_id', None)
@@ -189,6 +197,7 @@ class RegistrationList(JSONAPIBaseView, generics.ListCreateAPIView, bulk_views.B
             )
 
     def check_branched_from(self, draft):
+        logger.info('97')
         # Overrides DraftMixin - no node_id in kwargs
         return
 
@@ -310,6 +319,7 @@ class RegistrationImplicitContributorsList(JSONAPIBaseView, generics.ListAPIView
 class RegistrationChildrenList(BaseChildrenList, generics.ListAPIView, RegistrationMixin):
     """The documentation for this endpoint can be found [here](https://developer.osf.io/#operation/registrations_children_list).
     """
+    logger.info('96')
     view_category = 'registrations'
     view_name = 'registration-children'
     serializer_class = RegistrationSerializer
@@ -516,11 +526,13 @@ class RegistrationLinkedByNodesList(NodeLinkedByNodesList, RegistrationMixin):
 
 
 class RegistrationLinkedByRegistrationsList(NodeLinkedByRegistrationsList, RegistrationMixin):
+    logger('91')
     view_category = 'registrations'
     view_name = 'registration-linked-by-registrations'
 
 
 class RegistrationRegistrationsList(NodeRegistrationsList, RegistrationMixin):
+    logger.info('95')
     """List of registrations of a registration."""
     view_category = 'registrations'
     view_name = 'registration-registrations'
@@ -739,7 +751,7 @@ class RegistrationLinkedRegistrationsList(NodeLinkedRegistrationsList, Registrat
 
     #This Request/Response
     """
-
+    logger.info('93')
     serializer_class = RegistrationSerializer
     view_category = 'registrations'
     view_name = 'linked-registrations'
