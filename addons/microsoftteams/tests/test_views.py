@@ -227,8 +227,8 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         expected_organizer_fullname = 'MicrosoftTeams Fake User'
         expected_attendees_id1 = Attendees.objects.get(user_guid='teamstestuser').id
         expected_attendees_id2 = Attendees.objects.get(user_guid='teamstestuser2').id
-        expected_attendees = [expected_attendees_id1, expected_attendees_id2]
-        expected_attendees = {
+        expected_attendees_ids = [expected_attendees_id1, expected_attendees_id2]
+        expected_attendees = [
                     'emailAddress': {
                         'address': 'teamstestuser1@test.onmicrosoft.com',
                         'name': 'Teams Test User1'
@@ -237,7 +237,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
                         'address': updateEmailAddress,
                         'name': updateDisplayName
                     },
-                }
+                ]
         expected_startDatetime = datetime.now().isoformat()
         expected_endDatetime = (datetime.now() + timedelta(hours=1)).isoformat()
         expected_content = 'My Test Content EDIT'
@@ -273,7 +273,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
                 'dateTime': expected_endDatetime,
                 'timeZone': 'Asia/Tokyo'
             },
-            'attendees': [expected_attendees],
+            'attendees': expected_attendees,
             'bodyPreview': expected_content,
             'organizer': {
                 'emailAddress': {
@@ -304,6 +304,10 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
 
         expected_startDatetime_format = date_parse.parse(expected_startDatetime).strftime('%Y/%m/%d %H:%M:%S')
         expected_endDatetime_format = date_parse.parse(expected_endDatetime).strftime('%Y/%m/%d %H:%M:%S')
+
+        logger.info('externai_id::' + str(MeetingsFactory.external_account))
+
+        logger.info('resultattendee:' + str(result.attendees.all()[0])
 
         assert_equals(result.subject, expected_subject)
         assert_equals(result.organizer, expected_organizer)
@@ -433,9 +437,11 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         mock_api_get_microsoft_username.return_value = 'Teams Test User B EDIT'
         url = self.project.api_url_for('microsoftteams_register_email')
 
-        tst = Attendees.objects.all()
-        tst = serializers.serialize('json', tst, ensure_ascii=False)
-        logger.info('tsta:' + str(tst))
+        qsAttendees = Attendees.objects.all()
+        attendeesJson = json.loads(serializers.serialize('json', tst, ensure_ascii=False))
+        expected_external_id = attendeesJson['fields']['external_account']
+
+        logger.info('tsta:' + str(attendeesJson))
 
         expected_id = AttendeesFactory._id
         expected_guid = AttendeesFactory.user_guid
@@ -468,7 +474,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         assert_equals(result.email_address, expected_email)
         assert_equals(result.display_name, expected_username)
         assert_equals(result.is_guest, expected_is_guest)
-        assert_equals(result.external_account.id, AttendeesFactory.external_account)
+        assert_equals(result.external_account.id, expected_external_id)
         assert_equals(result.node_settings.id, self.node_settings.id)
         assert_equals(rvBodyJson, {})
 
