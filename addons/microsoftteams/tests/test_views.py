@@ -81,8 +81,18 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
     def test_microsoftteams_request_api_create(self, mock_api_create_teams_meeting):
         self.node_settings.set_auth(self.external_account, self.user)
         self.node_settings.save()
-#        AttendeesFactory = MicrosoftTeamsAttendeesFactory(node_settings=self.node_settings)
+
+        tst = Attendees.objects.all()
+        tst = serializers.serialize('json', tst, ensure_ascii=False)
+        logger.info('tst1:' + str(tst))
+
+        AttendeesFactory = MicrosoftTeamsAttendeesFactory(node_settings=self.node_settings)
         url = self.project.api_url_for('microsoftteams_request_api')
+
+
+        tst = Attendees.objects.all()
+        tst = serializers.serialize('json', tst, ensure_ascii=False)
+        logger.info('tst2:' + str(tst))
 
         expected_action = 'create'
         expected_UpdateMeetinId = ''
@@ -176,6 +186,10 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         assert_equals(result.node_settings.id, self.node_settings.id)
         assert_equals(rvBodyJson, {})
 
+        #clear
+        Attendees.objects.all().delete()
+        Meetings.objects.all().delete()
+
     @mock.patch('addons.microsoftteams.utils.api_update_teams_meeting')
     def test_microsoftteams_request_api_update(self, mock_api_update_teams_meeting):
 
@@ -185,9 +199,17 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         updateEmailAddress = 'teamstestuser2@test.onmicrosoft.com'
         updateDisplayName = 'Teams Test User2'
 
-#        AttendeesFactory = MicrosoftTeamsAttendeesFactory(node_settings=self.node_settings)
+        tst = Attendees.objects.all()
+        tst = serializers.serialize('json', tst, ensure_ascii=False)
+        logger.info('tst3:' + str(tst))
+
+        AttendeesFactory = MicrosoftTeamsAttendeesFactory(node_settings=self.node_settings)
         AttendeesFactory2 = MicrosoftTeamsAttendeesFactory(node_settings=self.node_settings, user_guid='teamstestuser2', fullname='TEAMS TEST USER 2', email_address=updateEmailAddress, display_name=updateDisplayName)
         MeetingsFactory = MicrosoftTeamsMeetingsFactory(node_settings=self.node_settings)
+
+        tst = Attendees.objects.all()
+        tst = serializers.serialize('json', tst, ensure_ascii=False)
+        logger.info('tst4:' + str(tst))
 
         url = self.project.api_url_for('microsoftteams_request_api')
 
@@ -198,7 +220,9 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         expected_subject = 'My Test Meeting EDIT'
         expected_organizer = 'teamstestuser1@test.onmicrosoft.com'
         expected_organizer_fullname = 'MicrosoftTeams Fake User'
-        expected_attendees_id = Attendees.objects.get(user_guid='teamstestuser').id
+        expected_attendees_id1 = Attendees.objects.get(user_guid='teamstestuser').id
+        expected_attendees_id2 = Attendees.objects.get(user_guid='teamstestuser2').id
+        expected_attendees = [expected_attendees_id1, expected_attendees_id2]
         expected_attendees = {
                     'emailAddress': {
                         'address': 'teamstestuser1@test.onmicrosoft.com',
@@ -281,7 +305,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         assert_equals(result.organizer_fullname, expected_organizer_fullname)
         assert_equals(result.start_datetime.strftime('%Y/%m/%d %H:%M:%S'), expected_startDatetime_format)
         assert_equals(result.end_datetime.strftime('%Y/%m/%d %H:%M:%S'), expected_endDatetime_format)
-        assert_equals(result.attendees.all()[0].id, expected_attendees_id)
+        assert_equals(result.attendees.all(), expected_attendees_id)
         assert_equals(result.content, expected_content)
         assert_equals(result.join_url, expected_joinUrl)
         assert_equals(result.meetingid, expected_meetingId)
@@ -408,7 +432,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         expected_email = 'teamstestuserbedit@test.onmicrosoft.com'
         expected_username = mock_api_get_microsoft_username.return_value
         expected_is_guest = False
-        expected_fullname = 'TEST RDM USER'
+        expected_fullname = osfUser.fullname
         expected_actionType = 'update'
         expected_emailType = 'radio_signInAddress'
 
