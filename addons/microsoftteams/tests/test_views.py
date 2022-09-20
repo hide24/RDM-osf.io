@@ -131,7 +131,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
                 'attendees': expected_attendees,
                 'isOnlineMeeting': True,
             };
-        expected_guestOrNot = {'testuser1@test.onmicrosoft.com': False}
+        expected_guestOrNot = {'teamstestuser1@test.onmicrosoft.com': False}
 
         mock_api_create_teams_meeting.return_value = {
             'id': expected_meetingId,
@@ -243,6 +243,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         expected_content = 'My Test Content EDIT'
         expected_contentExtract = expected_content
         expected_joinUrl = 'teams/microsoft.com/321'
+        expected_meetingId = '1234567890qwertyuiopasdfghjkl'
         expected_body = {
                 'subject': expected_subject,
                 'start': {
@@ -420,6 +421,8 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
     @mock.patch('addons.microsoftteams.utils.api_get_microsoft_username')
     def test_microsoftteams_register_email_update(self, mock_api_get_microsoft_username):
 
+        self.node_settings.set_auth(self.external_account, self.user)
+        self.node_settings.save()
         osfUser = OSFUser.objects.get(username=self.user.username)
         osfGuids = osfUser._prefetched_objects_cache['guids'].only()
         osfGuidsSerializer = serializers.serialize('json', osfGuids, ensure_ascii=False)
@@ -428,9 +431,11 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
 
         AttendeesFactory = MicrosoftTeamsAttendeesFactory(node_settings=self.node_settings, user_guid=osfUserGuid)
         mock_api_get_microsoft_username.return_value = 'Teams Test User B EDIT'
-        self.node_settings.set_auth(self.external_account, self.user)
-        self.node_settings.save()
         url = self.project.api_url_for('microsoftteams_register_email')
+
+        tst = Attendees.objects.all()
+        tst = serializers.serialize('json', tst, ensure_ascii=False)
+        logger.info('tsta:' + str(tst))
 
         expected_id = AttendeesFactory._id
         expected_guid = AttendeesFactory.user_guid
@@ -454,7 +459,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
 
         tst = Attendees.objects.all()
         tst = serializers.serialize('json', tst, ensure_ascii=False)
-        logger.info('tst:' + str(tst))
+        logger.info('tstb:' + str(tst))
 
         result = Attendees.objects.get(_id=expected_id)
 
