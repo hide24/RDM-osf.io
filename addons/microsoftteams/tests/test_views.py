@@ -194,9 +194,6 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
     @mock.patch('addons.microsoftteams.utils.api_update_teams_meeting')
     def test_microsoftteams_request_api_update(self, mock_api_update_teams_meeting):
 
-        self.node_settings.set_auth(self.external_account, self.user)
-        self.node_settings.save()
-
         updateEmailAddress = 'teamstestuser2@test.onmicrosoft.com'
         updateDisplayName = 'Teams Test User2'
 
@@ -243,7 +240,6 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         expected_content = 'My Test Content EDIT'
         expected_contentExtract = expected_content
         expected_joinUrl = 'teams/microsoft.com/321'
-        expected_meetingId = '1234567890qwertyuiopasdfghjkl'
         expected_body = {
                 'subject': expected_subject,
                 'start': {
@@ -313,12 +309,12 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         assert_equals(result.end_datetime.strftime('%Y/%m/%d %H:%M:%S'), expected_endDatetime_format)
         assert_equals(result.content, expected_content)
         assert_equals(result.join_url, expected_joinUrl)
-        assert_equals(result.meetingid, expected_meetingId)
+        assert_equals(result.meetingid, expected_UpdateMeetinId)
         assert_equals(result.app_name, microsoftteams_settings.MICROSOFT_TEAMS)
-        assert_equals(result.external_account.id, self.external_account.id)
         assert_equals(result.node_settings.id, self.node_settings.id)
         assert_equals(rvBodyJson, {})
         assert_equals(len(result.attendees.all()), 2)
+        assert_equals(result.external_account.id, MeetingsFactory.external_account)
 
         #clear
         Attendees.objects.all().delete()
@@ -421,8 +417,6 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
     @mock.patch('addons.microsoftteams.utils.api_get_microsoft_username')
     def test_microsoftteams_register_email_update(self, mock_api_get_microsoft_username):
 
-        self.node_settings.set_auth(self.external_account, self.user)
-        self.node_settings.save()
         osfUser = OSFUser.objects.get(username=self.user.username)
         osfGuids = osfUser._prefetched_objects_cache['guids'].only()
         osfGuidsSerializer = serializers.serialize('json', osfGuids, ensure_ascii=False)
@@ -468,7 +462,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         assert_equals(result.email_address, expected_email)
         assert_equals(result.display_name, expected_username)
         assert_equals(result.is_guest, expected_is_guest)
-        assert_equals(result.external_account.id, self.external_account.id)
+        assert_equals(result.external_account.id, AttendeesFactory.external_account)
         assert_equals(result.node_settings.id, self.node_settings.id)
         assert_equals(rvBodyJson, {})
 
