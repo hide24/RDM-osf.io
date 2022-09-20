@@ -177,14 +177,15 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         assert_equals(result.organizer_fullname, expected_organizer_fullname)
         assert_equals(result.start_datetime.strftime('%Y/%m/%d %H:%M:%S'), expected_startDatetime_format)
         assert_equals(result.end_datetime.strftime('%Y/%m/%d %H:%M:%S'), expected_endDatetime_format)
-        assert_equals(result.attendees.all(), expected_attendees_id)
+
         assert_equals(result.content, expected_content)
         assert_equals(result.join_url, expected_joinUrl)
         assert_equals(result.meetingid, expected_meetingId)
         assert_equals(result.app_name, microsoftteams_settings.MICROSOFT_TEAMS)
-        assert_equals(result.external_account.id, self.external_account_id)
+        assert_equals(result.external_account.id, self.external_account.id)
         assert_equals(result.node_settings.id, self.node_settings.id)
         assert_equals(rvBodyJson, {})
+        assert_equals(result.attendees.all()[0].id, expected_attendees_id)
 
         #clear
         Attendees.objects.all().delete()
@@ -210,6 +211,10 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         tst = Attendees.objects.all()
         tst = serializers.serialize('json', tst, ensure_ascii=False)
         logger.info('tst4:' + str(tst))
+
+        tst = Meetings.objects.all()
+        tst = serializers.serialize('json', tst, ensure_ascii=False)
+        logger.info('tst5:' + str(tst))
 
         url = self.project.api_url_for('microsoftteams_request_api')
 
@@ -305,14 +310,14 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         assert_equals(result.organizer_fullname, expected_organizer_fullname)
         assert_equals(result.start_datetime.strftime('%Y/%m/%d %H:%M:%S'), expected_startDatetime_format)
         assert_equals(result.end_datetime.strftime('%Y/%m/%d %H:%M:%S'), expected_endDatetime_format)
-        assert_equals(result.attendees.all(), expected_attendees_id)
         assert_equals(result.content, expected_content)
         assert_equals(result.join_url, expected_joinUrl)
         assert_equals(result.meetingid, expected_meetingId)
         assert_equals(result.app_name, microsoftteams_settings.MICROSOFT_TEAMS)
-        assert_equals(result.external_account.id, self.external_account_id)
+        assert_equals(result.external_account.id, self.external_account.id)
         assert_equals(result.node_settings.id, self.node_settings.id)
         assert_equals(rvBodyJson, {})
+        assert_equals(len(result.attendees.all()), 2)
 
         #clear
         Attendees.objects.all().delete()
@@ -458,7 +463,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         assert_equals(result.email_address, expected_email)
         assert_equals(result.display_name, expected_username)
         assert_equals(result.is_guest, expected_is_guest)
-        assert_equals(result.external_account.id, self.external_account_id)
+        assert_equals(result.external_account.id, self.external_account.id)
         assert_equals(result.node_settings.id, self.node_settings.id)
         assert_equals(rvBodyJson, {})
 

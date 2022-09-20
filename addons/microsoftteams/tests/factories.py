@@ -56,7 +56,7 @@ class MicrosoftTeamsMeetingsFactory(DjangoModelFactory):
 
     subject = 'My Test Meeting'
     organizer = 'teamstestuser1@test.onmicrosoft.com'
-    organizer_fullname = 'TEST USER'
+    organizer_fullname = 'MicrosoftTeams Fake User'
     start_datetime = datetime.now().isoformat()
     end_datetime = (datetime.now() + timedelta(hours=1)).isoformat()
     content = 'My Meeting Content'
