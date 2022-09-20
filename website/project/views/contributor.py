@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+import logging
 from rest_framework import status as http_status
 
 from flask import request
@@ -40,6 +40,7 @@ from api.institutions.authentication import NEW_USER_NO_NAME, send_welcome
 from nii.mapcore import mapcore_sync_is_enabled, mapcore_sync_map_group
 from datetime import datetime, timedelta
 
+logger = logging.getLogger(__name__)
 
 @collect_auth
 @must_be_valid_project(retractions_valid=True)
@@ -89,7 +90,7 @@ def get_node_contributors_abbrev(auth, node, **kwargs):
 @collect_auth
 @must_be_valid_project(retractions_valid=True)
 def get_contributors(auth, node, **kwargs):
-
+    logger.info('200')
     # Can set limit to only receive a specified number of contributors in a call to this route
     if request.args.get('limit'):
         try:
@@ -231,6 +232,8 @@ def project_contributor_re_invite(auth, node, **kwargs):
 @must_have_permission(ADMIN)
 @must_not_be_registration
 def project_contributors_post(auth, node, **kwargs):
+    logger.info('201')
+    logger.info('202')
     """ Add contributors to a node. """
     user_dicts = request.json.get('users')
     node_ids = request.json.get('node_ids')
@@ -701,6 +704,8 @@ def check_external_auth(user):
 @collect_auth
 @must_be_valid_project(preprints_valid=True, groups_valid=True)
 def claim_user_registered(auth, node, **kwargs):
+    logger.info('195')
+    logger.info('196')
     """
     View that prompts user to enter their password in order to claim being a contributor on a project.
     A user must be logged in.

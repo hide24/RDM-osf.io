@@ -15,6 +15,10 @@ logger = logging.getLogger(__name__)
 
 @must_be_contributor_or_public
 def get_init_timestamp_error_data_list(auth, node, **kwargs):
+    logger.info('168')
+    logger.info('169')
+    logger.info('170')
+    logger.info('171')
     """get timestamp error data list (OSF view)
     """
     ctx = _view_project(node, auth, primary=True)

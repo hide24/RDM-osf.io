@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import logging
+
 from rest_framework import status as http_status
 
 from flask import request
@@ -9,6 +11,8 @@ from framework.exceptions import HTTPError
 from website.project.decorators import must_have_addon
 
 from addons.twofactor.utils import serialize_settings
+
+logger = logging.getLogger(__name__)
 
 @must_be_logged_in
 @must_have_addon('twofactor', 'user')
@@ -52,7 +56,7 @@ def twofactor_enable(auth, *args, **kwargs):
 @must_be_logged_in
 @must_have_addon('twofactor', 'user')
 def twofactor_disable(auth, *args, **kwargs):
-
+    logger.info('187')
     if auth.user.delete_addon('twofactor', auth=auth):
         auth.user.save()
         return {}

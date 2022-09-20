@@ -57,6 +57,7 @@ def validate_user(data, user):
 
 @must_be_logged_in_without_checking_email
 def resend_confirmation(auth):
+    logger.info('189')
     user = auth.user
     data = request.get_json()
 
@@ -102,6 +103,7 @@ def extend_profile_view(auth, **kwargs):
 
 @must_be_logged_in_without_checking_email
 def update_user(auth):
+    logger.info('190')
     """Update the logged-in user's profile."""
 
     # trust the decorator to handle auth
@@ -294,6 +296,7 @@ def _profile_view(profile, is_profile=False, include_node_counts=False, temp_use
 
 @must_be_logged_in_without_checking_email
 def profile_view_json(auth):
+    logger.info('191')
     return _profile_view(auth.user, True)
 
 
@@ -301,6 +304,7 @@ def profile_view_json(auth):
 @must_be_confirmed
 @must_be_logged_in
 def profile_view_id_json(uid, auth):
+    logger.info('192')
     user = OSFUser.load(uid)
     is_profile = auth and auth.user == user
     # Do NOT embed nodes, they aren't necessary
@@ -309,6 +313,7 @@ def profile_view_id_json(uid, auth):
 @must_be_logged_in_without_checking_email
 @ember_flag_is_active(features.EMBER_USER_PROFILE)
 def profile_view(auth):
+    logger.info('193')
     # Embed node data, so profile node lists can be rendered
     return _profile_view(auth.user, True, include_node_counts=True)
 
@@ -316,6 +321,7 @@ def profile_view(auth):
 @must_be_confirmed
 @must_be_logged_in
 def profile_view_id(uid, auth):
+    logger.info('194')
     user = OSFUser.load(uid)
     is_profile = auth and auth.user == user
     # Embed node data, so profile node lists can be rendered
@@ -551,6 +557,7 @@ def collect_user_config_js(addon_configs):
 
 @must_be_logged_in
 def user_choose_addons(**kwargs):
+    logger.info('182')
     auth = kwargs['auth']
     config = escape_html(request.get_json())
     try:

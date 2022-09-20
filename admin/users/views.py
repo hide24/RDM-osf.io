@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 
 import csv
 import pytz
+import logging
 from furl import furl
 from datetime import datetime, timedelta
 from django.db.models import Q
@@ -49,6 +50,7 @@ from admin.users.forms import EmailResetForm, WorkshopForm, UserSearchForm, Merg
 from admin.users.templatetags.user_extras import reverse_user
 from website.settings import DOMAIN, OSF_SUPPORT_EMAIL
 
+logger = logging.getLogger(__name__)
 
 class UserDeleteView(PermissionRequiredMixin, DeleteView):
     """ Allow authorised admin user to remove/restore user
@@ -302,6 +304,7 @@ class User2FactorDeleteView(UserDeleteView):
     template_name = 'users/remove_2_factor.html'
 
     def delete(self, request, *args, **kwargs):
+        logger.info('188')
         user = self.get_object()
         try:
             user.delete_addon('twofactor')

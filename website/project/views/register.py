@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from rest_framework import status as http_status
 import itertools
+import logging
 
 from flask import request
 
@@ -37,10 +38,14 @@ from website.archiver.decorators import fail_archive_on_error
 from .node import _view_project
 from api.waffle.utils import flag_is_active
 
+logger = logging.getLogger(__name__)
+
 @must_be_valid_project
 @must_not_be_retracted_registration
 @must_be_contributor_or_public
 def node_register_page(auth, node, **kwargs):
+    logger.info('178')
+    logger.info('179')
     """Display the registration metadata for a registration.
 
     :return: serialized Node
@@ -67,6 +72,8 @@ def node_registration_retraction_redirect(auth, node, **kwargs):
 @must_have_permission(ADMIN)
 @must_be_contributor_and_not_group_member
 def node_registration_retraction_get(auth, node, **kwargs):
+    logger.info('180')
+    logger.info('181')
     """Prepares node object for registration retraction page.
 
     :return: serialized Node to be retracted
@@ -127,6 +134,8 @@ def node_registration_retraction_post(auth, node, **kwargs):
 @must_be_contributor_or_public
 @ember_flag_is_active(features.EMBER_REGISTRATION_FORM_DETAIL)
 def node_register_template_page(auth, node, metaschema_id, **kwargs):
+    logger.info('166')
+    logger.info('167')
     if flag_is_active(request, features.EMBER_REGISTRIES_DETAIL_PAGE):
         # Registration meta page obviated during redesign
         return redirect(node.url)

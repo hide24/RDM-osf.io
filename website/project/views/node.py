@@ -450,6 +450,8 @@ def collect_node_config_js(addons):
 @must_have_permission(WRITE)
 @must_not_be_registration
 def node_choose_addons(auth, node, **kwargs):
+    logger.info('183')
+    logger.info('184')
     config = request.json
     try:
         for addon_name, enabled in config.items():
@@ -505,6 +507,7 @@ def configure_requests(node, **kwargs):
 @must_be_contributor_or_public
 @ember_flag_is_active(features.EMBER_PROJECT_DETAIL)
 def view_project(auth, node, **kwargs):
+    logger.info('217')
     primary = '/api/v1' not in request.path
     ret = _view_project(node, auth,
                         primary=primary,
@@ -652,6 +655,8 @@ def project_set_privacy(auth, node, **kwargs):
 @must_be_valid_project
 @must_have_permission(WRITE)
 def update_node(auth, node, **kwargs):
+    logger.info('212')
+    logger.info('213')
     # in node.update() method there is a key list node.WRITABLE_WHITELIST only allow user to modify
     # category, title, and description which can be edited by write permission contributor
     data = r_strip_html(request.get_json())

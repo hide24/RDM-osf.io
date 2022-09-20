@@ -2,6 +2,7 @@ import functools
 from rest_framework import status as http_status
 import itertools
 import html
+import logging
 
 from operator import itemgetter
 
@@ -33,6 +34,8 @@ from website.project.metadata.utils import serialize_meta_schema, serialize_draf
 from website.project.utils import serialize_node
 
 autoload_draft = functools.partial(autoload, DraftRegistration, 'draft_id', 'draft')
+
+logger = logging.getLogger(__name__)
 
 def get_schema_or_fail(schema_name, schema_version):
     try:
@@ -122,6 +125,8 @@ def check_draft_state(draft):
 @must_be_contributor_and_not_group_member
 @must_be_branched_from_node
 def draft_before_register_page(auth, node, draft, *args, **kwargs):
+    logger.info('172')
+    logger.info('173')
     """Allow the user to select an embargo period and confirm registration
 
     :return: serialized Node + DraftRegistration
@@ -136,6 +141,7 @@ def draft_before_register_page(auth, node, draft, *args, **kwargs):
 @must_have_permission(ADMIN)
 @must_be_branched_from_node
 def get_draft_registration(auth, node, draft, *args, **kwargs):
+    logger.info('206')
     """Return a single draft registration
 
     :return: serialized draft registration
@@ -146,6 +152,7 @@ def get_draft_registration(auth, node, draft, *args, **kwargs):
 @must_have_permission(ADMIN)
 @must_be_valid_project
 def get_draft_registrations(auth, node, *args, **kwargs):
+    logger.info('175')
     """List draft registrations for a node
 
     :return: serialized draft registrations
@@ -205,6 +212,8 @@ def new_draft_registration(auth, node, *args, **kwargs):
 @ember_flag_is_active(features.EMBER_EDIT_DRAFT_REGISTRATION)
 @must_be_branched_from_node
 def edit_draft_registration_page(auth, node, draft, **kwargs):
+    logger.info('174')
+    logger.info('176')
     """Draft registration editor
 
     :return: serialized DraftRegistration
@@ -219,6 +228,7 @@ def edit_draft_registration_page(auth, node, draft, **kwargs):
 @must_be_contributor_and_not_group_member
 @must_be_branched_from_node
 def update_draft_registration(auth, node, draft, *args, **kwargs):
+    logger.info('177')
     """Update an existing draft registration
 
     :return: serialized draft registration

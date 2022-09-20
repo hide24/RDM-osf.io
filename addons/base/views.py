@@ -127,6 +127,8 @@ WATERBUTLER_JWE_KEY = jwe.kdf(settings.WATERBUTLER_JWE_SECRET.encode('utf-8'), s
 @decorators.must_have_permission(permissions.WRITE)
 @decorators.must_not_be_registration
 def disable_addon(auth, **kwargs):
+    logger.info('185')
+    logger.info('186')
     node = kwargs['node'] or kwargs['project']
 
     addon_name = kwargs.get('addon')
