@@ -61,6 +61,7 @@ def binderhub_get_user_config(auth, **kwargs):
 @must_be_logged_in
 @must_be_rdm_addons_allowed(SHORT_NAME)
 def binderhub_set_user_config(auth, **kwargs):
+    logger.info('146')
     addon = auth.user.get_addon(SHORT_NAME)
     if not addon:
         auth.user.add_addon(SHORT_NAME)
@@ -75,6 +76,7 @@ def binderhub_set_user_config(auth, **kwargs):
 @must_be_logged_in
 @must_be_rdm_addons_allowed(SHORT_NAME)
 def binderhub_add_user_config(auth, **kwargs):
+    logger.info("147")
     addon = auth.user.get_addon(SHORT_NAME)
     if not addon:
         auth.user.add_addon(SHORT_NAME)

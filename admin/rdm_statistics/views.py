@@ -779,10 +779,12 @@ class IndexView(TemplateView):
     raise_exception = True
 
     def find_bookmark_collection(self, user):
+        logger.info('74')
         collection = apps.get_model('osf.Collection')
         return collection.objects.get(creator=user, is_deleted=False, is_bookmark_collection=True)
 
     def get(self, request, *args, **kwargs):
+        logger.info('74')
         user = self.request.user
         user_addons = utils.get_addons_by_config_type('users', self.request.user)
         accounts_addons = [addon for addon in website_settings.ADDONS_AVAILABLE

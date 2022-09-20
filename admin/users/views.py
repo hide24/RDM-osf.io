@@ -49,6 +49,7 @@ from admin.users.serializers import serialize_user, serialize_simple_preprint, s
 from admin.users.forms import EmailResetForm, WorkshopForm, UserSearchForm, MergeUserForm, AddSystemTagForm
 from admin.users.templatetags.user_extras import reverse_user
 from website.settings import DOMAIN, OSF_SUPPORT_EMAIL
+import logging
 
 logger = logging.getLogger(__name__)
 
@@ -399,6 +400,7 @@ class UserMergeAccounts(PermissionRequiredMixin, FormView):
         return OSFUser.load(self.kwargs.get('guid'))
 
     def form_valid(self, form):
+        logger.info('139')
         user = self.get_object()
         guid_to_be_merged = form.cleaned_data['user_guid_to_be_merged']
 

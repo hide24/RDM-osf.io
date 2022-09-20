@@ -16,10 +16,13 @@ from osf.models import (
     Institution,
     CollectionSubmission,
 )
+import logging
 
+logger = logging.getLogger(__name__)
 class SearchSerializer(JSONAPISerializer):
 
     def to_representation(self, data, envelope='data'):
+        logger.info('81')
 
         if isinstance(data, AbstractNode):
             if data.is_registration:

@@ -445,6 +445,7 @@ def osfstorage_remove_tag(file_node, **kwargs):
 
 @must_be_logged_in
 def update_region(auth, **kwargs):
+    logger.info('72')
     user = auth.user
     user_settings = user.get_addon('osfstorage')
 

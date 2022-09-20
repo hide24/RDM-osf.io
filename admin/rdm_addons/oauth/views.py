@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import uuid
+import logging
 from collections import defaultdict
 from requests.compat import urljoin
 from django.views.generic import View, TemplateView
@@ -20,6 +21,8 @@ from website.oauth.utils import get_service
 from website.routes import make_url_map
 from website import settings as website_settings
 from framework.exceptions import PermissionsError
+
+logger = logging.getLogger(__name__)
 
 
 class RdmAddonRequestContextMixin(object):
@@ -164,6 +167,7 @@ class AccountsView(RdmPermissionMixin, UserPassesTestMixin, View):
         return super(AccountsView, self).dispatch(request, *args, **kwargs)
 
     def delete(self, request, *args, **kwargs):
+        logger.info('11')
         """disconnect OAuth"""
         external_account_id = kwargs['external_account_id']
         institution_id = int(kwargs['institution_id'])

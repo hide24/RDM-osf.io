@@ -261,10 +261,12 @@ class NodeList(JSONAPIBaseView, bulk_views.BulkUpdateJSONAPIView, bulk_views.Bul
 
     # overrides NodesFilterMixin
     def get_default_queryset(self):
+        logger.info('80')
         return default_node_list_permission_queryset(user=self.request.user, model_cls=Node)
 
     # overrides ListBulkCreateJSONAPIView, BulkUpdateJSONAPIView
     def get_queryset(self):
+        logger.info('80')
         # For bulk requests, queryset is formed from request body.
         if is_bulk_request(self.request):
             auth = get_user_auth(self.request)
@@ -285,6 +287,7 @@ class NodeList(JSONAPIBaseView, bulk_views.BulkUpdateJSONAPIView, bulk_views.Bul
 
     # overrides ListBulkCreateJSONAPIView, BulkUpdateJSONAPIView, BulkDestroyJSONAPIView
     def get_serializer_class(self):
+        logger.info('80')
         """
         Use NodeDetailSerializer which requires 'id'
         """
@@ -294,6 +297,7 @@ class NodeList(JSONAPIBaseView, bulk_views.BulkUpdateJSONAPIView, bulk_views.Bul
             return NodeSerializer
 
     def get_serializer_context(self):
+        logger.info('80')
         context = super(NodeList, self).get_serializer_context()
         region_id = self.request.query_params.get('region', None)
         if region_id:
@@ -308,6 +312,7 @@ class NodeList(JSONAPIBaseView, bulk_views.BulkUpdateJSONAPIView, bulk_views.Bul
 
     # overrides ListBulkCreateJSONAPIView
     def perform_create(self, serializer):
+        logger.info('80')
         """Create a node.
 
         :param serializer:
@@ -323,12 +328,14 @@ class NodeList(JSONAPIBaseView, bulk_views.BulkUpdateJSONAPIView, bulk_views.Bul
 
     # overrides BulkDestroyJSONAPIView
     def allow_bulk_destroy_resources(self, user, resource_list):
+        logger.info('80')
         """User must have admin permissions to delete nodes."""
         if is_truthy(self.request.query_params.get('skip_uneditable', False)):
             return any([node.has_permission(user, ADMIN) for node in resource_list])
         return all([node.has_permission(user, ADMIN) for node in resource_list])
 
     def bulk_destroy_skip_uneditable(self, resource_object_list, user, object_type):
+        logger.info('80')
         """
         If skip_uneditable=True in query_params, skip the resources for which the user does not have
         admin permissions and delete the remaining resources
@@ -349,6 +356,7 @@ class NodeList(JSONAPIBaseView, bulk_views.BulkUpdateJSONAPIView, bulk_views.Bul
 
     # Overrides BulkDestroyModelMixin
     def perform_bulk_destroy(self, resource_object_list):
+        logger.info('80')
         if enforce_no_children(self.request):
             if NodeRelation.objects.filter(
                 parent__in=resource_object_list,
@@ -361,6 +369,7 @@ class NodeList(JSONAPIBaseView, bulk_views.BulkUpdateJSONAPIView, bulk_views.Bul
 
     # Overrides BulkDestroyModelMixin
     def perform_destroy(self, instance):
+        logger.info('80')
         auth = get_user_auth(self.request)
         try:
             instance.remove_node(auth=auth)
@@ -391,10 +400,12 @@ class NodeDetail(JSONAPIBaseView, generics.RetrieveUpdateDestroyAPIView, NodeMix
 
     # overrides RetrieveUpdateDestroyAPIView
     def get_object(self):
+        logger.info('86')
         return self.get_node()
 
     # overrides RetrieveUpdateDestroyAPIView
     def perform_destroy(self, instance):
+        logger.info('86')
         auth = get_user_auth(self.request)
         node = self.get_object()
 
@@ -407,6 +418,7 @@ class NodeDetail(JSONAPIBaseView, generics.RetrieveUpdateDestroyAPIView, NodeMix
             raise PermissionDenied(str(err))
 
     def get_renderer_context(self):
+        logger.info('86')
         context = super(NodeDetail, self).get_renderer_context()
         show_counts = is_truthy(self.request.query_params.get('related_counts', False))
         if show_counts:
@@ -418,6 +430,7 @@ class NodeDetail(JSONAPIBaseView, generics.RetrieveUpdateDestroyAPIView, NodeMix
 
     # overrides RetrieveUpdateDestroyAPIView
     def put(self, request, *args, **kwargs):
+        logger.info('86')
         res = super(NodeDetail, self).put(request, *args, **kwargs)
         if res.status_code == HTTP_200_OK and mapcore_sync_is_enabled():
             auth = get_user_auth(self.request)
@@ -426,6 +439,7 @@ class NodeDetail(JSONAPIBaseView, generics.RetrieveUpdateDestroyAPIView, NodeMix
 
     # overrides RetrieveUpdateDestroyAPIView
     def patch(self, request, *args, **kwargs):
+        logger.info('86')
         res = super(NodeDetail, self).patch(request, *args, **kwargs)
         if res.status_code == HTTP_200_OK and mapcore_sync_is_enabled():
             auth = get_user_auth(self.request)
@@ -729,6 +743,8 @@ class NodeRegistrationsList(JSONAPIBaseView, generics.ListCreateAPIView, NodeMix
     ordering = ('-modified',)
 
     def get_serializer_class(self):
+        logger.info('94')
+        logger.info('95')
         if self.request.method in ('PUT', 'POST'):
             return RegistrationCreateSerializer
         return RegistrationSerializer
@@ -736,6 +752,9 @@ class NodeRegistrationsList(JSONAPIBaseView, generics.ListCreateAPIView, NodeMix
     # overrides ListCreateAPIView
     # TODO: Filter out withdrawals by default
     def get_queryset(self):
+        logger.info('94')
+
+        logger.info('95')
         nodes = self.get_node().registrations_all
         auth = get_user_auth(self.request)
         registrations = [node for node in nodes if node.can_view(auth)]
@@ -743,6 +762,9 @@ class NodeRegistrationsList(JSONAPIBaseView, generics.ListCreateAPIView, NodeMix
 
     # overrides ListCreateJSONAPIView
     def perform_create(self, serializer):
+        logger.info('94')
+
+        logger.info('95')
         """Create a registration from a draft.
         """
         # On creation, make sure that current user is the creator
@@ -768,6 +790,7 @@ class NodeChildrenList(BaseChildrenList, bulk_views.ListBulkCreateJSONAPIView, N
     model_class = Node
 
     def get_serializer_context(self):
+        logger.info('78')
         context = super(NodeChildrenList, self).get_serializer_context()
         region__id = self.request.query_params.get('region', None)
         id = None
@@ -784,6 +807,7 @@ class NodeChildrenList(BaseChildrenList, bulk_views.ListBulkCreateJSONAPIView, N
 
     # overrides ListBulkCreateJSONAPIView
     def perform_create(self, serializer):
+        logger.info('78')
         user = self.request.user
         serializer.save(creator=user, parent=self.get_node())
 
@@ -1044,6 +1068,7 @@ class NodeForksList(JSONAPIBaseView, generics.ListCreateAPIView, NodeMixin, Node
 
     # overrides ListCreateAPIView
     def get_queryset(self):
+        logger.info('87')
         all_forks = (
             self.get_node().forks
             .annotate(region=F('addons_osfstorage_node_settings__region___id'))
@@ -1059,6 +1084,7 @@ class NodeForksList(JSONAPIBaseView, generics.ListCreateAPIView, NodeMixin, Node
 
     # overrides ListCreateAPIView
     def perform_create(self, serializer):
+        logger.info('87')
         user = get_user_auth(self.request).user
         node = self.get_node()
         try:
@@ -1088,6 +1114,7 @@ class NodeLinkedByNodesList(JSONAPIBaseView, generics.ListAPIView, NodeMixin):
     serializer_class = NodeSerializer
 
     def get_queryset(self):
+        logger.info('79')
         node = self.get_node()
         auth = get_user_auth(self.request)
         node_relation_subquery = node._parents.filter(is_node_link=True).values_list('parent', flat=True)
@@ -1112,6 +1139,8 @@ class NodeLinkedByRegistrationsList(JSONAPIBaseView, generics.ListAPIView, NodeM
     serializer_class = RegistrationSerializer
 
     def get_queryset(self):
+        logger.info('90')
+        logger.info('91')
         node = self.get_node()
         auth = get_user_auth(self.request)
         node_relation_subquery = node._parents.filter(is_node_link=True).values_list('parent', flat=True)
@@ -1194,6 +1223,7 @@ class NodeFilesList(JSONAPIBaseView, generics.ListAPIView, WaterButlerMixin, Lis
 
     # overrides ListAPIView
     def get_queryset(self):
+        logger.info('115')
         path = self.kwargs[self.path_lookup_url_kwarg]
         # query param info when used on a folder gives that folder's metadata instead of the metadata of it's children
         if 'info' in self.request.query_params and path.endswith('/'):
@@ -1233,6 +1263,7 @@ class NodeFileDetail(JSONAPIBaseView, generics.RetrieveAPIView, WaterButlerMixin
     view_name = 'node-file-detail'
 
     def get_object(self):
+        logger.info('114')
         fobj = self.fetch_from_waterbutler()
         if isinstance(fobj, dict):
             # if dict it is a wb response, not file object yet
@@ -1372,6 +1403,7 @@ class NodeAddonList(JSONAPIBaseView, generics.ListAPIView, ListFilterMixin, Node
     ordering = ('-id',)
 
     def get_default_queryset(self):
+        logger.info('4')
         qs = []
         for addon in ADDONS_OAUTH:
             obj = self.get_addon_settings(provider=addon, fail_if_absent=False, check_object_permissions=False)
@@ -1403,9 +1435,11 @@ class NodeAddonDetail(JSONAPIBaseView, generics.RetrieveUpdateDestroyAPIView, ge
     view_name = 'node-addon-detail'
 
     def get_object(self):
+        logger.info('5')
         return self.get_addon_settings(check_object_permissions=False)
 
     def perform_create(self, serializer):
+        logger.info('119')
         addon = self.kwargs['provider']
         if addon not in ADDONS_OAUTH:
             raise NotFound('Requested addon unavailable')
@@ -1419,6 +1453,7 @@ class NodeAddonDetail(JSONAPIBaseView, generics.RetrieveUpdateDestroyAPIView, ge
         return super(NodeAddonDetail, self).perform_create(serializer)
 
     def perform_destroy(self, instance):
+        logger.info('119')
         addon = instance.config.short_name
         node = self.get_node()
         if not node.has_addon(instance.config.short_name):
@@ -1455,6 +1490,7 @@ class NodeAddonFolderList(JSONAPIBaseView, generics.ListAPIView, NodeMixin, Addo
     view_name = 'node-addon-folders'
 
     def get_queryset(self):
+        logger.info('6')
         # TODO: [OSF-6120] refactor this/NS models to be generalizable
         node_addon = self.get_addon_settings()
         if not node_addon.has_auth:
@@ -2073,10 +2109,16 @@ class NodeLinkedRegistrationsList(BaseLinkedList, NodeMixin):
     view_name = 'linked-registrations'
 
     def get_queryset(self):
+        logger.info('92')
+
+        logger.info('93')
         return super(NodeLinkedRegistrationsList, self).get_queryset().filter(type='osf.registration')
 
     # overrides APIView
     def get_parser_context(self, http_request):
+        logger.info('92')
+
+        logger.info('93')
         """
         Tells parser that we are creating a relationship
         """
@@ -2258,14 +2300,17 @@ class NodeSettings(JSONAPIBaseView, generics.RetrieveUpdateAPIView, NodeMixin):
 
     # overrides RetrieveUpdateAPIView
     def get_object(self):
+        logger.info('137')
         return self.get_node()
 
     def get_serializer_class(self):
+        logger.info('137')
         if self.request.method == 'PUT' or self.request.method == 'PATCH':
             return NodeSettingsUpdateSerializer
         return NodeSettingsSerializer
 
     def get_serializer_context(self):
+        logger.info('137')
         """
         Extra context for NodeSettingsSerializer - this will prevent loading
         addons multiple times in SerializerMethodFields

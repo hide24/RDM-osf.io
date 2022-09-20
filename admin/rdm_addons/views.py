@@ -17,6 +17,9 @@ from admin.rdm.utils import RdmPermissionMixin, get_dummy_institution
 from . import utils
 from website.routes import make_url_map
 from website.app import init_addons, attach_handlers
+import logging
+
+logger = logging.getLogger(__name__)
 
 def init_app():
     from framework.flask import app
@@ -81,6 +84,7 @@ class AddonListView(RdmPermissionMixin, UserPassesTestMixin, TemplateView):
         return self.has_auth(institution_id)
 
     def get_context_data(self, **kwargs):
+        logger.info('73')
         """get contexts"""
         ctx = super(AddonListView, self).get_context_data(**kwargs)
 

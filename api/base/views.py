@@ -44,7 +44,9 @@ from osf.models import Contributor, MaintenanceState, BaseFileNode
 from osf.utils.permissions import API_CONTRIBUTOR_PERMISSIONS, READ, WRITE, ADMIN
 from waffle.models import Flag, Switch, Sample
 from waffle import sample_is_active
+import logging
 
+logger = logging.getLogger(__name__)
 
 class JSONAPIBaseView(generics.GenericAPIView):
 
@@ -473,6 +475,7 @@ class BaseChildrenList(JSONAPIBaseView, NodesFilterMixin):
 
     # overrides NodesFilterMixin
     def get_default_queryset(self):
+        logger.info('96')
         return default_node_list_queryset(model_cls=self.model_class)
 
     # overrides GenericAPIView
@@ -482,6 +485,7 @@ class BaseChildrenList(JSONAPIBaseView, NodesFilterMixin):
         Children could be public, viewable through a view-only link (if provided), or the user
         is a contributor, or has implicit admin perms.
         """
+        logger.info('96')
         node = self.get_node()
         auth = get_user_auth(self.request)
         node_pks = node.node_relations.filter(is_node_link=False).select_related('child')\

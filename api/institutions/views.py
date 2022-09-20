@@ -45,6 +45,9 @@ from api.institutions.serializers import (
 from api.institutions.permissions import UserIsAffiliated
 from api.institutions.renderers import InstitutionDepartmentMetricsCSVRenderer, InstitutionUserMetricsCSVRenderer, MetricsCSVRenderer
 
+import logging
+
+logger = logging.getLogger(__name__)
 
 class InstitutionMixin(object):
     """Mixin with convenience method get_institution
@@ -113,6 +116,7 @@ class InstitutionDetail(JSONAPIBaseView, generics.RetrieveAPIView, InstitutionMi
 class InstitutionNodeList(JSONAPIBaseView, generics.ListAPIView, InstitutionMixin, NodesFilterMixin):
     """The documentation for this endpoint can be found [here](https://developer.osf.io/#operation/institutions_node_list).
     """
+
     permission_classes = (
         drf_permissions.IsAuthenticatedOrReadOnly,
         base_permissions.TokenHasScope,
@@ -130,6 +134,7 @@ class InstitutionNodeList(JSONAPIBaseView, generics.ListAPIView, InstitutionMixi
 
     # overrides NodesFilterMixin
     def get_default_queryset(self):
+        logger.info('76')
         institution = self.get_institution()
         return (
             institution.nodes.filter(is_public=True, is_deleted=False, type='osf.node')
@@ -140,6 +145,7 @@ class InstitutionNodeList(JSONAPIBaseView, generics.ListAPIView, InstitutionMixi
 
     # overrides RetrieveAPIView
     def get_queryset(self):
+        logger.info('76')
         if self.request.version < '2.2':
             return self.get_queryset_from_request().get_roots()
         return self.get_queryset_from_request()
@@ -209,10 +215,12 @@ class InstitutionRegistrationList(InstitutionNodeList):
     ordering = ('-modified', )
 
     def get_default_queryset(self):
+        logger.info('89')
         institution = self.get_institution()
         return institution.nodes.filter(is_deleted=False, is_public=True, type='osf.registration', retraction__isnull=True)
 
     def get_queryset(self):
+        logger.info('89')
         return self.get_queryset_from_request()
 
 class InstitutionRegistrationsRelationship(JSONAPIBaseView, generics.RetrieveDestroyAPIView, generics.CreateAPIView, InstitutionMixin):

@@ -16,7 +16,9 @@ from api.registrations.views import (
 )
 
 from api.users.views import UserNodes, UserRegistrations
+import logging
 
+logger = logging.getLogger(__name__)
 
 class BaseSparseMixin(object):
     view_category = 'sparse'
@@ -24,21 +26,61 @@ class BaseSparseMixin(object):
 
     # overrides NodeList because these endpoints don't allow writing
     def perform_create(self, *args):
+        logger.info('103')
+        logger.info('104')
+        logger.info('105')
+        logger.info('106')
+        logger.info('107')
+        logger.info('108')
+        logger.info('109')
+        logger.info('110')
         raise MethodNotAllowed(method=self.request.method)
 
     # overrides NodeList because these endpoints don't allow writing
     def perform_update(self, *args):
+        logger.info('103')
+        logger.info('104')
+        logger.info('105')
+        logger.info('106')
+        logger.info('107')
+        logger.info('108')
+        logger.info('109')
+        logger.info('110')
         raise MethodNotAllowed(method=self.request.method)
 
     # overrides NodeDetail because these endpoints don't allow writing
     def perform_destroy(self, *args):
+        logger.info('103')
+        logger.info('104')
+        logger.info('105')
+        logger.info('106')
+        logger.info('107')
+        logger.info('108')
+        logger.info('109')
+        logger.info('110')
         raise MethodNotAllowed(method=self.request.method)
 
     # overrides NodeList because these endpoints don't allow writing
     def allow_bulk_destroy_resources(self, *args):
+        logger.info('103')
+        logger.info('104')
+        logger.info('105')
+        logger.info('106')
+        logger.info('107')
+        logger.info('108')
+        logger.info('109')
+        logger.info('110')
         raise MethodNotAllowed(method=self.request.method)
 
     def get_serializer_class(self):
+        logger.info('103')
+        logger.info('104')
+        logger.info('105')
+        logger.info('106')
+        logger.info('107')
+        logger.info('108')
+        logger.info('109')
+        logger.info('110')
         return self.serializer_class
 
 
@@ -51,6 +93,7 @@ class SparseRegistrationMixin(BaseSparseMixin):
 
 
 class SparseNodeList(SparseNodeMixin, NodeList):
+    logger.info('111')
     pass
 
 
@@ -63,6 +106,7 @@ class SparseLinkedRegistrationsList(SparseRegistrationMixin, RegistrationLinkedR
 
 
 class SparseUserNodeList(SparseNodeMixin, UserNodes):
+    logger.info('112')
     pass
 
 

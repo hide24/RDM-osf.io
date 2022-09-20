@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import json
+import logging
 from rest_framework import status as http_status
 
 from django.views.generic import View
@@ -20,6 +21,8 @@ from framework.auth import Auth
 
 from admin.rdm_addons import utils
 
+logger = logging.getLogger(__name__)
+
 
 class OAuthView(RdmPermissionMixin, UserPassesTestMixin, View):
     """View for revoking add-on authentication information"""
@@ -36,6 +39,7 @@ class OAuthView(RdmPermissionMixin, UserPassesTestMixin, View):
         return super(OAuthView, self).dispatch(request, *args, **kwargs)
 
     def delete(self, request, *args, **kwargs):
+        logger.info('10')
         """disconnect OAuth"""
         external_account_id = kwargs['external_account_id']
         institution_id = int(kwargs['institution_id'])
