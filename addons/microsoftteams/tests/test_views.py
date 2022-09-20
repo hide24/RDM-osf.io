@@ -194,6 +194,9 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
     @mock.patch('addons.microsoftteams.utils.api_update_teams_meeting')
     def test_microsoftteams_request_api_update(self, mock_api_update_teams_meeting):
 
+        self.node_settings.set_auth(self.external_account, self.user)
+        self.node_settings.save()
+
         updateEmailAddress = 'teamstestuser2@test.onmicrosoft.com'
         updateDisplayName = 'Teams Test User2'
 
@@ -416,6 +419,9 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
 
     @mock.patch('addons.microsoftteams.utils.api_get_microsoft_username')
     def test_microsoftteams_register_email_update(self, mock_api_get_microsoft_username):
+
+        self.node_settings.set_auth(self.external_account, self.user)
+        self.node_settings.save()
 
         osfUser = OSFUser.objects.get(username=self.user.username)
         osfGuids = osfUser._prefetched_objects_cache['guids'].only()
