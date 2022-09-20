@@ -177,7 +177,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         assert_equals(result.organizer_fullname, expected_organizer_fullname)
         assert_equals(result.start_datetime.strftime('%Y/%m/%d %H:%M:%S'), expected_startDatetime_format)
         assert_equals(result.end_datetime.strftime('%Y/%m/%d %H:%M:%S'), expected_endDatetime_format)
-        assert_equals(result.attendees, expected_attendees_id)
+        assert_equals(result.attendees.all(), expected_attendees_id)
         assert_equals(result.content, expected_content)
         assert_equals(result.join_url, expected_joinUrl)
         assert_equals(result.meetingid, expected_meetingId)

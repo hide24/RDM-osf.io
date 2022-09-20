@@ -135,7 +135,7 @@ def webexmeetings_register_email(**kwargs):
             attendee = models.Attendees.objects.get(node_settings_id=nodeSettings.id, _id=_id)
             if not is_guest:
                 attendee.fullname = OSFUser.objects.get(guids___id=attendee.user_guid).fullname
-                attendee.displayName = utils.api_get_webex_meetings_username(account, email)
+                attendee.display_name = utils.api_get_webex_meetings_username(account, email)
             attendee.email_address = email
             attendee.save()
     elif actionType == 'delete':
