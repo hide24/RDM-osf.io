@@ -216,6 +216,11 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         tst = serializers.serialize('json', tst, ensure_ascii=False)
         logger.info('tst5:' + str(tst))
 
+        qsAttendees = Attendees.objects.all()
+        attendeesJson = json.loads(serializers.serialize('json', qsAttendees, ensure_ascii=False))
+        logger.info('attendeesJson:' + str(attendeesJson))
+        expected_external_id = attendeesJson['fields']['external_account']
+
         url = self.project.api_url_for('microsoftteams_request_api')
 
         expected_action = 'update'
@@ -312,7 +317,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         assert_equals(rvBodyJson, {})
         assert_equals(len(result.attendees.all()), 1)
         assert_equals(result.attendees.all()[0].id, expected_attendees_id)
-        assert_equals(result.external_account.id, MeetingsFactory.external_account)
+        assert_equals(result.external_account.id, expected_external_id)
 
         #clear
         Attendees.objects.all().delete()
@@ -432,6 +437,11 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         tst = serializers.serialize('json', tst, ensure_ascii=False)
         logger.info('tsta:' + str(tst))
 
+        qsAttendees = Attendees.objects.all()
+        attendeesJson = json.loads(serializers.serialize('json', qsAttendees, ensure_ascii=False))
+        expected_external_id = attendeesJson['fields']['external_account']
+        logger.info('attendeesJson:' + str(attendeesJson))
+
         expected_id = AttendeesFactory._id
         expected_guid = AttendeesFactory.user_guid
         expected_email = 'teamstestuserbedit@test.onmicrosoft.com'
@@ -463,7 +473,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         assert_equals(result.email_address, expected_email)
         assert_equals(result.display_name, expected_username)
         assert_equals(result.is_guest, expected_is_guest)
-        assert_equals(result.external_account.id, AttendeesFactory.external_account)
+        assert_equals(result.external_account.id, expected_external_id)
         assert_equals(result.node_settings.id, self.node_settings.id)
         assert_equals(rvBodyJson, {})
 
