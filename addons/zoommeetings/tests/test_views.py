@@ -99,7 +99,7 @@ class TestZoomMeetingsViews(ZoomMeetingsAddonTestCase, OAuthAddonConfigViewsTest
                 'timezone': 'UTC',
                 'type':2
             };
-        expected_guestOrNot =={'zoomtestuser1@test.zoom.com': False}
+        expected_guestOrNot = {}
 
         mock_api_create_zoom_meeting.return_value = {
             'id': expected_meetingId,
@@ -135,16 +135,26 @@ class TestZoomMeetingsViews(ZoomMeetingsAddonTestCase, OAuthAddonConfigViewsTest
         assert_equals(result.join_url, expected_joinUrl)
         assert_equals(result.meetingid, expected_meetingId)
         assert_equals(result.app_name, zoommeetings_settings.ZOOM_MEETINGS)
-        assert_equals(result.external_account.id, self.account.id)
+        assert_equals(result.external_account.id, self.external_account.id)
         assert_equals(result.node_settings.id, self.node_settings.id)
         assert_equals(rvBodyJson, {})
+
+        #clear
+        Meetings.objects.all().delete()
 
     @mock.patch('addons.zoommeetings.utils.api_update_zoom_meeting')
     def test_zoommeetings_request_api_update(self, mock_api_update_zoom_meeting):
 
-        MeetingsFactory = MicrosoftTeamsMeetingsFactory(node_settings=self.node_settings)
+        self.node_settings.set_auth(self.external_account, self.user)
+        self.node_settings.save()
+
+        MeetingsFactory = ZoomMeetingsMeetingsFactory(node_settings=self.node_settings)
 
         url = self.project.api_url_for('zoommeetings_request_api')
+
+        qsMeetings = Meetings.objects.all()
+        meetingsJson = json.loads(serializers.serialize('json', qsMeetings, ensure_ascii=False))
+        expected_external_id = meetingsJson[0]['fields']['external_account']
 
         expected_action = 'update'
         expected_UpdateMeetinId = 'qwertyuiopasdfghjklzxcvbnm'
@@ -167,7 +177,7 @@ class TestZoomMeetingsViews(ZoomMeetingsAddonTestCase, OAuthAddonConfigViewsTest
                 'timezone': 'UTC',
                 'type':2
             };
-        expected_guestOrNot =={}
+        expected_guestOrNot = {}
 
         mock_api_update_zoom_meeting.return_value = {}
 
@@ -197,11 +207,17 @@ class TestZoomMeetingsViews(ZoomMeetingsAddonTestCase, OAuthAddonConfigViewsTest
         assert_equals(result.node_settings.id, self.node_settings.id)
         assert_equals(rvBodyJson, {})
         assert_equals(result.external_account.id, MeetingsFactory.external_account)
+        assert_equals(result.external_account.id, expected_external_id)
+        #clear
+        Meetings.objects.all().delete()
 
     @mock.patch('addons.zoommeetings.utils.api_delete_zoom_meeting')
     def test_zoommeetings_request_api_delete(self, mock_api_delete_zoom_meeting):
 
-        mock_api_update_zoom_meeting.return_value = {}
+        mock_api_delete_zoom_meeting.return_value = {}
+
+        self.node_settings.set_auth(self.external_account, self.user)
+        self.node_settings.save()
 
         expected_action = 'delete'
         MeetingsFactory = ZoomMeetingsMeetingsFactory(node_settings=self.node_settings)
@@ -232,6 +248,9 @@ class TestZoomMeetingsViews(ZoomMeetingsAddonTestCase, OAuthAddonConfigViewsTest
 
         assert_equals(result.count(), 0)
         assert_equals(rvBodyJson, {})
+
+        #clear
+        Meetings.objects.all().delete()
 
     ## Overrides ##
 
