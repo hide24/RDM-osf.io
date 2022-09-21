@@ -228,16 +228,20 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         expected_attendees_id1 = Attendees.objects.get(user_guid='teamstestuser').id
         expected_attendees_id2 = Attendees.objects.get(user_guid='teamstestuser2').id
         expected_attendees_ids = [expected_attendees_id1, expected_attendees_id2]
-        expected_attendees = [
-                    'emailAddress': {
-                        'address': 'teamstestuser1@test.onmicrosoft.com',
-                        'name': 'Teams Test User1'
+        expected_attendees = {
+                    {
+                        'emailAddress': {
+                            'address': 'teamstestuser1@test.onmicrosoft.com',
+                            'name': 'Teams Test User1'
+                        },
                     },
-                    'emailAddress': {
-                        'address': updateEmailAddress,
-                        'name': updateDisplayName
+                    {
+                        'emailAddress': {
+                            'address': updateEmailAddress,
+                            'name': updateDisplayName
+                        },
                     },
-                ]
+                }
         expected_startDatetime = datetime.now().isoformat()
         expected_endDatetime = (datetime.now() + timedelta(hours=1)).isoformat()
         expected_content = 'My Test Content EDIT'
@@ -273,7 +277,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
                 'dateTime': expected_endDatetime,
                 'timeZone': 'Asia/Tokyo'
             },
-            'attendees': expected_attendees,
+            'attendees': [expected_attendees],
             'bodyPreview': expected_content,
             'organizer': {
                 'emailAddress': {
