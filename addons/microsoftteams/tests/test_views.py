@@ -216,10 +216,10 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         tst = serializers.serialize('json', tst, ensure_ascii=False)
         logger.info('tst5:' + str(tst))
 
-        qsAttendees = Attendees.objects.all()
-        attendeesJson = json.loads(serializers.serialize('json', qsAttendees, ensure_ascii=False))
-        logger.info('attendeesJson:' + str(attendeesJson))
-        expected_external_id = attendeesJson[0]['fields']['external_account']
+        qsMeetings = Meetings.objects.all()
+        meetingsJson = json.loads(serializers.serialize('json', qsMeetings, ensure_ascii=False))
+        logger.info('meetingsJson:' + str(meetingsJson))
+        expected_external_id = meetingsJson[0]['fields']['external_account']
 
         url = self.project.api_url_for('microsoftteams_request_api')
 
