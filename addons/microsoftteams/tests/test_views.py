@@ -225,22 +225,12 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         expected_subject = 'My Test Meeting EDIT'
         expected_organizer = 'teamstestuser1@test.onmicrosoft.com'
         expected_organizer_fullname = 'MicrosoftTeams Fake User'
-        expected_attendees_id1 = Attendees.objects.get(user_guid='teamstestuser').id
-        expected_attendees_id2 = Attendees.objects.get(user_guid='teamstestuser2').id
-        expected_attendees_ids = [expected_attendees_id1, expected_attendees_id2]
+        expected_attendees_id = Attendees.objects.get(user_guid='teamstestuser2').id
         expected_attendees = {
-                    {
-                        'emailAddress': {
-                            'address': 'teamstestuser1@test.onmicrosoft.com',
-                            'name': 'Teams Test User1'
-                        },
-                    },
-                    {
-                        'emailAddress': {
-                            'address': updateEmailAddress,
-                            'name': updateDisplayName
-                        },
-                    },
+                    'emailAddress': {
+                        'address': updateEmailAddress,
+                        'name': updateDisplayName
+                    }
                 }
         expected_startDatetime = datetime.now().isoformat()
         expected_endDatetime = (datetime.now() + timedelta(hours=1)).isoformat()
@@ -264,7 +254,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
                 'attendees': expected_attendees,
                 'isOnlineMeeting': True,
             };
-        expected_guestOrNot = {'teamstestuser1@test.onmicrosoft.com': False, updateEmailAddress: False}
+        expected_guestOrNot = {updateEmailAddress: False}
 
         mock_api_update_teams_meeting.return_value = {
             'id': expected_UpdateMeetinId,
@@ -324,9 +314,9 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         assert_equals(result.app_name, microsoftteams_settings.MICROSOFT_TEAMS)
         assert_equals(result.node_settings.id, self.node_settings.id)
         assert_equals(rvBodyJson, {})
-        assert_equals(len(result.attendees.all()), 2)
+        assert_equals(len(result.attendees.all()), 1)
         assert_equals(result.external_account.id, MeetingsFactory.external_account)
-
+        assert_equals(result.attendees.all()[0].id, expected_attendees_id)
         #clear
         Attendees.objects.all().delete()
         Meetings.objects.all().delete()
