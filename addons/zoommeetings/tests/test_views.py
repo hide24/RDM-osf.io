@@ -34,6 +34,9 @@ from addons.zoommeetings.tests.factories import (
 )
 from api_tests import utils as api_utils
 
+import logging
+logger = logging.getLogger(__name__)
+
 pytestmark = pytest.mark.django_db
 
 class TestZoomMeetingsViews(ZoomMeetingsAddonTestCase, OAuthAddonConfigViewsTestCaseMixin, OsfTestCase):
@@ -106,6 +109,7 @@ class TestZoomMeetingsViews(ZoomMeetingsAddonTestCase, OAuthAddonConfigViewsTest
             'topic': expected_subject,
             'start_time': expected_startDatetime,
             'duration': expected_duration,
+            'agenda': expected_content,
             'bodyPreview': expected_content,
             'host_email': 'zoomtestuser1@test.zoom.com',
             'join_url': expected_joinUrl
@@ -148,7 +152,15 @@ class TestZoomMeetingsViews(ZoomMeetingsAddonTestCase, OAuthAddonConfigViewsTest
         self.node_settings.set_auth(self.external_account, self.user)
         self.node_settings.save()
 
+        tst = Meetings.objects.all()
+        tst = serializers.serialize('json', tst, ensure_ascii=False)
+        logger.info('tstx:' + str(tst))
+
         MeetingsFactory = ZoomMeetingsMeetingsFactory(node_settings=self.node_settings)
+
+        tst = Meetings.objects.all()
+        tst = serializers.serialize('json', tst, ensure_ascii=False)
+        logger.info('tsty:' + str(tst))
 
         url = self.project.api_url_for('zoommeetings_request_api')
 
@@ -237,7 +249,7 @@ class TestZoomMeetingsViews(ZoomMeetingsAddonTestCase, OAuthAddonConfigViewsTest
             };
 
         rv = self.app.post_json(url, {
-            'action': expected_action,
+            'actionType': expected_action,
             'deleteMeetingId': expected_DeleteMeetinId,
             'updateMeetingId': expected_UpdateMeetinId,
             'body': expected_body,
