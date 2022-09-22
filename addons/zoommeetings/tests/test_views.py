@@ -88,7 +88,7 @@ class TestZoomMeetingsViews(ZoomMeetingsAddonTestCase, OAuthAddonConfigViewsTest
         expected_DeleteMeetinId = ''
 
         expected_subject = 'My Test Meeting'
-        expected_startDatetime = datetime.now().isoformat()
+        expected_startDatetime = date_parse.parse(datetime.now().isoformat())
         expected_duration = 60
         expected_endDatetime = expected_startDatetime + timedelta(minutes=expected_duration)
         expected_content = 'My Test Content'
@@ -128,8 +128,8 @@ class TestZoomMeetingsViews(ZoomMeetingsAddonTestCase, OAuthAddonConfigViewsTest
 
         result = Meetings.objects.get(meetingid=expected_meetingId)
 
-        expected_startDatetime_format = date_parse.parse(expected_startDatetime).strftime('%Y/%m/%d %H:%M:%S')
-        expected_endDatetime_format = date_parse.parse(expected_endDatetime).strftime('%Y/%m/%d %H:%M:%S')
+        expected_startDatetime_format = date_parse.parse(expected_startDatetime.isoformat()).strftime('%Y/%m/%d %H:%M:%S')
+        expected_endDatetime_format = date_parse.parse(expected_endDatetime.isoformat()).strftime('%Y/%m/%d %H:%M:%S')
 
         assert_equals(result.subject, expected_subject)
         assert_equals(result.organizer, expected_organizer)
@@ -177,7 +177,7 @@ class TestZoomMeetingsViews(ZoomMeetingsAddonTestCase, OAuthAddonConfigViewsTest
         expected_organizer = 'zoomtestuser1@test.zoom.com'
         expected_organizer_fullname = 'ZoomMeetings Fake User'
 
-        expected_startDatetime = datetime.now().isoformat()
+        expected_startDatetime = date_parse.parse(datetime.now().isoformat())
         expected_duration = 60
         expected_endDatetime = expected_startDatetime + timedelta(minutes=expected_duration)
         expected_content = 'My Test Content EDIT'
@@ -207,8 +207,8 @@ class TestZoomMeetingsViews(ZoomMeetingsAddonTestCase, OAuthAddonConfigViewsTest
 
         result = Meetings.objects.get(meetingid=expected_UpdateMeetinId)
 
-        expected_startDatetime_format = date_parse.parse(expected_startDatetime).strftime('%Y/%m/%d %H:%M:%S')
-        expected_endDatetime_format = date_parse.parse(expected_endDatetime).strftime('%Y/%m/%d %H:%M:%S')
+        expected_startDatetime_format = date_parse.parse(expected_startDatetime.isoformat()).strftime('%Y/%m/%d %H:%M:%S')
+        expected_endDatetime_format = date_parse.parse(expected_endDatetime.isoformat()).strftime('%Y/%m/%d %H:%M:%S')
 
         assert_equals(result.subject, expected_subject)
         assert_equals(result.organizer, expected_organizer)
