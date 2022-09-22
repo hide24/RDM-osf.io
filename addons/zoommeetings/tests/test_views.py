@@ -112,7 +112,7 @@ class TestZoomMeetingsViews(ZoomMeetingsAddonTestCase, OAuthAddonConfigViewsTest
         }
 
         rv = self.app.post_json(url, {
-            'action': expected_action,
+            'actionType': expected_action,
             'updateMeetingId': expected_UpdateMeetinId,
             'deleteMeetingId': expected_DeleteMeetinId,
             'contentExtract': expected_contentExtract,
@@ -165,6 +165,7 @@ class TestZoomMeetingsViews(ZoomMeetingsAddonTestCase, OAuthAddonConfigViewsTest
         expected_organizer_fullname = 'ZoomMeetings Fake User'
 
         expected_startDatetime = datetime.now().isoformat()
+        expected_duration = 60
         expected_endDatetime = (datetime.now() + timedelta(hours=1)).isoformat()
         expected_content = 'My Test Content EDIT'
         expected_contentExtract = expected_content
@@ -182,7 +183,7 @@ class TestZoomMeetingsViews(ZoomMeetingsAddonTestCase, OAuthAddonConfigViewsTest
         mock_api_update_zoom_meeting.return_value = {}
 
         rv = self.app.post_json(url, {
-            'action': expected_action,
+            'actionType': expected_action,
             'updateMeetingId': expected_UpdateMeetinId,
             'deleteMeetingId': expected_DeleteMeetinId,
             'contentExtract': expected_contentExtract,
@@ -229,7 +230,7 @@ class TestZoomMeetingsViews(ZoomMeetingsAddonTestCase, OAuthAddonConfigViewsTest
         expected_body = {
                 'topic': '',
                 'start_time': '',
-                duration: '',
+                'duration': '',
                 'agenda': '',
                 'timezone': 'UTC',
                 'type': 2,
