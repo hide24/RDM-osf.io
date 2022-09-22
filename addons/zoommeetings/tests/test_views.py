@@ -90,6 +90,7 @@ class TestZoomMeetingsViews(ZoomMeetingsAddonTestCase, OAuthAddonConfigViewsTest
         expected_subject = 'My Test Meeting'
         expected_startDatetime = datetime.now().isoformat()
         expected_duration = 60
+        expected_endDatetime = expected_startDatetime + timedelta(minutes=expected_duration)
         expected_content = 'My Test Content'
         expected_contentExtract = expected_content
         expected_joinUrl = 'zoom/zoom.com/asd'
@@ -173,12 +174,12 @@ class TestZoomMeetingsViews(ZoomMeetingsAddonTestCase, OAuthAddonConfigViewsTest
         expected_DeleteMeetinId = ''
 
         expected_subject = 'My Test Meeting EDIT'
-        expected_organizer = 'zoomtestuser1@test.onmicrosoft.com'
+        expected_organizer = 'zoomtestuser1@test.zoom.com'
         expected_organizer_fullname = 'ZoomMeetings Fake User'
 
         expected_startDatetime = datetime.now().isoformat()
         expected_duration = 60
-        expected_endDatetime = (datetime.now() + timedelta(hours=1)).isoformat()
+        expected_endDatetime = expected_startDatetime + timedelta(minutes=expected_duration)
         expected_content = 'My Test Content EDIT'
         expected_contentExtract = expected_content
         expected_joinUrl = 'zoom/zoom.com/321'
