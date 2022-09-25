@@ -90,7 +90,7 @@ class TestZoomMeetingsViews(ZoomMeetingsAddonTestCase, OAuthAddonConfigViewsTest
         expected_subject = 'My Test Meeting'
         expected_startDatetime = date_parse.parse(datetime.now().isoformat())
         expected_duration = 60
-        expected_endDatetime = expected_startDatetime + timedelta(minutes=expected_duration)
+        expected_endDatetime = str(expected_startDatetime + timedelta(minutes=expected_duration))
         expected_content = 'My Test Content'
         expected_contentExtract = expected_content
         expected_joinUrl = 'zoom/zoom.com/asd'
@@ -179,7 +179,7 @@ class TestZoomMeetingsViews(ZoomMeetingsAddonTestCase, OAuthAddonConfigViewsTest
 
         expected_startDatetime = date_parse.parse(datetime.now().isoformat())
         expected_duration = 60
-        expected_endDatetime = expected_startDatetime + timedelta(minutes=expected_duration)
+        expected_endDatetime = str(expected_startDatetime + timedelta(minutes=expected_duration))
         expected_content = 'My Test Content EDIT'
         expected_contentExtract = expected_content
         expected_joinUrl = 'zoom/zoom.com/321'
