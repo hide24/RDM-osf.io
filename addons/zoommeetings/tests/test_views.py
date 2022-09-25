@@ -90,14 +90,14 @@ class TestZoomMeetingsViews(ZoomMeetingsAddonTestCase, OAuthAddonConfigViewsTest
         expected_subject = 'My Test Meeting'
         expected_startDatetime = date_parse.parse(datetime.now().isoformat())
         expected_duration = 60
-        expected_endDatetime = str(expected_startDatetime + timedelta(minutes=expected_duration))
+        expected_endDatetime = expected_startDatetime + timedelta(minutes=expected_duration)
         expected_content = 'My Test Content'
         expected_contentExtract = expected_content
         expected_joinUrl = 'zoom/zoom.com/asd'
         expected_meetingId = '1234567890qwertyuiopasdfghjkl'
         expected_body = {
                 'topic': expected_subject,
-                'start_time': expected_startDatetime,
+                'start_time': str(expected_startDatetime),
                 'duration': expected_duration,
                 'agenda': expected_content,
                 'timezone': 'UTC',
@@ -108,7 +108,7 @@ class TestZoomMeetingsViews(ZoomMeetingsAddonTestCase, OAuthAddonConfigViewsTest
         mock_api_create_zoom_meeting.return_value = {
             'id': expected_meetingId,
             'topic': expected_subject,
-            'start_time': expected_startDatetime,
+            'start_time': str(expected_startDatetime),
             'duration': expected_duration,
             'agenda': expected_content,
             'bodyPreview': expected_content,
@@ -179,13 +179,13 @@ class TestZoomMeetingsViews(ZoomMeetingsAddonTestCase, OAuthAddonConfigViewsTest
 
         expected_startDatetime = date_parse.parse(datetime.now().isoformat())
         expected_duration = 60
-        expected_endDatetime = str(expected_startDatetime + timedelta(minutes=expected_duration))
+        expected_endDatetime = expected_startDatetime + timedelta(minutes=expected_duration)
         expected_content = 'My Test Content EDIT'
         expected_contentExtract = expected_content
         expected_joinUrl = 'zoom/zoom.com/321'
         expected_body = {
                 'topic': expected_subject,
-                'start_time': expected_startDatetime,
+                'start_time': str(expected_startDatetime),
                 'duration': expected_duration,
                 'agenda': expected_content,
                 'timezone': 'UTC',
