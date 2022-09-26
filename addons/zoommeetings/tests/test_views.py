@@ -88,6 +88,8 @@ class TestZoomMeetingsViews(ZoomMeetingsAddonTestCase, OAuthAddonConfigViewsTest
         expected_DeleteMeetinId = ''
 
         expected_subject = 'My Test Meeting'
+        expected_organizer = 'zoomtestuser1@test.zoom.com'
+        expected_organizer_fullname = 'ZoomMeetings Fake User'
         expected_startDatetime = date_parse.parse(datetime.now().isoformat())
         expected_duration = 60
         expected_endDatetime = expected_startDatetime + timedelta(minutes=expected_duration)
@@ -108,6 +110,7 @@ class TestZoomMeetingsViews(ZoomMeetingsAddonTestCase, OAuthAddonConfigViewsTest
         mock_api_create_zoom_meeting.return_value = {
             'id': expected_meetingId,
             'topic': expected_subject,
+            'host_email': expected_organizer,
             'start_time': str(expected_startDatetime),
             'duration': expected_duration,
             'agenda': expected_content,
@@ -133,7 +136,7 @@ class TestZoomMeetingsViews(ZoomMeetingsAddonTestCase, OAuthAddonConfigViewsTest
 
         assert_equals(result.subject, expected_subject)
         assert_equals(result.organizer, expected_organizer)
-        assert_equals(result.organizer_fullname, expected_organizer)
+        assert_equals(result.organizer_fullname, expected_organizer_fullname)
         assert_equals(result.start_datetime.strftime('%Y/%m/%d %H:%M:%S'), expected_startDatetime_format)
         assert_equals(result.end_datetime.strftime('%Y/%m/%d %H:%M:%S'), expected_endDatetime_format)
         assert_equals(result.content, expected_content)
@@ -220,7 +223,6 @@ class TestZoomMeetingsViews(ZoomMeetingsAddonTestCase, OAuthAddonConfigViewsTest
         assert_equals(result.meetingid, expected_UpdateMeetinId)
         assert_equals(result.node_settings.id, self.node_settings.id)
         assert_equals(rvBodyJson, {})
-        assert_equals(result.external_account.id, MeetingsFactory.external_account)
         assert_equals(result.external_account.id, expected_external_id)
         #clear
         Meetings.objects.all().delete()
