@@ -127,7 +127,7 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
             'start': expected_startDatetime,
             'end': expected_endDatetime,
             'agenda': expected_content,
-            'hostEmail': 'webextestorganizer@test.webex.com',
+            'hostEmail': expected_organizer,
             'joinUrl': expected_joinUrl,
             'password': expected_passowrd
         }
@@ -156,6 +156,7 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
         assert_equals(result.content, expected_content)
         assert_equals(result.join_url, expected_joinUrl)
         assert_equals(result.meetingid, expected_meetingId)
+        assert_equals(result.password, expected_passowrd)
         assert_equals(result.app_name, webexmeetings_settings.WEBEX_MEETINGS)
         assert_equals(result.external_account.id, self.external_account.id)
         assert_equals(result.node_settings.id, self.node_settings.id)
@@ -222,6 +223,7 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
         expected_endDatetime = (datetime.now() + timedelta(hours=1)).isoformat()
         expected_content = 'My Test Content EDIT'
         expected_joinUrl = 'webex/webex.com/321'
+        expected_passowrd = 'qwer12345'
         expected_body = {
                 'title': expected_subject,
                 'start': expected_startDatetime,
@@ -238,7 +240,7 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
             'end': expected_endDatetime,
             'agenda': expected_content,
             'hostMail': 'webextestorganizer@test.webex.com',
-            'joinUrl': expected_joinUrl,
+            'webLink': expected_joinUrl,
             'password': expected_passowrd
         }
 

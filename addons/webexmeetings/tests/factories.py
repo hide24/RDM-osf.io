@@ -62,6 +62,7 @@ class WebexMeetingsMeetingsFactory(DjangoModelFactory):
     content = 'My Meeting Content'
     join_url = 'webex/webex.com/321'
     meetingid = 'qwertyuiopasdfghjklzxcvbnm'
+    meeting_password = 'qwer12345'
     app_name = settings.WEBEX_MEETINGS
     external_account = factory.SubFactory(WebexMeetingsAccountFactory)
     node_settings = factory.SubFactory(WebexMeetingsNodeSettingsFactory)
