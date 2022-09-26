@@ -17,7 +17,8 @@ from addons.webexmeetings.tests.factories import (
     WebexMeetingsUserSettingsFactory,
     WebexMeetingsNodeSettingsFactory,
     WebexMeetingsAccountFactory,
-    WebexMeetingsAttendeesFactory
+    WebexMeetingsAttendeesFactory,
+    WebexMeetingsMeetingsAttendeesRelationFactory
 )
 from framework.auth import Auth
 from osf_tests.factories import ProjectFactory, DraftRegistrationFactory

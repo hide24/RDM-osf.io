@@ -77,7 +77,7 @@ class WebexMeetingsMeetingsFactory(DjangoModelFactory):
             for attendee in extracted:
                 self.attendees.add(attendee)
 
-class WebexMeetingsMeetingsAttendeesRelationFactory(ObjectIDMixin, BaseModel):
+class WebexMeetingsMeetingsAttendeesRelationFactory(DjangoModelFactory):
 
     meeting = factory.SubFactory(WebexMeetingsMeetingsFactory)
     attendee = factory.SubFactory(WebexMeetingsAttendeesFactory)
