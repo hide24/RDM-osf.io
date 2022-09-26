@@ -127,7 +127,7 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
             'start': expected_startDatetime,
             'end': expected_endDatetime,
             'agenda': expected_content,
-            'hostMail': 'webextestorganizer@test.webex.com',
+            'hostEmail': 'webextestorganizer@test.webex.com',
             'joinUrl': expected_joinUrl,
             'password': expected_passowrd
         }
@@ -232,7 +232,7 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
         expected_guestOrNot = {createEmailAddress: False}
 
         mock_api_update_webex_meeting.return_value = {
-            'id': expected_meetingId,
+            'id': expected_UpdateMeetinId,
             'title': expected_subject,
             'start': expected_startDatetime,
             'end': expected_endDatetime,
