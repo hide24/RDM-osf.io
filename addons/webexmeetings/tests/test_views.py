@@ -128,7 +128,7 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
             'end': expected_endDatetime,
             'agenda': expected_content,
             'hostEmail': expected_organizer,
-            'joinUrl': expected_joinUrl,
+            'webLink': expected_joinUrl,
             'password': expected_passowrd
         }
 
@@ -172,7 +172,8 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
         MeetingsAttendeesRelation.objects.all().delete()
 
     @mock.patch('addons.webexmeetings.utils.api_update_webex_meeting')
-    def test_webexmeetings_request_api_update(self, mock_api_update_webex_meeting):
+    @mock.patch('addons.webexmeetings.utils.api_update_webex_meeting_attendees')
+    def test_webexmeetings_request_api_update(self, mock_api_update_webex_meeting, mock_api_update_webex_meeting_attendees):
 
         self.node_settings.set_auth(self.external_account, self.user)
         self.node_settings.save()
@@ -242,6 +243,11 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
             'hostMail': 'webextestorganizer@test.webex.com',
             'webLink': expected_joinUrl,
             'password': expected_passowrd
+        }
+
+        mock_api_update_webex_meeting.return_value = {
+            'created': {'email': createEmailAddress, 'id': createInviteeId},
+            'deleted': deleteInviteeId
         }
 
         rv = self.app.post_json(url, {
