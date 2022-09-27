@@ -90,6 +90,7 @@ def get_node_contributors_abbrev(auth, node, **kwargs):
 @collect_auth
 @must_be_valid_project(retractions_valid=True)
 def get_contributors(auth, node, **kwargs):
+    logger.info('199')
     logger.info('200')
     # Can set limit to only receive a specified number of contributors in a call to this route
     if request.args.get('limit'):

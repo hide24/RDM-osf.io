@@ -417,7 +417,7 @@ def user_account_password(auth, **kwargs):
 @must_be_logged_in
 @ember_flag_is_active(features.EMBER_USER_SETTINGS_ADDONS)
 def user_addons(auth, **kwargs):
-    logger.info('14')
+    logger.info('15')
     user = auth.user
 
     ret = {
