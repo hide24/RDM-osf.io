@@ -162,7 +162,7 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
         assert_equals(result.content, expected_content)
         assert_equals(result.join_url, expected_joinUrl)
         assert_equals(result.meetingid, expected_meetingId)
-        assert_equals(result.password, expected_passowrd)
+        assert_equals(result.meeting_password, expected_passowrd)
         assert_equals(result.app_name, webexmeetings_settings.WEBEX_MEETINGS)
         assert_equals(result.external_account.id, self.external_account.id)
         assert_equals(result.node_settings.id, self.node_settings.id)
@@ -210,6 +210,10 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
         tst = Meetings.objects.all()
         tst = serializers.serialize('json', tst, ensure_ascii=False)
         logger.info('tst5:' + str(tst))
+
+        tst = MeetingsAttendeesRelation.objects.all()
+        tst = serializers.serialize('json', tst, ensure_ascii=False)
+        logger.info('tst6:' + str(tst))
 
         qsMeetings = Meetings.objects.all()
         meetingsJson = json.loads(serializers.serialize('json', qsMeetings, ensure_ascii=False))
@@ -285,6 +289,7 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
         assert_equals(result.content, expected_content)
         assert_equals(result.join_url, expected_joinUrl)
         assert_equals(result.meetingid, expected_UpdateMeetinId)
+        assert_equals(result.meeting_password, expected_passowrd)
         assert_equals(result.app_name, webexmeetings_settings.WEBEX_MEETINGS)
         assert_equals(result.node_settings.id, self.node_settings.id)
         assert_equals(rvBodyJson, {})
