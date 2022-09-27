@@ -24,7 +24,8 @@ from addons.webexmeetings.models import (
     UserSettings,
     NodeSettings,
     Attendees,
-    Meetings
+    Meetings,
+    MeetingsAttendeesRelation
 )
 from osf.models import ExternalAccount, OSFUser, RdmAddonOption, BaseFileNode, AbstractNode, Comment
 from addons.webexmeetings.tests.factories import (
@@ -185,6 +186,9 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
 
         createEmailAddress = 'webextestuser2@test.webex.com'
         createDisplayName = 'Webex Test User2'
+        expected_action = 'update'
+        expected_UpdateMeetinId = 'qwertyuiopasdfghjklzxcvbnm'
+        expected_DeleteMeetinId = ''
 
         tst = Attendees.objects.all()
         tst = serializers.serialize('json', tst, ensure_ascii=False)
@@ -193,6 +197,11 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
         AttendeesFactory = WebexMeetingsAttendeesFactory(node_settings=self.node_settings)
         AttendeesFactory2 = WebexMeetingsAttendeesFactory(node_settings=self.node_settings, user_guid='webextestuser2', fullname='WEBEX TEST USER 2', email_address=createEmailAddress, display_name=createDisplayName)
         MeetingsFactory = WebexMeetingsMeetingsFactory(node_settings=self.node_settings)
+
+        meeting = Meetings.objects.get(meetingid=expected_UpdateMeetinId)
+        attendeeId = Attendees.objects.get(user_guid='webextestuser').id
+        meeting.attendees = [attendeeId]
+        meeting.save()
 
         tst = Attendees.objects.all()
         tst = serializers.serialize('json', tst, ensure_ascii=False)
@@ -208,10 +217,6 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
         expected_external_id = meetingsJson[0]['fields']['external_account']
 
         url = self.project.api_url_for('webexmeetings_request_api')
-
-        expected_action = 'update'
-        expected_UpdateMeetinId = 'qwertyuiopasdfghjklzxcvbnm'
-        expected_DeleteMeetinId = ''
 
         expected_subject = 'My Test Meeting EDIT'
         expected_organizer = 'webextestuser1@test.webex.com'
