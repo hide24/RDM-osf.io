@@ -1,5 +1,5 @@
 /**
-* Module that controls the Microsoft 365 user settings. Includes Knockout view-model
+* Module that controls the Microsoft Teams user settings. Includes Knockout view-model
 * for syncing data.
 */
 
@@ -21,7 +21,7 @@ var sprintf = require('agh.sprintf').sprintf;
 function ViewModel(url) {
     var self = this;
 
-    self.properName = 'Microsoft 365';
+    self.properName = 'Microsoft Teams';
     self.accessKey = ko.observable();
     self.secretKey = ko.observable();
     self.account_url = '/api/v1/oauth/connect/microsoftteams';
@@ -29,7 +29,7 @@ function ViewModel(url) {
 
     ChangeMessageMixin.call(self);
 
-    /** Send POST request to authorize Microsoft 365 */
+    /** Send POST request to authorize Microsoft Teams */
     self.connectAccount = function() {
 
         return osfHelpers.postJSON(
@@ -41,7 +41,7 @@ function ViewModel(url) {
         }).fail(function(xhr, textStatus, error) {
             var errorMessage = (xhr.status === 400 && xhr.responseJSON.message !== undefined) ? xhr.responseJSON.message : 'auth error';
             self.changeMessage(errorMessage, 'text-danger');
-            Raven.captureMessage('Could not authenticate with Microsoft 365', {
+            Raven.captureMessage('Could not authenticate with Microsoft Teams', {
                 extra: {
                     url: self.account_url,
                     textStatus: textStatus,
@@ -77,8 +77,8 @@ function ViewModel(url) {
     self.askDisconnect = function(account) {
         var self = this;
         bootbox.confirm({
-            title: _('Disconnect Microsoft 365 Account?'),
-            message: sprintf(_('<p class="overflow">Are you sure you want to disconnect the Microsoft 365 account <strong>%1$s</strong>? This will revoke access to Microsoft 365 for all projects associated with this account.</p>'), osfHelpers.htmlEscape(account.name)),
+            title: _('Disconnect Microsoft Teams Account?'),
+            message: sprintf(_('<p class="overflow">Are you sure you want to disconnect the Microsoft Teams account <strong>%1$s</strong>? This will revoke access to Microsoft Teams for all projects associated with this account.</p>'), osfHelpers.htmlEscape(account.name)),
             callback: function (confirm) {
                 if (confirm) {
                     self.disconnectAccount(account);

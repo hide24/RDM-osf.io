@@ -56,7 +56,7 @@ var MicrosoftTeamsFolderPickerViewModel = oop.extend(OauthAddonFolderPicker, {
                 message = response.message;
             }
             self.changeMessage(message, 'text-danger');
-            Raven.captureMessage(_('Could not add Microsoft 365 credentials'), {
+            Raven.captureMessage(_('Could not add Microsoft Teams credentials'), {
                 extra: {
                     url: self.urls().importAuth,
                     textStatus: status,

@@ -2,4 +2,4 @@
 
 var MicrosoftTeamsNodeConfig = require('./microsoftteamsNodeConfig.js').MicrosoftTeamsNodeConfig;
 var url = window.contextVars.node.urls.api + 'microsoftteams/settings/';
-new MicrosoftTeamsNodeConfig('Microsoft 365', '#microsoftteamsScope', url, '#microsoftteamsGrid');
+new MicrosoftTeamsNodeConfig('Microsoft Teams', '#microsoftteamsScope', url, '#microsoftteamsGrid');
