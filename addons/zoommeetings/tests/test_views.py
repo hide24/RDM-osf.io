@@ -156,15 +156,7 @@ class TestZoomMeetingsViews(ZoomMeetingsAddonTestCase, OAuthAddonConfigViewsTest
         self.node_settings.set_auth(self.external_account, self.user)
         self.node_settings.save()
 
-        tst = Meetings.objects.all()
-        tst = serializers.serialize('json', tst, ensure_ascii=False)
-        logger.info('tstx:' + str(tst))
-
         MeetingsFactory = ZoomMeetingsMeetingsFactory(node_settings=self.node_settings)
-
-        tst = Meetings.objects.all()
-        tst = serializers.serialize('json', tst, ensure_ascii=False)
-        logger.info('tsty:' + str(tst))
 
         url = self.project.api_url_for('zoommeetings_request_api')
 
