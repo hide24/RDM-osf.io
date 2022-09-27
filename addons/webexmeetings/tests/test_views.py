@@ -132,10 +132,10 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
             'webLink': expected_joinUrl,
             'password': expected_passowrd
         }
-        mock_get_invitees.return_value = {
+        mock_get_invitees.return_value = [{
                     'email': expected_attendee_email,
                     'id': expected_invitee_id
-                }
+                }]
 
         rv = self.app.post_json(url, {
             'actionType': expected_action,
@@ -250,9 +250,9 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
             'password': expected_passowrd
         }
 
-        mock_api_update_webex_meeting.return_value = {
-            'created': {'email': createEmailAddress, 'id': createInviteeId},
-            'deleted': deleteInviteeId
+        mock_api_update_webex_meeting_attendees.return_value = {
+            'created': [{'email': createEmailAddress, 'id': createInviteeId}],
+            'deleted': [deleteInviteeId]
         }
 
         rv = self.app.post_json(url, {
