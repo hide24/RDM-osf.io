@@ -78,7 +78,8 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
         assert_equal(ret.status_code, 403)
 
     @mock.patch('addons.webexmeetings.utils.api_create_webex_meeting')
-    def test_webexmeetings_request_api_create(self, mock_api_create_webex_meeting):
+    @mock.patch('addons.webexmeetings.utils.get_invitees')
+    def test_webexmeetings_request_api_create(self, mock_api_create_webex_meeting, mock_get_invitees):
         self.node_settings.set_auth(self.external_account, self.user)
         self.node_settings.save()
 
@@ -131,6 +132,10 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
             'webLink': expected_joinUrl,
             'password': expected_passowrd
         }
+        mock_get_invitees.return_value = {
+                    'email': expected_attendee_email,
+                    'id': expected_invitee_id
+                }
 
         rv = self.app.post_json(url, {
             'actionType': expected_action,
@@ -256,7 +261,6 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
             'deleteMeetingId': expected_DeleteMeetinId,
             'body': expected_body,
             'guestOrNot': expected_guestOrNot,
-            'id': expected_UpdateMeetinId,
             'created': createdInvitees,
             'deleted': deletedInvitees,
         }, auth=self.user.auth)
