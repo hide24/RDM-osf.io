@@ -305,8 +305,8 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
         assert_equals(len(result.attendees.all()), 1)
         assert_equals(result.attendees.all()[0].id, expected_attendees_id)
         assert_equals(result.external_account.id, expected_external_id)
-        assert_equals(relationResult.meeting, result.id)
-        assert_equals(relationResult.attendee, expected_attendees_id)
+        assert_equals(relationResult.meeting_id, result.id)
+        assert_equals(relationResult.attendee_id, expected_attendees_id)
         assert_equals(relationResult.webex_meetings_invitee_id, createInviteeId)
 
         #clear
