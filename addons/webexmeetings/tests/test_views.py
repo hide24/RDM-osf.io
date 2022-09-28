@@ -168,8 +168,8 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
         assert_equals(result.node_settings.id, self.node_settings.id)
         assert_equals(rvBodyJson, {})
         assert_equals(result.attendees.all()[0].id, expected_attendees_id)
-        assert_equals(relationResult.meeting, result.id)
-        assert_equals(relationResult.attendee, expected_attendees_id)
+        assert_equals(relationResult.meeting_id, result.id)
+        assert_equals(relationResult.attendee_id, expected_attendees_id)
         assert_equals(relationResult.webex_meetings_invitee_id, expected_invitee_id)
 
         #clear
@@ -198,10 +198,19 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
         AttendeesFactory2 = WebexMeetingsAttendeesFactory(node_settings=self.node_settings, user_guid='webextestuser2', fullname='WEBEX TEST USER 2', email_address=createEmailAddress, display_name=createDisplayName)
         MeetingsFactory = WebexMeetingsMeetingsFactory(node_settings=self.node_settings)
 
+        deleteInviteeId = 'zxcvbnmasdfghjkl'
+
         meeting = Meetings.objects.get(meetingid=expected_UpdateMeetinId)
         attendeeId = Attendees.objects.get(user_guid='webextestuser').id
         meeting.attendees = [attendeeId]
         meeting.save()
+
+        rel = MeetingsAttendeesRelation(
+            attendee_id=attendeeId,
+            meeting_id=meeting.id,
+            webex_meetings_invitee_id=deleteInviteeId
+        )
+        rel.save()
 
         tst = Attendees.objects.all()
         tst = serializers.serialize('json', tst, ensure_ascii=False)
@@ -230,9 +239,9 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
 
 
         expected_attendees = [{'email': createEmailAddress}]
-        createInviteeId = 'zxcvbnmasdfghjkl'
+        createInviteeId = '1234565678'
         createdInvitees = [{'email': createEmailAddress, 'id': createInviteeId}]
-        deleteInviteeId = 'zxcvbnmasdfghjkl'
+
         deletedInvitees = [deleteInviteeId]
         expected_startDatetime = datetime.now().isoformat()
         expected_endDatetime = (datetime.now() + timedelta(hours=1)).isoformat()
