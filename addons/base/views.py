@@ -7,7 +7,6 @@ import uuid
 import markupsafe
 from future.moves.urllib.parse import quote
 from django.utils import timezone
-
 from django.core import serializers
 from distutils.util import strtobool
 from flask import make_response
@@ -66,7 +65,6 @@ from website.ember_osf_web.decorators import ember_flag_is_active
 from website.ember_osf_web.views import use_ember_app
 from website.project.utils import serialize_node
 from website.util import rubeus, timestamp
-
 
 from osf.features import (
     SLOAN_COI_DISPLAY,
@@ -1339,3 +1337,15 @@ def webmeetings_get_meetings(**kwargs):
     return {
         'recentMeetings': allRecentWebMeetings,
     }
+
+def zoommeetings_deauthorize_notification(**kwargs):
+
+    result = False
+    authorizationHeader = request.headers.get('authorization')
+    if authorizationHeader === zoom_meetings_settings.ZOOM_MEETINGS_SECRET_TOKEN:
+        result = True
+        logger.info('Recieved Zoom Meetings Webhook')
+    else:
+        result = False
+        logger.info('Recieved request non Zoom Meetings Webhook')
+    return result

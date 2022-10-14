@@ -1593,6 +1593,15 @@ def make_url_map(app):
         ], 'get', addon_views.webmeetings_get_meetings, json_renderer),
     ], prefix='/api/v1')
 
+    process_rules(app, [
+        Rule(
+            'zoommeetings/deauthorize_notification',
+            'post',
+            addon_views.zoommeetings_deauthorize_notification,
+            json_renderer,
+        ),
+    ], prefix='/api/v1')
+
     # API
 
     process_rules(app, [
