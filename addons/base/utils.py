@@ -1,8 +1,6 @@
 import json
 import markupsafe
-from admin.rdm import utils as rdm_utils
 from os.path import basename
-from osf.models import OSFUser
 from website.settings import MFR_SERVER_URL
 
 from website import settings

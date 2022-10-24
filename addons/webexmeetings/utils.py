@@ -97,7 +97,7 @@ def grdm_create_webex_meeting(addon, account, createdData, guestOrNot):
     organizer_fullname = account.display_name
     target = '('
     idx = organizer_fullname.find(target)
-    organizer_fullname = organizer_fullname[idx+1:len(organizer_fullname)-1]
+    organizer_fullname = organizer_fullname[idx + 1: len(organizer_fullname) - 1]
     isGuest = False
 
     invitees = get_invitees(account, meetingId)

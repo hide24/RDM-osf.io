@@ -1078,7 +1078,6 @@ def webmeetings_get_config_ember(**kwargs):
         raise HTTPError(http_status.HTTP_403_FORBIDDEN)
 
     auth = kwargs['auth']
-    user = auth.user
 
     allUpcomingWebMeetings = []
     allpreviousWebMeetings = []
@@ -1195,7 +1194,6 @@ def webmeetings_set_config_ember(**kwargs):
         raise HTTPError(http_status.HTTP_403_FORBIDDEN)
 
     auth = kwargs['auth']
-    user = auth.user
 
     allUpcomingWebMeetings = []
     allpreviousWebMeetings = []
