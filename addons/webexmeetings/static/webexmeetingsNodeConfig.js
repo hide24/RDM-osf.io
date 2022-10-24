@@ -23,7 +23,7 @@ var WebexMeetingsFolderPickerViewModel = oop.extend(OauthAddonFolderPicker, {
 
     connectAccount: function() {
         var self = this;
-
+        var openWindow = window.open('', '_blank');
         return $osf.postJSON(
             self.urls().auth, {}
         ).done(function(response) {
@@ -46,7 +46,7 @@ var WebexMeetingsFolderPickerViewModel = oop.extend(OauthAddonFolderPicker, {
                     }
                 });
             };
-            window.open(response);
+            openWindow.location.href = response;
         }).fail(function(xhr, status, error) {
             $osf.unblock();
             var message = '';

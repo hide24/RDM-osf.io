@@ -38,7 +38,7 @@ class MicrosoftTeamsProvider(ExternalProvider):
         info = response.json()
         return {
             'provider_id': info['id'],
-            'display_name': info['displayName'],
+            'display_name': '{}({})'.format(info['mail'], info['displayName'])
         }
 
     def fetch_access_token(self, force_refresh=False):

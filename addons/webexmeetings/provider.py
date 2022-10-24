@@ -36,7 +36,7 @@ class WebexMeetingsProvider(ExternalProvider):
         info = response.json()
         return {
             'provider_id': info['id'],
-            'display_name': info['displayName'],
+            'display_name': '{}({})'.format(info['userName'], info['displayName'])
         }
 
     def fetch_access_token(self, force_refresh=False):

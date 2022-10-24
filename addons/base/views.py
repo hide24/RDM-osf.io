@@ -49,7 +49,7 @@ from addons.webexmeetings import models as webex_meetings
 from addons.zoommeetings import models as zoom_meetings
 
 from addons.base import signals as file_signals
-from addons.base.utils import format_last_known_metadata, get_mfr_url, getInstitutionUsers
+from addons.base.utils import format_last_known_metadata, get_mfr_url, getProjectContribs
 from osf import features
 from osf.models import (BaseFileNode, TrashedFileNode, BaseFileVersionsThrough,
                         OSFUser, AbstractNode, Preprint,
@@ -1158,8 +1158,8 @@ def webmeetings_get_config_ember(**kwargs):
     allUpcomingWebMeetings = json.dumps(allUpcomingWebMeetings)
     allpreviousWebMeetings = json.dumps(allpreviousWebMeetings)
 
-    #Get the institution users
-    institutionUsers = getInstitutionUsers(user)
+    #Get the contributors
+    projectContribs = getProjectContribs(node)
 
     webMeetingsApps = json.dumps(webMeetingsApps)
 
@@ -1174,8 +1174,8 @@ def webmeetings_get_config_ember(**kwargs):
                          'node_microsoft_teams_attendees': nodeMicrosoftTeamsAttendees,
                          'node_webex_meetings_attendees': nodeWebexMeetingsAttendees,
                          'node_webex_meetings_attendees_relation': nodeWebexMeetingsAttendeesRelation,
-                         'institution_users': institutionUsers,
-                         'microsoft_teams_signature': microsoft_teams_settings.MICROSOFT_TEAMS_SIGNATURE
+                         'microsoft_teams_signature': microsoft_teams_settings.MICROSOFT_TEAMS_SIGNATURE,
+                         'project_contributors': projectContribs
                      }}}
 
 @must_be_logged_in
@@ -1275,8 +1275,8 @@ def webmeetings_set_config_ember(**kwargs):
     allUpcomingWebMeetings = json.dumps(allUpcomingWebMeetings)
     allpreviousWebMeetings = json.dumps(allpreviousWebMeetings)
 
-    #Get the institution users
-    institutionUsers = getInstitutionUsers(user)
+    #Get the contributors
+    projectContribs = getProjectContribs(node)
 
     webMeetingsApps = json.dumps(webMeetingsApps)
 
@@ -1291,8 +1291,8 @@ def webmeetings_set_config_ember(**kwargs):
                          'node_microsoft_teams_attendees': nodeMicrosoftTeamsAttendees,
                          'node_webex_meetings_attendees': nodeWebexMeetingsAttendees,
                          'node_webex_meetings_attendees_relation': nodeWebexMeetingsAttendeesRelation,
-                         'institution_users': institutionUsers,
-                         'microsoft_teams_signature': microsoft_teams_settings.MICROSOFT_TEAMS_SIGNATURE
+                         'microsoft_teams_signature': microsoft_teams_settings.MICROSOFT_TEAMS_SIGNATURE,
+                         'project_contributors': projectContribs
                      }}}
 
 @must_be_valid_project
@@ -1342,6 +1342,8 @@ def zoommeetings_deauthorize_notification(**kwargs):
 
     result = False
     authorizationHeader = request.headers.get('authorization')
+    logger.info('request header authorization:' + str(authorizationHeader))
+    logger.info('zoom_meetings_secret_token:' + str(zoom_meetings_settings.ZOOM_MEETINGS_SECRET_TOKEN))
     if authorizationHeader == zoom_meetings_settings.ZOOM_MEETINGS_SECRET_TOKEN:
         result = True
         logger.info('Recieved Zoom Meetings Webhook')

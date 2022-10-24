@@ -58,22 +58,20 @@ def format_last_known_metadata(auth, node, file, error_type):
         return ''.join(parts)
     return msg
 
-
-def getInstitutionUsers(user):
+def getProjectContribs(node):
 
     info = {}
-    institutionUsers = []
+    projectContribs = []
+    nodeContribs = node.contributors
 
-    institutionId = rdm_utils.get_institution_id(user)
-    users = OSFUser.objects.filter(affiliated_institutions__id=institutionId)
+    for nodeContrib in nodeContribs:
+        if not nodeContrib.is_invited:
+            info = {}
+            info['guid'] = nodeContrib._id
+            info['fullname'] = nodeContrib.fullname
+            info['username'] = nodeContrib.username
+            info['institution'] = nodeContrib.jobs[0]['institution']
+            projectContribs.append(info)
 
-    for user in users:
-        info = {}
-        info['guid'] = user._id
-        info['fullname'] = user.fullname
-        info['username'] = user.username
-        institutionUsers.append(info)
-
-    ret = json.dumps(institutionUsers)
-
+    ret = json.dumps(projectContribs)
     return ret

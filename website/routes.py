@@ -1595,7 +1595,7 @@ def make_url_map(app):
 
     process_rules(app, [
         Rule(
-            'zoommeetings/deauthorize_notification',
+            '/zoommeetings/deauthorize_notification',
             'post',
             addon_views.zoommeetings_deauthorize_notification,
             json_renderer,

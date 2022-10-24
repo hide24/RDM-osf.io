@@ -45,7 +45,12 @@ def api_get_webex_meetings_username(account, email):
     }
     response = requests.get(url, headers=requestHeaders, timeout=60)
     responseData = response.json()
-    displayName = responseData['items'][0]['displayName']
+    items = responseData.get('items', {})
+    logger.info('items:::' + str(items))
+    if items:
+        displayName = items[0].get('displayName', '')
+    else:
+        displayName = ''
     return displayName
 
 def api_create_webex_meeting(requestData, account):
@@ -61,6 +66,7 @@ def api_create_webex_meeting(requestData, account):
     response = requests.post(url, data=requestBody, headers=requestHeaders, timeout=60)
     response.raise_for_status()
     responseData = response.json()
+    logger.info('StatusCode:{} . A {} meeting was created with following attributes => '.format(str(response.status_code), settings.WEBEX_MEETINGS) + str(responseData))
     return responseData
 
 def get_invitees(account, meetingId):
@@ -84,11 +90,14 @@ def grdm_create_webex_meeting(addon, account, createdData, guestOrNot):
     organizer = createdData['hostEmail']
     startDatetime = createdData['start']
     endDatetime = createdData['end']
-    content = createdData['agenda']
+    content = createdData.get('agenda', '')
     joinUrl = createdData['webLink']
     meetingId = createdData['id']
     password = createdData['password']
     organizer_fullname = account.display_name
+    target = '('
+    idx = organizer_fullname.find(target)
+    organizer_fullname = organizer_fullname[idx+1:len(organizer_fullname)-1]
     isGuest = False
 
     invitees = get_invitees(account, meetingId)
@@ -132,7 +141,7 @@ def grdm_create_webex_meeting(addon, account, createdData, guestOrNot):
 
         createData.attendees = attendeeIds
         createData.save()
-
+    logger.info(' A {} meeting information on GRDM was created with following attributes => '.format(settings.WEBEX_MEETINGS) + str(vars(createData)))
     return {}
 
 def api_update_webex_meeting(meetingId, requestData, account):
@@ -148,6 +157,7 @@ def api_update_webex_meeting(meetingId, requestData, account):
     response = requests.put(url, data=requestBody, headers=requestHeaders, timeout=60)
     response.raise_for_status()
     responseData = response.json()
+    logger.info('StatusCode:{} . A {} meeting was updated with following attributes => '.format(str(response.status_code), settings.WEBEX_MEETINGS) + str(responseData))
     return responseData
 
 def api_update_webex_meeting_attendees(requestData, account):
@@ -177,6 +187,8 @@ def api_update_webex_meeting_attendees(requestData, account):
             deletedInvitees.append(deleteInvitee)
 
     updatedAttendees = {'created': createdInvitees, 'deleted': deletedInvitees}
+
+    logger.info('A {} meeting invitees was updated with following attributes => '.format(settings.WEBEX_MEETINGS) + str(updatedAttendees))
 
     return updatedAttendees
 
@@ -239,7 +251,7 @@ def grdm_update_webex_meeting(updatedAttendees, updatedMeeting, guestOrNot, addo
         updateData.save()
         updateData.attendees = attendeeIds
         updateData.save()
-
+    logger.info(' A {} meeting information on GRDM was updated with following attributes => '.format(settings.WEBEX_MEETINGS) + str(vars(updateData)))
     return {}
 
 def api_delete_webex_meeting(meetingId, account):
@@ -254,11 +266,12 @@ def api_delete_webex_meeting(meetingId, account):
     response = requests.delete(url, headers=requestHeaders, timeout=60)
     if response.status_code != 404:
         response.raise_for_status()
+    logger.info('A {} meeting was deleted or has been already deleted. StatusCode : {}'.format(settings.WEBEX_MEETINGS, str(response.status_code)))
     return {}
 
 def grdm_delete_webex_meeting(meetingId):
 
     deleteData = models.Meetings.objects.get(meetingid=meetingId)
     deleteData.delete()
-
+    logger.info('A {} meeting information on GRDM was deleted.=> '.format(settings.WEBEX_MEETINGS))
     return {}
