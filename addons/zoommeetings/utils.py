@@ -5,6 +5,7 @@ from addons.zoommeetings import models
 from addons.zoommeetings import settings
 import logging
 from datetime import timedelta
+import pytz
 import dateutil.parser
 from django.db import transaction
 logger = logging.getLogger(__name__)
@@ -59,6 +60,7 @@ def api_create_zoom_meeting(requestData, account):
     response = requests.post(url, data=requestBody, headers=requestHeaders, timeout=60)
     response.raise_for_status()
     responseData = response.json()
+    logger.info('StatusCode:{} . A {} meeting was created with following attributes => '.format(str(response.status_code), settings.ZOOM_MEETINGS) + str(responseData))
     return responseData
 
 def grdm_create_zoom_meeting(addon, account, createdData):
@@ -69,10 +71,13 @@ def grdm_create_zoom_meeting(addon, account, createdData):
     duration = createdData['duration']
     startDatetime = dateutil.parser.parse(startDatetime)
     endDatetime = startDatetime + timedelta(minutes=duration)
-    content = createdData['agenda']
+    content = createdData.get('agenda', '')
     joinUrl = createdData['join_url']
     meetingId = createdData['id']
     organizer_fullname = account.display_name
+    target = '('
+    idx = organizer_fullname.find(target)
+    organizer_fullname = organizer_fullname[idx+1:len(organizer_fullname)-1]
 
     with transaction.atomic():
 
@@ -89,7 +94,7 @@ def grdm_create_zoom_meeting(addon, account, createdData):
             node_settings_id=addon.id,
         )
         createData.save()
-
+    logger.info(' A {} meeting information on GRDM was created with following attributes => '.format(settings.ZOOM_MEETINGS) + str(vars(createData)))
     return {}
 
 
@@ -105,14 +110,18 @@ def api_update_zoom_meeting(meetingId, requestData, account):
     requestBody = json.dumps(requestData)
     response = requests.patch(url, data=requestBody, headers=requestHeaders, timeout=60)
     response.raise_for_status()
+    logger.info('StatusCode:{} . A {} meeting was updated with the folloing request body. => '.format(str(response.status_code), settings.ZOOM_MEETINGS) + str(requestBody))
     return {}
 
 def grdm_update_zoom_meeting(meetingId, requestData):
 
     subject = requestData['topic']
+    timeZone = requestData['timezone']
+    tz = pytz.timezone(timeZone)
     startDatetime = requestData['start_time']
-    duration = requestData['duration']
     startDatetime = dateutil.parser.parse(startDatetime)
+    startDatetime = tz.localize(startDatetime)
+    duration = requestData['duration']
     endDatetime = startDatetime + timedelta(minutes=duration)
     content = requestData['agenda']
 
@@ -123,7 +132,7 @@ def grdm_update_zoom_meeting(meetingId, requestData):
     updateData.end_datetime = endDatetime
     updateData.content = content
     updateData.save()
-
+    logger.info(' A {} meeting information on GRDM was updated with following attributes => '.format(settings.ZOOM_MEETINGS) + str(vars(updateData)))
     return {}
 
 def api_delete_zoom_meeting(meetingId, account):
@@ -136,12 +145,14 @@ def api_delete_zoom_meeting(meetingId, account):
         'Content-Type': 'application/json'
     }
     response = requests.delete(url, headers=requestHeaders, timeout=60)
-    response.raise_for_status()
+    if response.status_code != 404:
+        response.raise_for_status()
+    logger.info('A {} meeting was deleted or has been already deleted. StatusCode : {}'.format(settings.ZOOM_MEETINGS, str(response.status_code)))
     return {}
 
 def grdm_delete_zoom_meeting(meetingId):
 
     deleteData = models.Meetings.objects.get(meetingid=meetingId)
     deleteData.delete()
-
+    logger.info('A {} meeting information on GRDM was deleted.=> '.format(settings.ZOOM_MEETINGS))
     return {}

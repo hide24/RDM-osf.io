@@ -6,6 +6,7 @@ from addons.zoommeetings import SHORT_NAME
 from addons.base import generic_views
 from framework.auth.decorators import must_be_logged_in
 from addons.zoommeetings.serializer import ZoomMeetingsSerializer
+from addons.zoommeetings import settings
 from osf.models import ExternalAccount
 from osf.utils.permissions import WRITE
 from website.project.decorators import (
@@ -16,6 +17,7 @@ from website.project.decorators import (
 from admin.rdm_addons.decorators import must_be_rdm_addons_allowed
 from addons.zoommeetings import utils
 from website.oauth.utils import get_service
+from requests.exceptions import HTTPError
 logger = logging.getLogger(__name__)
 
 zoommeetings_account_list = generic_views.account_list(
@@ -51,11 +53,15 @@ def zoommeetings_oauth_connect(auth, **kwargs):
 @must_have_addon(SHORT_NAME, 'node')
 def zoommeetings_request_api(**kwargs):
 
+    auth = kwargs['auth']
+    user = auth.user
+    requestData = request.get_data()
+    requestDataJsonLoads = json.loads(requestData)
+    logger.info('{} API will be requested with following attribute by {}=> '.format(settings.ZOOM_MEETINGS, str(user)) + str(requestDataJsonLoads))
+
     node = kwargs['node'] or kwargs['project']
     addon = node.get_addon(SHORT_NAME)
     account_id = addon.external_account_id
-    requestData = request.get_data()
-    requestDataJsonLoads = json.loads(requestData)
     action = requestDataJsonLoads['actionType']
     updateMeetingId = requestDataJsonLoads['updateMeetingId']
     deleteMeetingId = requestDataJsonLoads['deleteMeetingId']
@@ -64,18 +70,41 @@ def zoommeetings_request_api(**kwargs):
     account = ExternalAccount.objects.get(
         provider='zoommeetings', id=account_id
     )
+    errCode = ''
+    createdMeetings = None
     if action == 'create':
-        createdMeetings = utils.api_create_zoom_meeting(requestBody, account)
-        #synchronize data
-        utils.grdm_create_zoom_meeting(addon, account, createdMeetings)
+        try:
+            createdMeetings = utils.api_create_zoom_meeting(requestBody, account)
+            #synchronize data
+            utils.grdm_create_zoom_meeting(addon, account, createdMeetings)
+        except HTTPError as e1:
+            errCode = e1.response.status_code
+            logger.info(str(e1))
+            return {
+                'errCode': errCode,
+            }
 
     if action == 'update':
-        utils.api_update_zoom_meeting(updateMeetingId, requestBody, account)
-        #synchronize data
-        utils.grdm_update_zoom_meeting(updateMeetingId, requestBody)
+        try:
+            utils.api_update_zoom_meeting(updateMeetingId, requestBody, account)
+            #synchronize data
+            utils.grdm_update_zoom_meeting(updateMeetingId, requestBody)
+        except HTTPError as e1:
+            errCode = e1.response.status_code
+            logger.info(str(e1))
+            return {
+                'errCode': errCode,
+            }
 
     if action == 'delete':
-        utils.api_delete_zoom_meeting(deleteMeetingId, account)
-        #synchronize data
-        utils.grdm_delete_zoom_meeting(deleteMeetingId)
+        try:
+            utils.api_delete_zoom_meeting(deleteMeetingId, account)
+            #synchronize data
+            utils.grdm_delete_zoom_meeting(deleteMeetingId)
+        except HTTPError as e1:
+            errCode = e1.response.status_code
+            logger.info(str(e1))
+            return {
+                'errCode': errCode,
+            }
     return {}
