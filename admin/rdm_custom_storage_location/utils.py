@@ -892,25 +892,71 @@ def use_https(url):
     host.scheme = 'https'
     return host
 
+
 def save_dropboxbusiness_credentials(institution, storage_name, provider_name):
     test_connection_result = test_dropboxbusiness_connection(institution)
     if test_connection_result[1] != http_status.HTTP_200_OK:
         return test_connection_result
 
+    fm = dropboxbusiness_utils.get_two_addon_options(institution.id)
+    if fm is None:
+        # Institution has no valid oauth keys.
+        return  # disabled
+
+    f_option, m_option = fm
+    f_token = dropboxbusiness_utils.addon_option_to_token(f_option)
+    m_token = dropboxbusiness_utils.addon_option_to_token(m_option)
+    if f_token is None or m_token is None:
+        return  # disabled
+
+    # ## ----- enabled -----
+    # checking the validity of Dropbox API here
+    try:
+        team_info = dropboxbusiness_utils.TeamInfo(f_token, m_token, connecttest=True, team_info=True, members=True, admin=True, groups=True)
+        admin_group, admin_dbmid_list = dropboxbusiness_utils.get_current_admin_group_and_sync(team_info)
+        admin_dbmid = dropboxbusiness_utils.get_current_admin_dbmid(m_option, admin_dbmid_list)
+        # team_name = team_info.name
+        # grdm_member_email_list = list(team_info.email_to_dbmid.keys())
+        # dropboxbusiness_settings.TEAM_FOLDER_NAME_FORMAT
+        # team_folder_name = 'TEAM_GRDM_{guid}'.format(title=institution.name, guid=institution.guid)
+        # dropboxbusiness_settings.GROUP_NAME_FORMAT
+        # group_name = 'GRDM_{guid}'.format(guid=institution.guid)
+        # team_folder_id, group_id = dropboxbusiness_utils.create_team_folder(
+        #     f_token, m_token, admin_dbmid,
+        #     team_folder_name, group_name,
+        #     grdm_member_email_list,
+        #     admin_group, team_name
+        # )
+        # team_folder_name = list(team_info.team_folders.values())[0].metadata.name
+        team_folder_id = list(team_info.team_folders.keys())[0]
+    except Exception:
+        logger.exception('Dropbox Business API Error')
+        raise
+
     wb_credentials, wb_settings = wd_info_for_institutions(provider_name)
-    region = update_storage(institution._id,  # not institution.id
-                            storage_name,
-                            wb_credentials, wb_settings)
+    wb_credentials['storage']['token'] = f_token
+    wb_credentials['external_account'] = {
+        'fileaccess_token': f_token,
+        'management_token': m_token,
+    }
+    wb_settings['disabled'] = False
+    wb_settings['storage']['folder'] = '/'
+    wb_settings['storage']['bucket'] = ''
+    wb_settings['storage']['admin_dbmid'] = wb_settings['admin_dbmid'] = admin_dbmid
+    wb_settings['storage']['team_folder_id'] = wb_settings['team_folder_id'] = team_folder_id
+
+    region = update_storage(institution.guid, storage_name, wb_credentials, wb_settings)
     external_util.remove_region_external_account(region)
+
     ### sync_all() is not supported by Dropbox Business Addon
     # sync_all(institution._id, target_addons=[provider_name])
 
-    return ({
-        'message': 'Dropbox Business was set successfully!!'
-    }, http_status.HTTP_200_OK)
+    return {'message': 'Dropbox Business was set successfully!!'}, http_status.HTTP_200_OK
+
 
 def save_basic_storage_institutions_credentials_common(
-        institution, storage_name, folder, provider_name, provider, separator=':', extended_data=None):
+        institution, storage_name, folder, provider_name, provider,
+        separator=':', extended_data=None):
     try:
         provider.account.save()
     except ValidationError:
@@ -926,7 +972,7 @@ def save_basic_storage_institutions_credentials_common(
             provider.account.oauth_key = password
             provider.account.save()
 
-    # Storage Addons for Institutions must have only one ExternalAccont.
+    # Storage Addons for Institutions must have only one ExternalAccount.
     rdm_addon_option = get_rdm_addon_option(institution.id, provider_name)
     if rdm_addon_option.external_accounts.count() > 0:
         rdm_addon_option.external_accounts.clear()
@@ -938,35 +984,79 @@ def save_basic_storage_institutions_credentials_common(
     rdm_addon_option.save()
 
     wb_credentials, wb_settings = wd_info_for_institutions(provider_name)
-    region = update_storage(institution._id,  # not institution.id
-                            storage_name,
-                            wb_credentials, wb_settings)
+    if provider_name == 'nextcloudinstitutions':
+        host_url = provider.host
+        host = furl()
+        host.host = host_url.rstrip('/').replace('https://', '').replace('http://', '')
+        host.scheme = 'https'
+
+        wb_credentials = {
+            'storage': {
+                'host': host.url,
+                'username': provider.username,
+                'password': provider.password,
+            },
+        }
+        wb_settings = {
+            'storage': {
+                'bucket': '',
+                'folder': '/{}/'.format(folder.strip('/')),
+                'verify_ssl': False,
+                'provider': provider_name
+            },
+        }
+    elif provider_name in ['ociinstitutions', 's3compatinstitutions']:
+        wb_credentials = {
+            'storage': {
+                'access_key': provider.username,
+                'secret_key': provider.password,
+                'host': provider.host,
+            }
+        }
+        wb_settings = {
+            'storage': {
+                'folder': {
+                    'encrypt_uploads': True,
+                },
+                'bucket': folder,
+                'provider': provider_name,
+            }
+        }
+
+    region = update_storage(institution.guid, storage_name, wb_credentials, wb_settings)
     external_util.remove_region_external_account(region)
 
     save_usermap_from_tmp(provider_name, institution)
-    sync_all(institution._id, target_addons=[provider_name])
+    sync_all(institution.guid, target_addons=[provider_name])
 
-    return ({
-        'message': 'Saved credentials successfully!!'
-    }, http_status.HTTP_200_OK)
+    return {'message': 'Saved credentials successfully!!'}, http_status.HTTP_200_OK
+
 
 def save_nextcloudinstitutions_credentials(
-        institution, storage_name, host_url, username, password, folder, notification_secret, provider_name):
-    test_connection_result = test_owncloud_connection(
-        host_url, username, password, folder, provider_name)
+        institution, storage_name, host_url, username, password, folder,
+        notification_secret, provider_name):
+    test_connection_result = test_owncloud_connection(host_url, username, password, folder, provider_name)
     if test_connection_result[1] != http_status.HTTP_200_OK:
         return test_connection_result
 
     host = use_https(host_url)
+    # init with an ExternalAccount instance as account
     provider = NextcloudInstitutionsProvider(
         account=None, host=host.url,
-        username=username, password=password)
-    extended_data = {}
-    extended_data[KEYNAME_NOTIFICATION_SECRET] = notification_secret
-    return save_basic_storage_institutions_credentials_common(
-        institution, storage_name, folder, provider_name, provider, extended_data=extended_data)
+        username=username, password=password
+    )
 
-def save_s3compatinstitutions_credentials(institution, storage_name, host_url, access_key, secret_key, bucket, provider_name):
+    extended_data = {
+        KEYNAME_NOTIFICATION_SECRET: notification_secret
+    }
+
+    return save_basic_storage_institutions_credentials_common(
+        institution, storage_name, folder, provider_name,
+        provider, extended_data=extended_data)
+
+
+def save_s3compatinstitutions_credentials(
+        institution, storage_name, host_url, access_key, secret_key, bucket, provider_name):
     host = host_url.rstrip('/').replace('https://', '').replace('http://', '')
     test_connection_result = test_s3compat_connection(
         host, access_key, secret_key, bucket)
@@ -979,9 +1069,12 @@ def save_s3compatinstitutions_credentials(institution, storage_name, host_url, a
         username=access_key, password=secret_key, separator=separator)
 
     return save_basic_storage_institutions_credentials_common(
-        institution, storage_name, bucket, provider_name, provider, separator)
+        institution, storage_name, bucket, provider_name,
+        provider, separator)
 
-def save_ociinstitutions_credentials(institution, storage_name, host_url, access_key, secret_key, bucket, provider_name):
+
+def save_ociinstitutions_credentials(
+        institution, storage_name, host_url, access_key, secret_key, bucket, provider_name):
     host = host_url.rstrip('/').replace('https://', '').replace('http://', '')
     test_connection_result = test_s3compatb3_connection(
         host, access_key, secret_key, bucket)
@@ -994,7 +1087,9 @@ def save_ociinstitutions_credentials(institution, storage_name, host_url, access
         username=access_key, password=secret_key, separator=separator)
 
     return save_basic_storage_institutions_credentials_common(
-        institution, storage_name, bucket, provider_name, provider, separator)
+        institution, storage_name, bucket, provider_name,
+        provider, separator)
+
 
 def get_credentials_common(institution, provider_name):
     clear_usermap_tmp(provider_name, institution)
