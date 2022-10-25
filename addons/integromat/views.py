@@ -686,7 +686,7 @@ def integromat_watch_files(**kwargs):
     updatedFilesJson = serializers.serialize('json', updatedFiles, ensure_ascii=False)
     updatedFilesDict = json.loads(updatedFilesJson)
     retFiles = {'data': []}
-    for file in updatedCommentsDict:
+    for file in updatedFilesDict:
         filesInfo = {}
         filesInfo['id'] = file['fields']['_id']
         filesInfo['created'] = file['fields']['created']
