@@ -191,47 +191,6 @@ class TestZoomMeetingsViews(ZoomMeetingsAddonTestCase, OAuthAddonConfigViewsTest
         #clear
         Meetings.objects.all().delete()
 
-    @mock.patch('addons.zoommeetings.utils.api_create_zoom_meeting')
-    def test_zoommeetings_request_api_create_403(self, mock_api_create_zoom_meeting):
-        self.node_settings.set_auth(self.external_account, self.user)
-        self.node_settings.save()
-        url = self.project.api_url_for('zoommeetings_request_api')
-        expected_action = 'create'
-        expected_UpdateMeetinId = ''
-        expected_DeleteMeetinId = ''
-        expected_subject = 'My Test Meeting'
-        expected_organizer = 'zoomtestuser1@test.zoom.com'
-        expected_organizer_fullname = 'ZoomMeetings Fake User'
-        expected_startDatetime = date_parse.parse(datetime.now().isoformat())
-        expected_duration = 60
-        expected_endDatetime = expected_startDatetime + timedelta(minutes=expected_duration)
-        expected_content = 'My Test Content'
-        expected_contentExtract = expected_content
-        expected_joinUrl = 'zoom/zoom.com/asd'
-        expected_meetingId = '1234567890qwertyuiopasdfghjkl'
-        expected_body = {
-                'topic': expected_subject,
-                'start_time': str(expected_startDatetime),
-                'duration': expected_duration,
-                'agenda': expected_content,
-                'timezone': 'UTC',
-                'type':2
-            };
-        expected_guestOrNot = {}
-        mock_api_create_zoom_meeting.side_effect = HTTPError(403)
-        rv = self.app.post_json(url, {
-            'actionType': expected_action,
-            'updateMeetingId': expected_UpdateMeetinId,
-            'deleteMeetingId': expected_DeleteMeetinId,
-            'contentExtract': expected_contentExtract,
-            'body': expected_body,
-            'guestOrNot': expected_guestOrNot,
-        }, auth=self.user.auth)
-        rvBodyJson = json.loads(rv.body)
-        assert_equals(rvBodyJson.errCode, 403)
-        #clear
-        Meetings.objects.all().delete()
-
     @mock.patch('addons.zoommeetings.utils.api_update_zoom_meeting')
     def test_zoommeetings_request_api_update(self, mock_api_update_zoom_meeting):
 
@@ -346,50 +305,6 @@ class TestZoomMeetingsViews(ZoomMeetingsAddonTestCase, OAuthAddonConfigViewsTest
         #clear
         Meetings.objects.all().delete()
 
-    @mock.patch('addons.zoommeetings.utils.api_update_zoom_meeting')
-    def test_zoommeetings_request_api_update_403(self, mock_api_update_zoom_meeting):
-        self.node_settings.set_auth(self.external_account, self.user)
-        self.node_settings.save()
-        MeetingsFactory = ZoomMeetingsMeetingsFactory(node_settings=self.node_settings)
-        url = self.project.api_url_for('zoommeetings_request_api')
-        qsMeetings = Meetings.objects.all()
-        meetingsJson = json.loads(serializers.serialize('json', qsMeetings, ensure_ascii=False))
-        expected_external_id = meetingsJson[0]['fields']['external_account']
-        expected_action = 'update'
-        expected_UpdateMeetinId = 'qwertyuiopasdfghjklzxcvbnm'
-        expected_DeleteMeetinId = ''
-        expected_subject = 'My Test Meeting EDIT'
-        expected_organizer = 'zoomtestuser1@test.zoom.com'
-        expected_organizer_fullname = 'ZoomMeetings Fake User'
-        expected_startDatetime = date_parse.parse(datetime.now().isoformat())
-        expected_duration = 60
-        expected_endDatetime = expected_startDatetime + timedelta(minutes=expected_duration)
-        expected_content = 'My Test Content EDIT'
-        expected_contentExtract = expected_content
-        expected_joinUrl = 'zoom/zoom.com/321'
-        expected_body = {
-                'topic': expected_subject,
-                'start_time': str(expected_startDatetime),
-                'duration': expected_duration,
-                'agenda': expected_content,
-                'timezone': 'UTC',
-                'type':2
-            };
-        expected_guestOrNot = {}
-        mock_api_create_zoom_meeting.side_effect = HTTPError(403)
-        rv = self.app.post_json(url, {
-            'actionType': expected_action,
-            'updateMeetingId': expected_UpdateMeetinId,
-            'deleteMeetingId': expected_DeleteMeetinId,
-            'contentExtract': expected_contentExtract,
-            'body': expected_body,
-            'guestOrNot': expected_guestOrNot,
-        }, auth=self.user.auth)
-        rvBodyJson = json.loads(rv.body)
-        assert_equals(rvBodyJson.errCode, 403)
-        #clear
-        Meetings.objects.all().delete()
-
     @mock.patch('addons.zoommeetings.utils.api_delete_zoom_meeting')
     def test_zoommeetings_request_api_delete(self, mock_api_delete_zoom_meeting):
 
@@ -459,37 +374,6 @@ class TestZoomMeetingsViews(ZoomMeetingsAddonTestCase, OAuthAddonConfigViewsTest
         }, auth=self.user.auth)
         rvBodyJson = json.loads(rv.body)
         assert_equals(rvBodyJson.errCode, 401)
-        #clear
-        Meetings.objects.all().delete()
-
-    @mock.patch('addons.zoommeetings.utils.api_delete_zoom_meeting')
-    def test_zoommeetings_request_api_delete_403(self, mock_api_delete_zoom_meeting):
-        mock_api_delete_zoom_meeting.return_value = {}
-        self.node_settings.set_auth(self.external_account, self.user)
-        self.node_settings.save()
-        expected_action = 'delete'
-        MeetingsFactory = ZoomMeetingsMeetingsFactory(node_settings=self.node_settings)
-        url = self.project.api_url_for('zoommeetings_request_api')
-        expected_UpdateMeetinId = ''
-        expected_DeleteMeetinId = 'qwertyuiopasdfghjklzxcvbnm'
-        expected_body = {
-                'topic': '',
-                'start_time': '',
-                'duration': '',
-                'agenda': '',
-                'timezone': 'UTC',
-                'type': 2,
-            };
-        mock_api_create_zoom_meeting.side_effect = HTTPError(403)
-        rv = self.app.post_json(url, {
-            'actionType': expected_action,
-            'deleteMeetingId': expected_DeleteMeetinId,
-            'updateMeetingId': expected_UpdateMeetinId,
-            'body': expected_body,
-            'guestOrNot': {},
-        }, auth=self.user.auth)
-        rvBodyJson = json.loads(rv.body)
-        assert_equals(rvBodyJson.errCode, 403)
         #clear
         Meetings.objects.all().delete()
 

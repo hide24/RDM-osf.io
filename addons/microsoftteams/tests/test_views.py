@@ -240,64 +240,6 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         Attendees.objects.all().delete()
         Meetings.objects.all().delete()
 
-    @mock.patch('addons.microsoftteams.utils.api_create_teams_meeting')
-    def test_microsoftteams_request_api_create_403(self, mock_api_create_teams_meeting):
-        self.node_settings.set_auth(self.external_account, self.user)
-        self.node_settings.save()
-        AttendeesFactory = MicrosoftTeamsAttendeesFactory(node_settings=self.node_settings)
-        url = self.project.api_url_for('microsoftteams_request_api')
-        expected_action = 'create'
-        expected_UpdateMeetinId = ''
-        expected_DeleteMeetinId = ''
-        expected_subject = 'My Test Meeting'
-        expected_organizer = 'teamstestuser1@test.onmicrosoft.com'
-        expected_organizer_fullname = 'MicrosoftTeams Fake User'
-        expected_attendees_id = Attendees.objects.get(user_guid='teamstestuser').id
-        expected_attendees = {
-                    'emailAddress': {
-                        'address': 'teamstestuser1@test.onmicrosoft.com',
-                        'name': 'Teams Test User1'
-                    }
-                }
-        expected_startDatetime = datetime.now().isoformat()
-        expected_endDatetime = (datetime.now() + timedelta(hours=1)).isoformat()
-        expected_content = 'My Test Content'
-        expected_contentExtract = expected_content
-        expected_joinUrl = 'teams/microsoft.com/asd'
-        expected_meetingId = '1234567890qwertyuiopasdfghjkl'
-        expected_body = {
-                'subject': expected_subject,
-                'start': {
-                    'dateTime': expected_startDatetime,
-                    'timeZone': 'Asia/Tokyo',
-                },
-                'end': {
-                    'dateTime': expected_endDatetime,
-                    'timeZone': 'Asia/Tokyo',
-                },
-                'body': {
-                    'contentType': 'HTML',
-                    'content': expected_content,
-                },
-                'attendees': expected_attendees,
-                'isOnlineMeeting': True,
-            };
-        expected_guestOrNot = {'teamstestuser1@test.onmicrosoft.com': False}
-        mock_api_create_zoom_meeting.side_effect = HTTPError(403)
-        rv = self.app.post_json(url, {
-            'actionType': expected_action,
-            'updateMeetingId': expected_UpdateMeetinId,
-            'deleteMeetingId': expected_DeleteMeetinId,
-            'contentExtract': expected_contentExtract,
-            'body': expected_body,
-            'guestOrNot': expected_guestOrNot,
-        }, auth=self.user.auth)
-        rvBodyJson = json.loads(rv.body)
-        assert_equals(rvBodyJson.errCode, 403)
-        #clear
-        Attendees.objects.all().delete()
-        Meetings.objects.all().delete()
-
     @mock.patch('addons.microsoftteams.utils.api_update_teams_meeting')
     def test_microsoftteams_request_api_update(self, mock_api_update_teams_meeting):
 
@@ -481,70 +423,6 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         Attendees.objects.all().delete()
         Meetings.objects.all().delete()
 
-    @mock.patch('addons.microsoftteams.utils.api_update_teams_meeting')
-    def test_microsoftteams_request_api_update_403(self, mock_api_update_teams_meeting):
-        self.node_settings.set_auth(self.external_account, self.user)
-        self.node_settings.save()
-        updateEmailAddress = 'teamstestuser2@test.onmicrosoft.com'
-        updateDisplayName = 'Teams Test User2'
-        AttendeesFactory = MicrosoftTeamsAttendeesFactory(node_settings=self.node_settings)
-        AttendeesFactory2 = MicrosoftTeamsAttendeesFactory(node_settings=self.node_settings, user_guid='teamstestuser2', fullname='TEAMS TEST USER 2', email_address=updateEmailAddress, display_name=updateDisplayName)
-        MeetingsFactory = MicrosoftTeamsMeetingsFactory(node_settings=self.node_settings)
-        qsMeetings = Meetings.objects.all()
-        meetingsJson = json.loads(serializers.serialize('json', qsMeetings, ensure_ascii=False))
-        expected_external_id = meetingsJson[0]['fields']['external_account']
-        url = self.project.api_url_for('microsoftteams_request_api')
-        expected_action = 'update'
-        expected_UpdateMeetinId = 'qwertyuiopasdfghjklzxcvbnm'
-        expected_DeleteMeetinId = ''
-        expected_subject = 'My Test Meeting EDIT'
-        expected_organizer = 'teamstestuser1@test.onmicrosoft.com'
-        expected_organizer_fullname = 'MicrosoftTeams Fake User'
-        expected_attendees_id = Attendees.objects.get(user_guid='teamstestuser2').id
-        expected_attendees = {
-                    'emailAddress': {
-                        'address': updateEmailAddress,
-                        'name': updateDisplayName
-                    }
-                }
-        expected_startDatetime = datetime.now().isoformat()
-        expected_endDatetime = (datetime.now() + timedelta(hours=1)).isoformat()
-        expected_content = 'My Test Content EDIT'
-        expected_contentExtract = expected_content
-        expected_joinUrl = 'teams/microsoft.com/321'
-        expected_body = {
-                'subject': expected_subject,
-                'start': {
-                    'dateTime': expected_startDatetime,
-                    'timeZone': 'Asia/Tokyo',
-                },
-                'end': {
-                    'dateTime': expected_endDatetime,
-                    'timeZone': 'Asia/Tokyo',
-                },
-                'body': {
-                    'contentType': 'HTML',
-                    'content': expected_content,
-                },
-                'attendees': expected_attendees,
-                'isOnlineMeeting': True,
-            };
-        expected_guestOrNot = {'teamstestuser1@test.onmicrosoft.com': False, updateEmailAddress: False}
-        mock_api_create_zoom_meeting.side_effect = HTTPError(403)
-        rv = self.app.post_json(url, {
-            'actionType': expected_action,
-            'updateMeetingId': expected_UpdateMeetinId,
-            'deleteMeetingId': expected_DeleteMeetinId,
-            'contentExtract': expected_contentExtract,
-            'body': expected_body,
-            'guestOrNot': expected_guestOrNot,
-        }, auth=self.user.auth)
-        rvBodyJson = json.loads(rv.body)
-        assert_equals(rvBodyJson.errCode, 403)
-        #clear
-        Attendees.objects.all().delete()
-        Meetings.objects.all().delete()
-
     @mock.patch('addons.microsoftteams.utils.api_delete_teams_meeting')
     def test_microsoftteams_request_api_delete(self, mock_api_delete_teams_meeting):
 
@@ -631,45 +509,6 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         rvBodyJson = json.loads(rv.body)
         mock_api_create_zoom_meeting.side_effect = HTTPError(401)
         assert_equals(rvBodyJson.errCode, 401)
-        Meetings.objects.all().delete()
-
-    @mock.patch('addons.microsoftteams.utils.api_delete_teams_meeting')
-    def test_microsoftteams_request_api_delete_403(self, mock_api_delete_teams_meeting):
-        self.node_settings.set_auth(self.external_account, self.user)
-        self.node_settings.save()
-        mock_api_delete_teams_meeting.return_value = {}
-        expected_action = 'delete'
-        MeetingsFactory = MicrosoftTeamsMeetingsFactory(node_settings=self.node_settings)
-        url = self.project.api_url_for('microsoftteams_request_api')
-        expected_UpdateMeetinId = ''
-        expected_DeleteMeetinId = 'qwertyuiopasdfghjklzxcvbnm'
-        expected_body = {
-                'subject': '',
-                'start': {
-                    'dateTime': '',
-                    'timeZone': 'Asia/Tokyo',
-                },
-                'end': {
-                    'dateTime': '',
-                    'timeZone': 'Asia/Tokyo',
-                },
-                'body': {
-                    'contentType': 'HTML',
-                    'content': '',
-                },
-                'attendees': [],
-                'isOnlineMeeting': True,
-            };
-        rv = self.app.post_json(url, {
-            'actionType': expected_action,
-            'updateMeetingId': expected_UpdateMeetinId,
-            'deleteMeetingId': expected_DeleteMeetinId,
-            'body': expected_body,
-            'guestOrNot': {}
-        }, auth=self.user.auth)
-        rvBodyJson = json.loads(rv.body)
-        mock_api_create_zoom_meeting.side_effect = HTTPError(403)
-        assert_equals(rvBodyJson.errCode, 403)
         Meetings.objects.all().delete()
 
     @mock.patch('addons.microsoftteams.utils.api_get_microsoft_username')
@@ -924,7 +763,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
             'email': expected_email,
             'is_guest': expected_is_guest,
             'actionType': expected_actionType,
-            'emailType': expected_emailType
+            'emailType': expected_emailType,
             'regType': expected_regType
         }, auth=self.user.auth)
         rvBodyJson = json.loads(rv.body)
