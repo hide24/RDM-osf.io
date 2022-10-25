@@ -853,7 +853,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
             'email': expected_email,
             'is_guest': expected_is_guest,
             'actionType': expected_actionType,
-            'emailType': expected_emailType
+            'emailType': expected_emailType,
             'regType': expected_regType
         }, auth=self.user.auth)
 

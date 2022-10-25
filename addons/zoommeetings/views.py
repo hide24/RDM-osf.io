@@ -78,8 +78,9 @@ def zoommeetings_request_api(**kwargs):
             #synchronize data
             utils.grdm_create_zoom_meeting(addon, account, createdMeetings)
         except HTTPError as e1:
-            errCode = e1.response.status_code
             logger.info(str(e1))
+            logger.info(str(vars(e1.response)))
+            errCode = e1.response.status_code
             return {
                 'errCode': errCode,
             }
@@ -90,8 +91,8 @@ def zoommeetings_request_api(**kwargs):
             #synchronize data
             utils.grdm_update_zoom_meeting(updateMeetingId, requestBody)
         except HTTPError as e1:
-            errCode = e1.response.status_code
             logger.info(str(e1))
+            errCode = e1.response.status_code
             return {
                 'errCode': errCode,
             }
@@ -102,8 +103,8 @@ def zoommeetings_request_api(**kwargs):
             #synchronize data
             utils.grdm_delete_zoom_meeting(deleteMeetingId)
         except HTTPError as e1:
-            errCode = e1.response.status_code
             logger.info(str(e1))
+            errCode = e1.response.status_code
             return {
                 'errCode': errCode,
             }
