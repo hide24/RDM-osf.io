@@ -46,6 +46,7 @@ class MicrosoftTeamsAttendeesFactory(DjangoModelFactory):
     email_address = 'teamstestuser1@test.onmicrosoft.com'
     display_name = 'Teams Test User1'
     is_guest = False
+    is_active = True
     external_account = factory.SubFactory(MicrosoftTeamsAccountFactory)
     node_settings = factory.SubFactory(MicrosoftTeamsNodeSettingsFactory)
 

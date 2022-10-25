@@ -347,7 +347,8 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
         expected_is_guest = False
         expected_fullname = osfUser.fullname
         expected_actionType = 'create'
-        expected_emailType = 'radio_signInAddress'
+        expected_emailType = True
+        expected_regType = True
 
         rv = self.app.post_json(url, {
             '_id': _id,
@@ -356,10 +357,24 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
             'fullname': expected_fullname,
             'is_guest': expected_is_guest,
             'actionType': expected_actionType,
-            'emailType': expected_emailType
+            'emailType': expected_emailType,
+            'regType': expected_regType
         }, auth=self.user.auth)
 
         rvBodyJson = json.loads(rv.body)
+
+        expected_newAttendee = {
+            'guid': expected_guid,
+            'dispName': expected_fullname,
+            'fullname': expected_fullname,
+            'email': expected_email,
+            'institution': '',
+            'appUsername': expected_username,
+            'appEmail': expected_email,
+            'profile': '',
+            '_id': '',
+            'is_guest': is_guest,
+        }
 
         result = Attendees.objects.get(user_guid=osfUserGuid)
 
@@ -370,7 +385,80 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
         assert_equals(result.is_guest, expected_is_guest)
         assert_equals(result.external_account.id, self.external_account.id)
         assert_equals(result.node_settings.id, self.node_settings.id)
-        assert_equals(rvBodyJson, {})
+        assert_equals(rvBodyJson.result, '')
+        assert_equals(rvBodyJson.regType, True)
+        assert_equals(rvBodyJson.newAttendee, expected_newAttendee)
+
+    @mock.patch('addons.webexmeetings.utils.api_get_webex_meetings_username')
+    def test_webexmeetings_register_email_create_outside(self, mock_api_get_webex_meetings_username):
+        mock_api_get_webex_meetings_username.return_value = ''
+        self.node_settings.set_auth(self.external_account, self.user)
+        self.node_settings.save()
+        osfUser = OSFUser.objects.get(username=self.user.username)
+        osfGuids = osfUser._prefetched_objects_cache['guids'].only()
+        osfGuidsSerializer = serializers.serialize('json', osfGuids, ensure_ascii=False)
+        osfGuidsJson = json.loads(osfGuidsSerializer)
+        osfUserGuid = osfGuidsJson[0]['fields']['_id']
+        url = self.project.api_url_for('webexmeetings_register_email')
+        _id = None
+        expected_guid = osfUserGuid
+        expected_email = 'webextestusera@test.webex.com'
+        expected_is_guest = False
+        expected_fullname = osfUser.fullname
+        expected_actionType = 'create'
+        expected_emailType = True
+        expected_regType = True
+        rv = self.app.post_json(url, {
+            '_id': _id,
+            'guid': expected_guid,
+            'email': expected_email,
+            'fullname': expected_fullname,
+            'is_guest': expected_is_guest,
+            'actionType': expected_actionType,
+            'emailType': expected_emailType,
+            'regType': expected_regType
+        }, auth=self.user.auth)
+        rvBodyJson = json.loads(rv.body)
+        result = Attendees.objects.all()
+        assert_equals(len(result), 0)
+        assert_equals(rvBodyJson.result, 'outside_email')
+        assert_equals(rvBodyJson.regType, True)
+
+    @mock.patch('addons.webexmeetings.utils.api_get_webex_meetings_username')
+    def test_webexmeetings_register_email_create_duplicated(self, mock_api_get_webex_meetings_username):
+        mock_api_get_webex_meetings_username.return_value = ''
+        self.node_settings.set_auth(self.external_account, self.user)
+        self.node_settings.save()
+        osfUser = OSFUser.objects.get(username=self.user.username)
+        osfGuids = osfUser._prefetched_objects_cache['guids'].only()
+        osfGuidsSerializer = serializers.serialize('json', osfGuids, ensure_ascii=False)
+        osfGuidsJson = json.loads(osfGuidsSerializer)
+        osfUserGuid = osfGuidsJson[0]['fields']['_id']
+        AttendeesFactory = WebexMeetingsAttendeesFactory(node_settings=self.node_settings, user_guid=osfUserGuid)
+        url = self.project.api_url_for('webexmeetings_register_email')
+        _id = None
+        expected_guid = osfUserGuid
+        expected_email = 'webextestuser1@test.webex.com'
+        expected_is_guest = False
+        expected_fullname = osfUser.fullname
+        expected_actionType = 'create'
+        expected_emailType = True
+        expected_regType = True
+        rv = self.app.post_json(url, {
+            '_id': _id,
+            'guid': expected_guid,
+            'email': expected_email,
+            'fullname': expected_fullname,
+            'is_guest': expected_is_guest,
+            'actionType': expected_actionType,
+            'emailType': expected_emailType,
+            'regType': expected_regType
+        }, auth=self.user.auth)
+        rvBodyJson = json.loads(rv.body)
+        result = Attendees.objects.all()
+        assert_equals(len(result), 0)
+        assert_equals(rvBodyJson.result, 'duplicated_email')
+        assert_equals(rvBodyJson.regType, True)
 
     @mock.patch('addons.webexmeetings.utils.api_get_webex_meetings_username')
     def test_webexmeetings_register_email_update(self, mock_api_get_webex_meetings_username):
@@ -399,7 +487,8 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
         expected_is_guest = False
         expected_fullname = osfUser.fullname
         expected_actionType = 'update'
-        expected_emailType = 'radio_signInAddress'
+        expected_emailType = True
+        expected_regType = False
 
         rv = self.app.post_json(url, {
             '_id': expected_id,
@@ -408,6 +497,78 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
             'is_guest': expected_is_guest,
             'actionType': expected_actionType,
             'emailType': expected_emailType
+            'regType': expected_regType
+        }, auth=self.user.auth)
+
+        rvBodyJson = json.loads(rv.body)
+
+        expected_newAttendee = {
+            'guid': expected_guid,
+            'dispName': expected_fullname,
+            'fullname': expected_fullname,
+            'email': expected_email,
+            'institution': '',
+            'appUsername': expected_username,
+            'appEmail': expected_email,
+            'profile': '',
+            '_id': '',
+            'is_guest': is_guest,
+        }
+
+        result = Attendees.objects.get(_id=expected_id)
+
+        assert_equals(result.user_guid, expected_guid)
+        assert_equals(result.fullname, expected_fullname)
+        assert_equals(result.email_address, expected_email)
+        assert_equals(result.display_name, expected_username)
+        assert_equals(result.is_guest, expected_is_guest)
+        assert_equals(result.external_account.id, expected_external_id)
+        assert_equals(result.node_settings.id, self.node_settings.id)
+        assert_equals(rvBodyJson.result, '')
+        assert_equals(rvBodyJson.regType, True)
+        assert_equals(rvBodyJson.newAttendee, expected_newAttendee)
+
+        #clear
+        Attendees.objects.all().delete()
+
+    @mock.patch('addons.webexmeetings.utils.api_get_webex_meetings_username')
+    def test_webexmeetings_register_email_update_outside(self, mock_api_get_webex_meetings_username):
+
+        self.node_settings.set_auth(self.external_account, self.user)
+        self.node_settings.save()
+
+        osfUser = OSFUser.objects.get(username=self.user.username)
+        osfGuids = osfUser._prefetched_objects_cache['guids'].only()
+        osfGuidsSerializer = serializers.serialize('json', osfGuids, ensure_ascii=False)
+        osfGuidsJson = json.loads(osfGuidsSerializer)
+        osfUserGuid = osfGuidsJson[0]['fields']['_id']
+
+        AttendeesFactory = WebexMeetingsAttendeesFactory(node_settings=self.node_settings, user_guid=osfUserGuid)
+        mock_api_get_webex_meetings_username.return_value = ''
+        url = self.project.api_url_for('webexmeetings_register_email')
+
+        qsAttendees = Attendees.objects.all()
+        attendeesJson = json.loads(serializers.serialize('json', qsAttendees, ensure_ascii=False))
+        expected_external_id = attendeesJson[0]['fields']['external_account']
+
+        expected_id = AttendeesFactory._id
+        expected_guid = AttendeesFactory.user_guid
+        expected_email = AttendeesFactory.email_address
+        expected_username = AttendeesFactory.display_name
+        expected_is_guest = False
+        expected_fullname = osfUser.fullname
+        expected_actionType = 'update'
+        expected_emailType = True
+        expected_regType = False
+
+        rv = self.app.post_json(url, {
+            '_id': expected_id,
+            'guid': expected_guid,
+            'email': expected_email,
+            'is_guest': expected_is_guest,
+            'actionType': expected_actionType,
+            'emailType': expected_emailType
+            'regType': expected_regType
         }, auth=self.user.auth)
 
         rvBodyJson = json.loads(rv.body)
@@ -421,7 +582,70 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
         assert_equals(result.is_guest, expected_is_guest)
         assert_equals(result.external_account.id, expected_external_id)
         assert_equals(result.node_settings.id, self.node_settings.id)
-        assert_equals(rvBodyJson, {})
+        assert_equals(rvBodyJson.result, 'outside_email')
+        assert_equals(rvBodyJson.regType, expected_regType)
+
+        #clear
+        Attendees.objects.all().delete()
+
+    @mock.patch('addons.webexmeetings.utils.api_get_webex_meetings_username')
+    def test_webexmeetings_register_email_update_duplicated(self, mock_api_get_webex_meetings_username):
+
+        self.node_settings.set_auth(self.external_account, self.user)
+        self.node_settings.save()
+
+        createEmailAddress = 'webextestuser2@test.webex.com'
+        createDisplayName = 'Webex Test User2'
+
+        osfUser = OSFUser.objects.get(username=self.user.username)
+        osfGuids = osfUser._prefetched_objects_cache['guids'].only()
+        osfGuidsSerializer = serializers.serialize('json', osfGuids, ensure_ascii=False)
+        osfGuidsJson = json.loads(osfGuidsSerializer)
+        osfUserGuid = osfGuidsJson[0]['fields']['_id']
+
+        AttendeesFactory = WebexMeetingsAttendeesFactory(node_settings=self.node_settings, user_guid=osfUserGuid)
+        AttendeesFactory2 = WebexMeetingsAttendeesFactory(node_settings=self.node_settings, user_guid='webextestuser2', fullname='WEBEX TEST USER 2', email_address=createEmailAddress, display_name=createDisplayName)
+        mock_api_get_webex_meetings_username.return_value = ''
+        url = self.project.api_url_for('webexmeetings_register_email')
+
+        qsAttendees = Attendees.objects.all()
+        attendeesJson = json.loads(serializers.serialize('json', qsAttendees, ensure_ascii=False))
+        expected_external_id = attendeesJson[0]['fields']['external_account']
+
+        expected_id = AttendeesFactory._id
+        expected_guid = AttendeesFactory.user_guid
+        expected_email = 'webextestuser1@test.webex.com'
+        duplicated_email = createDisplayName
+        expected_username = AttendeesFactory.display_name
+        expected_is_guest = False
+        expected_fullname = osfUser.fullname
+        expected_actionType = 'update'
+        expected_emailType = True
+        expected_regType = False
+
+        rv = self.app.post_json(url, {
+            '_id': expected_id,
+            'guid': expected_guid,
+            'email': duplicated_email,
+            'is_guest': expected_is_guest,
+            'actionType': expected_actionType,
+            'emailType': expected_emailType
+            'regType': expected_regType
+        }, auth=self.user.auth)
+
+        rvBodyJson = json.loads(rv.body)
+
+        result = Attendees.objects.get(_id=expected_id)
+
+        assert_equals(result.user_guid, expected_guid)
+        assert_equals(result.fullname, expected_fullname)
+        assert_equals(result.email_address, expected_email)
+        assert_equals(result.display_name, expected_username)
+        assert_equals(result.is_guest, expected_is_guest)
+        assert_equals(result.external_account.id, expected_external_id)
+        assert_equals(result.node_settings.id, self.node_settings.id)
+        assert_equals(rvBodyJson.result, 'duplicated_email')
+        assert_equals(rvBodyJson.regType, expected_regType)
 
         #clear
         Attendees.objects.all().delete()
