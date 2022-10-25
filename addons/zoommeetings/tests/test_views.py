@@ -177,6 +177,7 @@ class TestZoomMeetingsViews(ZoomMeetingsAddonTestCase, OAuthAddonConfigViewsTest
                 'type':2
             };
         expected_guestOrNot = {}
+        mock_api_create_zoom_meeting.side_effect = HTTPError(401)
         rv = self.app.post_json(url, {
             'actionType': expected_action,
             'updateMeetingId': expected_UpdateMeetinId,
@@ -186,7 +187,6 @@ class TestZoomMeetingsViews(ZoomMeetingsAddonTestCase, OAuthAddonConfigViewsTest
             'guestOrNot': expected_guestOrNot,
         }, auth=self.user.auth)
         rvBodyJson = json.loads(rv.body)
-        mock_api_create_zoom_meeting.side_effect = HTTPError(401)
         assert_equals(rvBodyJson.errCode, 401)
         #clear
         Meetings.objects.all().delete()
@@ -218,6 +218,7 @@ class TestZoomMeetingsViews(ZoomMeetingsAddonTestCase, OAuthAddonConfigViewsTest
                 'type':2
             };
         expected_guestOrNot = {}
+        mock_api_create_zoom_meeting.side_effect = HTTPError(403)
         rv = self.app.post_json(url, {
             'actionType': expected_action,
             'updateMeetingId': expected_UpdateMeetinId,
@@ -227,7 +228,6 @@ class TestZoomMeetingsViews(ZoomMeetingsAddonTestCase, OAuthAddonConfigViewsTest
             'guestOrNot': expected_guestOrNot,
         }, auth=self.user.auth)
         rvBodyJson = json.loads(rv.body)
-        mock_api_create_zoom_meeting.side_effect = HTTPError(403)
         assert_equals(rvBodyJson.errCode, 403)
         #clear
         Meetings.objects.all().delete()
@@ -332,6 +332,7 @@ class TestZoomMeetingsViews(ZoomMeetingsAddonTestCase, OAuthAddonConfigViewsTest
                 'type':2
             };
         expected_guestOrNot = {}
+        mock_api_create_zoom_meeting.side_effect = HTTPError(401)
         rv = self.app.post_json(url, {
             'actionType': expected_action,
             'updateMeetingId': expected_UpdateMeetinId,
@@ -341,7 +342,6 @@ class TestZoomMeetingsViews(ZoomMeetingsAddonTestCase, OAuthAddonConfigViewsTest
             'guestOrNot': expected_guestOrNot,
         }, auth=self.user.auth)
         rvBodyJson = json.loads(rv.body)
-        mock_api_create_zoom_meeting.side_effect = HTTPError(401)
         assert_equals(rvBodyJson.errCode, 401)
         #clear
         Meetings.objects.all().delete()
@@ -376,6 +376,7 @@ class TestZoomMeetingsViews(ZoomMeetingsAddonTestCase, OAuthAddonConfigViewsTest
                 'type':2
             };
         expected_guestOrNot = {}
+        mock_api_create_zoom_meeting.side_effect = HTTPError(403)
         rv = self.app.post_json(url, {
             'actionType': expected_action,
             'updateMeetingId': expected_UpdateMeetinId,
@@ -385,7 +386,6 @@ class TestZoomMeetingsViews(ZoomMeetingsAddonTestCase, OAuthAddonConfigViewsTest
             'guestOrNot': expected_guestOrNot,
         }, auth=self.user.auth)
         rvBodyJson = json.loads(rv.body)
-        mock_api_create_zoom_meeting.side_effect = HTTPError(403)
         assert_equals(rvBodyJson.errCode, 403)
         #clear
         Meetings.objects.all().delete()
@@ -449,6 +449,7 @@ class TestZoomMeetingsViews(ZoomMeetingsAddonTestCase, OAuthAddonConfigViewsTest
                 'timezone': 'UTC',
                 'type': 2,
             };
+        mock_api_create_zoom_meeting.side_effect = HTTPError(401)
         rv = self.app.post_json(url, {
             'actionType': expected_action,
             'deleteMeetingId': expected_DeleteMeetinId,
@@ -457,7 +458,6 @@ class TestZoomMeetingsViews(ZoomMeetingsAddonTestCase, OAuthAddonConfigViewsTest
             'guestOrNot': {},
         }, auth=self.user.auth)
         rvBodyJson = json.loads(rv.body)
-        mock_api_create_zoom_meeting.side_effect = HTTPError(401)
         assert_equals(rvBodyJson.errCode, 401)
         #clear
         Meetings.objects.all().delete()
@@ -480,6 +480,7 @@ class TestZoomMeetingsViews(ZoomMeetingsAddonTestCase, OAuthAddonConfigViewsTest
                 'timezone': 'UTC',
                 'type': 2,
             };
+        mock_api_create_zoom_meeting.side_effect = HTTPError(403)
         rv = self.app.post_json(url, {
             'actionType': expected_action,
             'deleteMeetingId': expected_DeleteMeetinId,
@@ -488,7 +489,6 @@ class TestZoomMeetingsViews(ZoomMeetingsAddonTestCase, OAuthAddonConfigViewsTest
             'guestOrNot': {},
         }, auth=self.user.auth)
         rvBodyJson = json.loads(rv.body)
-        mock_api_create_zoom_meeting.side_effect = HTTPError(403)
         assert_equals(rvBodyJson.errCode, 403)
         #clear
         Meetings.objects.all().delete()
