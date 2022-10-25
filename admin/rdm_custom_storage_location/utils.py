@@ -918,9 +918,10 @@ def save_dropboxbusiness_credentials(institution, storage_name, provider_name):
         # team_name = team_info.name
         # grdm_member_email_list = list(team_info.email_to_dbmid.keys())
         # dropboxbusiness_settings.TEAM_FOLDER_NAME_FORMAT
-        # team_folder_name = 'TEAM_GRDM_{guid}'.format(title=institution.name, guid=institution.guid)
+        team_folder_name = 'TEAM_GRDM_{guid}'.format(title=institution.name, guid=institution.guid)
         # dropboxbusiness_settings.GROUP_NAME_FORMAT
         # group_name = 'GRDM_{guid}'.format(guid=institution.guid)
+        # there are some problem when creating team folder
         # team_folder_id, group_id = dropboxbusiness_utils.create_team_folder(
         #     f_token, m_token, admin_dbmid,
         #     team_folder_name, group_name,
@@ -928,10 +929,19 @@ def save_dropboxbusiness_credentials(institution, storage_name, provider_name):
         #     admin_group, team_name
         # )
         # team_folder_name = list(team_info.team_folders.values())[0].metadata.name
-        team_folder_id = list(team_info.team_folders.keys())[0]
-    except Exception:
-        logger.exception('Dropbox Business API Error')
-        raise
+        if len(team_info.team_folders) < 1 or team_folder_name not in team_info.team_folder_names:
+            message = f'Please create a folder {team_folder_name} manually'
+            logger.exception(message)
+            raise Exception(message)
+        team_folder_id = team_info.team_folder_names[team_folder_name].team_folder_id
+        # first_team_folder_id = list(team_info.team_folders.keys())[0]
+        # team_folder_id = next((
+        #     team_folder.team_folder_id
+        #     for _, team_folder in team_info.team_folders.items()
+        #     if team_folder.metadata.name == team_folder_name
+        # ), first_team_folder_id)
+    except Exception as e:
+        raise e
 
     wb_credentials, wb_settings = wd_info_for_institutions(provider_name)
     wb_credentials['storage']['token'] = f_token
