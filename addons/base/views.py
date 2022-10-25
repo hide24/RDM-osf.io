@@ -1077,8 +1077,6 @@ def webmeetings_get_config_ember(**kwargs):
     if not (microsoft_teams_auth or webex_meetings_auth or zoom_meetings_auth):
         raise HTTPError(http_status.HTTP_403_FORBIDDEN)
 
-    auth = kwargs['auth']
-
     allUpcomingWebMeetings = []
     allpreviousWebMeetings = []
 
@@ -1192,8 +1190,6 @@ def webmeetings_set_config_ember(**kwargs):
     # Check auth addons
     if not (microsoft_teams_auth or webex_meetings_auth or zoom_meetings_auth):
         raise HTTPError(http_status.HTTP_403_FORBIDDEN)
-
-    auth = kwargs['auth']
 
     allUpcomingWebMeetings = []
     allpreviousWebMeetings = []
