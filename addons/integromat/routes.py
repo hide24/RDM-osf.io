@@ -154,6 +154,16 @@ api_routes = {
 
         Rule(
             [
+                '/project/<pid>/integromat/watch_files',
+                '/project/<pid>/node/<nid>/integromat/watch_files',
+            ],
+            'post',
+            views.integromat_watch_files,
+            json_renderer,
+        ),
+
+        Rule(
+            [
                 '/project/<pid>/integromat/start_scenario',
                 '/project/<pid>/node/<nid>/integromat/start_scenario',
             ],

@@ -672,6 +672,31 @@ def integromat_watch_comment(**kwargs):
     return retComments
 
 @must_be_valid_project
+@must_have_permission(ADMIN)
+@must_have_addon(SHORT_NAME, 'node')
+def integromat_watch_files(**kwargs):
+
+    guid = request.get_json().get('guid')
+    try:
+        targetObjectId = Guid.objects.get(_id=guid).id
+    except ObjectDoesNotExist:
+        raise HTTPError(http_status.HTTP_400_BAD_REQUEST, data=dict(message_short='GUID does not exixt.'))
+
+    updatedFiles = BaseFileNode.objects.filter(target_object_id=targetObjectId)
+    updatedFilesJson = serializers.serialize('json', updatedFiles, ensure_ascii=False)
+    updatedFilesDict = json.loads(updatedFilesJson)
+    retFiles = {'data': []}
+    for file in updatedCommentsDict:
+        filesInfo = {}
+        filesInfo['id'] = file['fields']['_id']
+        filesInfo['created'] = file['fields']['created']
+        filesInfo['modified'] = file['fields']['modified']
+        filesInfo['name'] = file['fields']['name']
+        retFiles['data'].append(filesInfo)
+
+    return retFiles
+
+@must_be_valid_project
 @must_have_permission(WRITE)
 @must_have_addon(SHORT_NAME, 'node')
 def integromat_register_web_meeting_apps_email(**kwargs):
