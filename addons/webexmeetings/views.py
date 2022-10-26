@@ -80,8 +80,8 @@ def webexmeetings_request_api(**kwargs):
             #synchronize data
             utils.grdm_create_webex_meeting(addon, account, createdMeeting, guestOrNot)
         except HTTPError as e1:
-            errCode = e1.response.status_code
             logger.info(str(e1))
+            errCode = str(e1) if e1.response is None else e1.response.status_code
             return {
                 'errCode': errCode,
             }
@@ -93,8 +93,8 @@ def webexmeetings_request_api(**kwargs):
             #synchronize data
             utils.grdm_update_webex_meeting(updatedAttendees, updatedMeeting, guestOrNot, addon)
         except HTTPError as e1:
-            errCode = e1.response.status_code
             logger.info(str(e1))
+            errCode = str(e1) if e1.response is None else e1.response.status_code
             return {
                 'errCode': errCode,
             }
@@ -105,8 +105,8 @@ def webexmeetings_request_api(**kwargs):
             #synchronize data
             utils.grdm_delete_webex_meeting(deleteMeetingId)
         except HTTPError as e1:
-            errCode = e1.response.status_code
             logger.info(str(e1))
+            errCode = str(e1) if e1.response is None else e1.response.status_code
             return {
                 'errCode': errCode,
             }
