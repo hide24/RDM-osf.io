@@ -385,9 +385,9 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
         assert_equals(result.is_guest, expected_is_guest)
         assert_equals(result.external_account.id, self.external_account.id)
         assert_equals(result.node_settings.id, self.node_settings.id)
-        assert_equals(rvBodyJson.result, '')
-        assert_equals(rvBodyJson.regType, True)
-        assert_equals(rvBodyJson.newAttendee, expected_newAttendee)
+        assert_equals(rvBodyJson['result'], '')
+        assert_equals(rvBodyJson['regType'], True)
+        assert_equals(rvBodyJson['newAttendee'], expected_newAttendee)
 
         #clear
         Attendees.objects.all().delete()
@@ -426,8 +426,8 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
         assert_equals(len(result), 0)
         logger.info('rv::' + str(rv))
         logger.info('rvBodyJson::' + str(rvBodyJson))
-        assert_equals(rvBodyJson.result, 'outside_email')
-        assert_equals(rvBodyJson.regType, True)
+        assert_equals(rvBodyJson['result'], 'outside_email')
+        assert_equals(rvBodyJson['regType'], True)
 
     @mock.patch('addons.webexmeetings.utils.api_get_webex_meetings_username')
     def test_webexmeetings_register_email_create_duplicated(self, mock_api_get_webex_meetings_username):
@@ -462,8 +462,8 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
         rvBodyJson = json.loads(rv.body)
         result = Attendees.objects.all()
         assert_equals(len(result), 0)
-        assert_equals(rvBodyJson.result, 'duplicated_email')
-        assert_equals(rvBodyJson.regType, True)
+        assert_equals(rvBodyJson['result'], 'duplicated_email')
+        assert_equals(rvBodyJson['regType'], True)
 
         #clear
         Attendees.objects.all().delete()
@@ -532,9 +532,9 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
         assert_equals(result.is_guest, expected_is_guest)
         assert_equals(result.external_account.id, expected_external_id)
         assert_equals(result.node_settings.id, self.node_settings.id)
-        assert_equals(rvBodyJson.result, '')
-        assert_equals(rvBodyJson.regType, True)
-        assert_equals(rvBodyJson.newAttendee, expected_newAttendee)
+        assert_equals(rvBodyJson['result'], '')
+        assert_equals(rvBodyJson['regType'], True)
+        assert_equals(rvBodyJson['newAttendee'], expected_newAttendee)
 
         #clear
         Attendees.objects.all().delete()
@@ -590,8 +590,8 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
         assert_equals(result.is_guest, expected_is_guest)
         assert_equals(result.external_account.id, expected_external_id)
         assert_equals(result.node_settings.id, self.node_settings.id)
-        assert_equals(rvBodyJson.result, 'outside_email')
-        assert_equals(rvBodyJson.regType, expected_regType)
+        assert_equals(rvBodyJson['result'], 'outside_email')
+        assert_equals(rvBodyJson['regType'], expected_regType)
 
         #clear
         Attendees.objects.all().delete()
@@ -652,8 +652,8 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
         assert_equals(result.is_guest, expected_is_guest)
         assert_equals(result.external_account.id, expected_external_id)
         assert_equals(result.node_settings.id, self.node_settings.id)
-        assert_equals(rvBodyJson.result, 'duplicated_email')
-        assert_equals(rvBodyJson.regType, expected_regType)
+        assert_equals(rvBodyJson['result'], 'duplicated_email')
+        assert_equals(rvBodyJson['regType'], expected_regType)
 
         #clear
         Attendees.objects.all().delete()
