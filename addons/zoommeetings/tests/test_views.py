@@ -187,7 +187,7 @@ class TestZoomMeetingsViews(ZoomMeetingsAddonTestCase, OAuthAddonConfigViewsTest
             'guestOrNot': expected_guestOrNot,
         }, auth=self.user.auth)
         rvBodyJson = json.loads(rv.body)
-        assert_equals(rvBodyJson.errCode, 401)
+        assert_equals(rvBodyJson['errCode'], 401)
         #clear
         Meetings.objects.all().delete()
 
@@ -301,7 +301,7 @@ class TestZoomMeetingsViews(ZoomMeetingsAddonTestCase, OAuthAddonConfigViewsTest
             'guestOrNot': expected_guestOrNot,
         }, auth=self.user.auth)
         rvBodyJson = json.loads(rv.body)
-        assert_equals(rvBodyJson.errCode, 401)
+        assert_equals(rvBodyJson['errCode'], 401)
         #clear
         Meetings.objects.all().delete()
 
@@ -373,7 +373,7 @@ class TestZoomMeetingsViews(ZoomMeetingsAddonTestCase, OAuthAddonConfigViewsTest
             'guestOrNot': {},
         }, auth=self.user.auth)
         rvBodyJson = json.loads(rv.body)
-        assert_equals(rvBodyJson.errCode, 401)
+        assert_equals(rvBodyJson['errCode'], 401)
         #clear
         Meetings.objects.all().delete()
 

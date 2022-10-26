@@ -99,8 +99,8 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
                         'name': 'Teams Test User1'
                     }
                 }
-        expected_startDatetime = datetime.now().isoformat()
-        expected_endDatetime = (datetime.now() + timedelta(hours=1)).isoformat()
+        expected_startDatetime = str(datetime.now().isoformat())
+        expected_endDatetime = str((datetime.now() + timedelta(hours=1)).isoformat())
         expected_content = 'My Test Content'
         expected_contentExtract = expected_content
         expected_joinUrl = 'teams/microsoft.com/asd'
@@ -225,7 +225,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
                 'isOnlineMeeting': True,
             };
         expected_guestOrNot = {'teamstestuser1@test.onmicrosoft.com': False}
-        mock_api_create_zoom_meeting.side_effect = HTTPError(401)
+        mock_api_create_teams_meeting.side_effect = HTTPError(401)
         rv = self.app.post_json(url, {
             'actionType': expected_action,
             'updateMeetingId': expected_UpdateMeetinId,
@@ -235,7 +235,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
             'guestOrNot': expected_guestOrNot,
         }, auth=self.user.auth)
         rvBodyJson = json.loads(rv.body)
-        assert_equals(rvBodyJson.errCode, 401)
+        assert_equals(rvBodyJson['errCode'], 401)
         #clear
         Attendees.objects.all().delete()
         Meetings.objects.all().delete()
@@ -340,6 +340,8 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         expected_startDatetime_format = date_parse.parse(expected_startDatetime).strftime('%Y/%m/%d %H:%M:%S')
         expected_endDatetime_format = date_parse.parse(expected_endDatetime).strftime('%Y/%m/%d %H:%M:%S')
 
+        logger.info('result.start_datetime::' + str(result.start_datetime))
+
         assert_equals(result.subject, expected_subject)
         assert_equals(result.organizer, expected_organizer)
         assert_equals(result.organizer_fullname, expected_organizer_fullname)
@@ -418,7 +420,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
             'guestOrNot': expected_guestOrNot,
         }, auth=self.user.auth)
         rvBodyJson = json.loads(rv.body)
-        assert_equals(rvBodyJson.errCode, 401)
+        assert_equals(rvBodyJson['errCode'], 401)
         #clear
         Attendees.objects.all().delete()
         Meetings.objects.all().delete()
@@ -473,7 +475,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         Meetings.objects.all().delete()
 
     @mock.patch('addons.microsoftteams.utils.api_delete_teams_meeting')
-    def test_microsoftteams_request_api_delete401(self, mock_api_delete_teams_meeting):
+    def test_microsoftteams_request_api_delete_401(self, mock_api_delete_teams_meeting):
         self.node_settings.set_auth(self.external_account, self.user)
         self.node_settings.save()
         mock_api_delete_teams_meeting.return_value = {}
@@ -508,7 +510,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         }, auth=self.user.auth)
         rvBodyJson = json.loads(rv.body)
         mock_api_delete_teams_meeting.side_effect = HTTPError(401)
-        assert_equals(rvBodyJson.errCode, 401)
+        assert_equals(rvBodyJson['errCode'], 401)
         Meetings.objects.all().delete()
 
     @mock.patch('addons.microsoftteams.utils.api_get_microsoft_username')
@@ -595,6 +597,11 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         expected_actionType = 'create'
         expected_emailType = True
         expected_regType = True
+
+        result = Attendees.objects.all()
+        resultJson = json.loads(serializers.serialize('json', result, ensure_ascii=False))
+        logger.info('attendeesJson1::' + str(resultJson))
+
         rv = self.app.post_json(url, {
             '_id': _id,
             'guid': expected_guid,
@@ -610,7 +617,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         logger.info('rvBodyJson::' + str(rvBodyJson))
         result = Attendees.objects.all()
         resultJson = json.loads(serializers.serialize('json', result, ensure_ascii=False))
-        logger.info('attendeesJson::' + str(resultJson))
+        logger.info('attendeesJson2::' + str(resultJson))
         assert_equals(rvBodyJson['result'], 'outside_email')
         assert_equals(rvBodyJson['regType'], True)
         assert_equals(result.count(), 0)
@@ -630,6 +637,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         qsAttendees = Attendees.objects.all()
         attendeesJson = json.loads(serializers.serialize('json', qsAttendees, ensure_ascii=False))
         logger.info('attendeesJson::' + str(attendeesJson))
+        expected_external_id = attendeesJson[0]['fields']['external_account']
 
         url = self.project.api_url_for('microsoftteams_register_email')
         expected_id = AttendeesFactory._id
@@ -863,7 +871,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
 
         rvBodyJson = json.loads(rv.body)
 
-        result = Attendees.objects.filter(node_settings_id=self.node_settings.id, _id=expected_id)
+        result = Attendees.objects.get(node_settings_id=self.node_settings.id, _id=expected_id)
 
         assert_equals(result.is_active, False)
         assert_equals(rvBodyJson, {})
