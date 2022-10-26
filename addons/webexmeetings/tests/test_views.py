@@ -378,6 +378,8 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
 
         result = Attendees.objects.get(user_guid=osfUserGuid)
 
+        logger.info('newAttendee::' + str(rvBodyJson['newAttendee']))
+
         assert_equals(result.user_guid, expected_guid)
         assert_equals(result.fullname, expected_fullname)
         assert_equals(result.email_address, expected_email)
@@ -533,7 +535,7 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
         assert_equals(result.external_account.id, expected_external_id)
         assert_equals(result.node_settings.id, self.node_settings.id)
         assert_equals(rvBodyJson['result'], '')
-        assert_equals(rvBodyJson['regType'], True)
+        assert_equals(rvBodyJson['regType'], expected_regType)
         assert_equals(rvBodyJson['newAttendee'], expected_newAttendee)
 
         #clear
@@ -676,7 +678,7 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
 
         result = Attendees.objects.filter(node_settings_id=self.node_settings.id, _id=expected_id)
 
-        assert_equals(result.count(), 0)
+        assert_equals(result.is_active, False)
         assert_equals(rvBodyJson, {})
 
     ## Overrides ##

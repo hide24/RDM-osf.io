@@ -507,7 +507,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
             'guestOrNot': {}
         }, auth=self.user.auth)
         rvBodyJson = json.loads(rv.body)
-        mock_api_create_zoom_meeting.side_effect = HTTPError(401)
+        mock_api_delete_teams_meeting.side_effect = HTTPError(401)
         assert_equals(rvBodyJson.errCode, 401)
         Meetings.objects.all().delete()
 
@@ -609,9 +609,11 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         logger.info('rv::' + str(rv))
         logger.info('rvBodyJson::' + str(rvBodyJson))
         result = Attendees.objects.all()
-        assert_equals(result.count(), 0)
+        resultJson = json.loads(serializers.serialize('json', result, ensure_ascii=False))
+        logger.info('attendeesJson::' + str(resultJson))
         assert_equals(rvBodyJson['result'], 'outside_email')
         assert_equals(rvBodyJson['regType'], True)
+        assert_equals(result.count(), 0)
 
     @mock.patch('addons.microsoftteams.utils.api_get_microsoft_username')
     def test_microsoftteams_register_email_create_duplicate(self, mock_api_get_microsoft_username):
@@ -624,6 +626,11 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         osfGuidsJson = json.loads(osfGuidsSerializer)
         osfUserGuid = osfGuidsJson[0]['fields']['_id']
         AttendeesFactory = MicrosoftTeamsAttendeesFactory(node_settings=self.node_settings, user_guid=osfUserGuid)
+
+        qsAttendees = Attendees.objects.all()
+        attendeesJson = json.loads(serializers.serialize('json', qsAttendees, ensure_ascii=False))
+        logger.info('attendeesJson::' + str(attendeesJson))
+
         url = self.project.api_url_for('microsoftteams_register_email')
         expected_id = AttendeesFactory._id
         expected_guid = AttendeesFactory.user_guid
@@ -858,7 +865,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
 
         result = Attendees.objects.filter(node_settings_id=self.node_settings.id, _id=expected_id)
 
-        assert_equals(result.count(), 0)
+        assert_equals(result.is_active, False)
         assert_equals(rvBodyJson, {})
 
     ## Overrides ##
