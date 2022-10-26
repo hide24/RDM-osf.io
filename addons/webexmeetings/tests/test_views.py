@@ -373,7 +373,7 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
             'appEmail': expected_email,
             'profile': '',
             '_id': '',
-            'is_guest': is_guest,
+            'is_guest': expected_is_guest,
         }
 
         result = Attendees.objects.get(user_guid=osfUserGuid)
@@ -388,6 +388,9 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
         assert_equals(rvBodyJson.result, '')
         assert_equals(rvBodyJson.regType, True)
         assert_equals(rvBodyJson.newAttendee, expected_newAttendee)
+
+        #clear
+        Attendees.objects.all().delete()
 
     @mock.patch('addons.webexmeetings.utils.api_get_webex_meetings_username')
     def test_webexmeetings_register_email_create_outside(self, mock_api_get_webex_meetings_username):
@@ -421,6 +424,8 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
         rvBodyJson = json.loads(rv.body)
         result = Attendees.objects.all()
         assert_equals(len(result), 0)
+        logger.info('rv::' + str(rv))
+        logger.info('rvBodyJson::' + str(rvBodyJson))
         assert_equals(rvBodyJson.result, 'outside_email')
         assert_equals(rvBodyJson.regType, True)
 
@@ -459,6 +464,9 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
         assert_equals(len(result), 0)
         assert_equals(rvBodyJson.result, 'duplicated_email')
         assert_equals(rvBodyJson.regType, True)
+
+        #clear
+        Attendees.objects.all().delete()
 
     @mock.patch('addons.webexmeetings.utils.api_get_webex_meetings_username')
     def test_webexmeetings_register_email_update(self, mock_api_get_webex_meetings_username):
@@ -512,7 +520,7 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
             'appEmail': expected_email,
             'profile': '',
             '_id': '',
-            'is_guest': is_guest,
+            'is_guest': expected_is_guest,
         }
 
         result = Attendees.objects.get(_id=expected_id)
@@ -556,7 +564,7 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
         expected_email = AttendeesFactory.email_address
         expected_username = AttendeesFactory.display_name
         expected_is_guest = False
-        expected_fullname = osfUser.fullname
+        expected_fullname = AttendeesFactory.fullname
         expected_actionType = 'update'
         expected_emailType = True
         expected_regType = False
@@ -618,7 +626,7 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
         duplicated_email = createDisplayName
         expected_username = AttendeesFactory.display_name
         expected_is_guest = False
-        expected_fullname = osfUser.fullname
+        expected_fullname = AttendeesFactory.fullname
         expected_actionType = 'update'
         expected_emailType = True
         expected_regType = False

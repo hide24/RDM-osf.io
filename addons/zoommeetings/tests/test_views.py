@@ -291,7 +291,7 @@ class TestZoomMeetingsViews(ZoomMeetingsAddonTestCase, OAuthAddonConfigViewsTest
                 'type':2
             };
         expected_guestOrNot = {}
-        mock_api_create_zoom_meeting.side_effect = HTTPError(401)
+        mock_api_update_zoom_meeting.side_effect = HTTPError(401)
         rv = self.app.post_json(url, {
             'actionType': expected_action,
             'updateMeetingId': expected_UpdateMeetinId,
@@ -364,7 +364,7 @@ class TestZoomMeetingsViews(ZoomMeetingsAddonTestCase, OAuthAddonConfigViewsTest
                 'timezone': 'UTC',
                 'type': 2,
             };
-        mock_api_create_zoom_meeting.side_effect = HTTPError(401)
+        mock_api_delete_zoom_meeting.side_effect = HTTPError(401)
         rv = self.app.post_json(url, {
             'actionType': expected_action,
             'deleteMeetingId': expected_DeleteMeetinId,

@@ -19,7 +19,7 @@ class WebexMeetingsAccountFactory(ExternalAccountFactory):
     provider = SHORT_NAME
     provider_id = factory.Sequence(lambda n: 'id-{0}'.format(n))
     oauth_key = factory.Sequence(lambda n: 'key-{0}'.format(n))
-    display_name = 'WebexMeetings Fake User'
+    display_name = 'WebexMeetings Fake User()'
 
 
 class WebexMeetingsUserSettingsFactory(DjangoModelFactory):

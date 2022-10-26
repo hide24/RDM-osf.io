@@ -35,7 +35,7 @@ from addons.microsoftteams.tests.factories import (
     MicrosoftTeamsMeetingsFactory
 )
 from api_tests import utils as api_utils
-
+from requests.exceptions import HTTPError
 import logging
 logger = logging.getLogger(__name__)
 
@@ -555,7 +555,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
             'appEmail': expected_email,
             'profile': '',
             '_id': '',
-            'is_guest': is_guest,
+            'is_guest': expected_is_guest,
         }
 
         rvBodyJson = json.loads(rv.body)
@@ -572,6 +572,9 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         assert_equals(rvBodyJson.result, '')
         assert_equals(rvBodyJson.regType, True)
         assert_equals(rvBodyJson.newAttendee, expected_newAttendee)
+
+        #clear
+        Attendees.objects.all().delete()
 
     @mock.patch('addons.microsoftteams.utils.api_get_microsoft_username')
     def test_microsoftteams_register_email_create_outside(self, mock_api_get_microsoft_username):
@@ -603,6 +606,8 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
             'regType': expected_regType
         }, auth=self.user.auth)
         rvBodyJson = json.loads(rv.body)
+        logger.info('rv::' + str(rv))
+        logger.info('rvBodyJson::' + str(rvBodyJson))
         result = Attendees.objects.all()
         assert_equals(len(result), 0)
         assert_equals(rvBodyJson.result, 'outside_email')
@@ -624,7 +629,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         expected_guid = AttendeesFactory.user_guid
         duplicated_email = 'teamstestuser1@test.onmicrosoft.com'
         expected_is_guest = False
-        expected_fullname = AttendeesFactory.fullname
+        expected_fullname = osfUser.fullname
         expected_username = AttendeesFactory.display_name
         expected_actionType = 'create'
         expected_emailType = True
@@ -706,7 +711,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
             'appEmail': expected_email,
             'profile': '',
             '_id': '',
-            'is_guest': is_guest,
+            'is_guest': expected_is_guest,
         }
 
         rvBodyJson = json.loads(rv.body)
@@ -751,7 +756,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         expected_email = AttendeesFactory.email_address
         expected_username = AttendeesFactory.display_name
         expected_is_guest = False
-        expected_fullname = osfUser.fullname
+        expected_fullname = AttendeesFactory.fullname
         expected_actionType = 'update'
         expected_emailType = True
         expected_regType = False
@@ -809,7 +814,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         expected_emailType = True
         expected_regType = True
         rv = self.app.post_json(url, {
-            '_id': _id,
+            '_id': expected_id,
             'guid': expected_guid,
             'email': duplicated_email,
             'fullname': expected_fullname,
