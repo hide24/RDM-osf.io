@@ -678,7 +678,7 @@ def integromat_watch_files(**kwargs):
 
     guid = request.get_json().get('guid')
     try:
-        targetObjectId = Guid.objects.get(_id=guid).id
+        targetObjectId = Guid.objects.get(_id=guid).object_id
     except ObjectDoesNotExist:
         raise HTTPError(http_status.HTTP_400_BAD_REQUEST, data=dict(message_short='GUID does not exixt.'))
 
