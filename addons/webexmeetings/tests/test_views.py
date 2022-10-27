@@ -36,7 +36,7 @@ from addons.webexmeetings.tests.factories import (
     WebexMeetingsMeetingsFactory
 )
 from api_tests import utils as api_utils
-
+from requests.exceptions import HTTPError
 import logging
 logger = logging.getLogger(__name__)
 
@@ -218,7 +218,7 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
             'guestOrNot': expected_guestOrNot,
         }, auth=self.user.auth)
         rvBodyJson = json.loads(rv.body)
-        assert_equals(rvBodyJson['errCode'], 401)
+        assert_equals(rvBodyJson['errCode'], '401')
 
         #clear
         Attendees.objects.all().delete()
@@ -423,7 +423,7 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
             'deleted': deletedInvitees,
         }, auth=self.user.auth)
         rvBodyJson = json.loads(rv.body)
-        assert_equals(rvBodyJson['errCode'], 401)
+        assert_equals(rvBodyJson['errCode'], '401')
         #clear
         Attendees.objects.all().delete()
         Meetings.objects.all().delete()
@@ -498,7 +498,7 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
             'guestOrNot': {}
         }, auth=self.user.auth)
         rvBodyJson = json.loads(rv.body)
-        assert_equals(rvBodyJson['errCode'], 401)
+        assert_equals(rvBodyJson['errCode'], '401')
 
         #clear
         Meetings.objects.all().delete()
@@ -639,9 +639,9 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
         }, auth=self.user.auth)
         rvBodyJson = json.loads(rv.body)
         result = Attendees.objects.all()
-        assert_equals(len(result), 0)
         assert_equals(rvBodyJson['result'], 'duplicated_email')
         assert_equals(rvBodyJson['regType'], True)
+        assert_equals(len(result), 1)
 
         #clear
         Attendees.objects.all().delete()
@@ -856,7 +856,7 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
         result = Attendees.objects.get(node_settings_id=self.node_settings.id, _id=expected_id)
 
         assert_equals(result.is_active, False)
-        assert_equals(rvBodyJson, {})
+        assert_equals(rvBodyJson['result'], '')
 
     ## Overrides ##
 

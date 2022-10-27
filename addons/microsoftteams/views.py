@@ -206,6 +206,10 @@ def microsoftteams_register_email(**kwargs):
                         attendee.external_account_id = None
                     displayName = fullname
             else:
+                logger.info(str(nodeSettings.id))
+                logger.info(str(account_id))
+                logger.info(str(email))
+                logger.info(str(is_guest))
                 if models.Attendees.objects.filter(node_settings_id=nodeSettings.id, external_account_id=account_id, email_address=email, is_guest=is_guest).exists():
                     return {
                         'result': 'duplicated_email',
