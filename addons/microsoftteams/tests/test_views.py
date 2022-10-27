@@ -162,11 +162,15 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         result = Meetings.objects.get(meetingid=expected_meetingId)
 
         tz = pytz.timezone('Asia/Tokyo')
+        logger.info('1::' + str(expected_startDatetime))
         expected_startDatetime = date_parse.parse(expected_startDatetime)
+        logger.info('2::' + str(expected_startDatetime))
         expected_startDatetime = tz.localize(expected_startDatetime)
+        logger.info('3::' + str(expected_startDatetime))
         expected_endDatetime = date_parse.parse(expected_endDatetime)
         expected_endDatetime = tz.localize(expected_endDatetime)
         expected_startDatetime_format = expected_startDatetime.strftime('%Y/%m/%d %H:%M:%S')
+        logger.info('4::' + str(expected_startDatetime_format))
         expected_endDatetime_format = expected_endDatetime.strftime('%Y/%m/%d %H:%M:%S')
 
         assert_equals(result.subject, expected_subject)
@@ -644,7 +648,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         osfGuidsSerializer = serializers.serialize('json', osfGuids, ensure_ascii=False)
         osfGuidsJson = json.loads(osfGuidsSerializer)
         osfUserGuid = osfGuidsJson[0]['fields']['_id']
-
+        expected_fullname = osfUser.fullname
         AttendeesFactory = MicrosoftTeamsAttendeesFactory(node_settings=self.node_settings, user_guid=osfUserGuid)
         mock_api_get_microsoft_username.return_value = 'Teams Test User B EDIT'
         url = self.project.api_url_for('microsoftteams_register_email')
@@ -658,7 +662,6 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         expected_email = 'teamstestuserbedit@test.onmicrosoft.com'
         expected_username = mock_api_get_microsoft_username.return_value
         expected_is_guest = False
-        expected_fullname = mock_api_get_microsoft_username.return_value
         expected_actionType = 'update'
         expected_emailType = True
         expected_regType = False
@@ -666,7 +669,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         rv = self.app.post_json(url, {
             '_id': expected_id,
             'guid': expected_guid,
-            'fullname': expected_username,
+            'fullname': 'MicrosoftTeams Fake User',
             'email': expected_email,
             'is_guest': expected_is_guest,
             'actionType': expected_actionType,
