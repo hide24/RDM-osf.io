@@ -164,10 +164,8 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         tz = pytz.timezone('Asia/Tokyo')
         expected_startDatetime = date_parse.parse(expected_startDatetime)
         expected_startDatetime = tz.localize(expected_startDatetime)
-        expected_startDatetime.astimezone(gettz('UTC'))
         expected_endDatetime = date_parse.parse(expected_endDatetime)
         expected_endDatetime = tz.localize(expected_endDatetime)
-        expected_endDatetime.astimezone(gettz('UTC'))
         expected_startDatetime_format = expected_startDatetime.strftime('%Y/%m/%d %H:%M:%S')
         expected_endDatetime_format = expected_endDatetime.strftime('%Y/%m/%d %H:%M:%S')
 
@@ -348,10 +346,8 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         tz = pytz.timezone('Asia/Tokyo')
         expected_startDatetime = date_parse.parse(expected_startDatetime)
         expected_startDatetime = tz.localize(expected_startDatetime)
-        expected_startDatetime.astimezone(gettz('UTC'))
         expected_endDatetime = date_parse.parse(expected_endDatetime)
         expected_endDatetime = tz.localize(expected_endDatetime)
-        expected_endDatetime.astimezone(gettz('UTC'))
         expected_startDatetime_format = expected_startDatetime.strftime('%Y/%m/%d %H:%M:%S')
         expected_endDatetime_format = expected_endDatetime.strftime('%Y/%m/%d %H:%M:%S')
 
@@ -662,7 +658,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         expected_email = 'teamstestuserbedit@test.onmicrosoft.com'
         expected_username = mock_api_get_microsoft_username.return_value
         expected_is_guest = False
-        expected_fullname = osfUser.fullname
+        expected_fullname = mock_api_get_microsoft_username.return_value
         expected_actionType = 'update'
         expected_emailType = True
         expected_regType = False
