@@ -215,7 +215,8 @@ def microsoftteams_register_email(**kwargs):
                         'result': 'duplicated_email',
                         'regType': regType,
                     }
-                attendee.fullname = OSFUser.objects.get(guids___id=attendee.user_guid).fullname
+                fullname = OSFUser.objects.get(guids___id=attendee.user_guid).fullname
+                attendee.fullname = fullname
                 displayName = utils.api_get_microsoft_username(account, email)
                 if not displayName:
                     return {
@@ -231,7 +232,8 @@ def microsoftteams_register_email(**kwargs):
         attendee = models.Attendees.objects.get(node_settings_id=nodeSettings.id, _id=_id)
         attendee.is_active = False
         attendee.save()
-        logger.info('{} Email was {}d with following attribute by {}=> '.format(settings.MICROSOFT_TEAMS, str(actionType), str(user)) + str(vars(attendee)))
+
+    logger.info('{} Email was {}d with following attribute by {}=> '.format(settings.MICROSOFT_TEAMS, str(actionType), str(user)) + str(vars(attendee)))
 
     newAttendee = {
         'guid': guid,
