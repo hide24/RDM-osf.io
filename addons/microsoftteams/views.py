@@ -140,7 +140,6 @@ def microsoftteams_register_email(**kwargs):
     nodeSettings = models.NodeSettings.objects.get(_id=addon._id)
     newAttendee = {}
 
-
     if actionType == 'create':
         if regAuto:
             if models.Attendees.objects.filter(node_settings_id=nodeSettings.id, external_account_id=account_id, email_address=email).exists():
