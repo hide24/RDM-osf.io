@@ -99,13 +99,14 @@ class Attendees(ObjectIDMixin, BaseModel):
     fullname = models.CharField(max_length=255)
     email_address = models.CharField(max_length=254, blank=True, null=True)
     display_name = models.CharField(max_length=255, blank=True, null=True)
-    is_guest = models.BooleanField(default=False)
+    is_guest = models.BooleanField(default=True)
     is_active = models.BooleanField(default=True)
+    has_grdm_account = models.BooleanField(default=False)
     external_account = models.ForeignKey(ExternalAccount, null=True, blank=True, default=None, related_name='{}_attendees'.format(SHORT_NAME))
     node_settings = models.ForeignKey(NodeSettings, null=False, blank=False, default=None)
 
     class Meta:
-        unique_together = ('email_address', 'node_settings', 'external_account', 'is_guest')
+        unique_together = ('email_address', 'node_settings', 'external_account')
 
 class Meetings(ObjectIDMixin, BaseModel):
 
