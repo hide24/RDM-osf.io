@@ -554,7 +554,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         expected_fullname = osfUser.fullname
         expected_actionType = 'create'
         expected_emailType = True
-        expected_regType = True
+        expected_regAuto = True
 
         rv = self.app.post_json(url, {
             '_id': _id,
@@ -564,7 +564,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
             'is_guest': expected_is_guest,
             'actionType': expected_actionType,
             'emailType': expected_emailType,
-            'regType': expected_regType
+            'regAuto': expected_regAuto
         }, auth=self.user.auth)
 
         expected_newAttendee = {
@@ -592,7 +592,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         assert_equals(result.external_account.id, self.external_account.id)
         assert_equals(result.node_settings.id, self.node_settings.id)
         assert_equals(rvBodyJson['result'], '')
-        assert_equals(rvBodyJson['regType'], True)
+        assert_equals(rvBodyJson['regAuto'], True)
         assert_equals(rvBodyJson['newAttendee'], expected_newAttendee)
 
         #clear
@@ -616,7 +616,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         expected_fullname = osfUser.fullname
         expected_actionType = 'create'
         expected_emailType = True
-        expected_regType = True
+        expected_regAuto = True
 
         result = Attendees.objects.all()
         resultJson = json.loads(serializers.serialize('json', result, ensure_ascii=False))
@@ -630,7 +630,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
             'is_guest': expected_is_guest,
             'actionType': expected_actionType,
             'emailType': expected_emailType,
-            'regType': expected_regType
+            'regAuto': expected_regAuto
         }, auth=self.user.auth)
         rvBodyJson = json.loads(rv.body)
         logger.info('rv::' + str(rv))
@@ -639,7 +639,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         resultJson = json.loads(serializers.serialize('json', result, ensure_ascii=False))
         logger.info('attendeesJson2::' + str(resultJson))
         assert_equals(rvBodyJson['result'], 'outside_email')
-        assert_equals(rvBodyJson['regType'], True)
+        assert_equals(rvBodyJson['regAuto'], True)
         assert_equals(result.count(), 0)
 
     @mock.patch('addons.microsoftteams.utils.api_get_microsoft_username')
@@ -669,7 +669,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         expected_is_guest = False
         expected_actionType = 'update'
         expected_emailType = True
-        expected_regType = False
+        expected_regAuto = False
 
         rv = self.app.post_json(url, {
             '_id': expected_id,
@@ -679,7 +679,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
             'is_guest': expected_is_guest,
             'actionType': expected_actionType,
             'emailType': expected_emailType,
-            'regType': expected_regType
+            'regAuto': expected_regAuto
         }, auth=self.user.auth)
 
         expected_newAttendee = {
@@ -706,7 +706,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         assert_equals(result.external_account.id, expected_external_id)
         assert_equals(result.node_settings.id, self.node_settings.id)
         assert_equals(rvBodyJson['result'], '')
-        assert_equals(rvBodyJson['regType'], False)
+        assert_equals(rvBodyJson['regAuto'], False)
         assert_equals(rvBodyJson['newAttendee'], expected_newAttendee)
 
         #clear
@@ -744,7 +744,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         expected_fullname = AttendeesFactory.fullname
         expected_actionType = 'update'
         expected_emailType = True
-        expected_regType = False
+        expected_regAuto = False
 
         rv = self.app.post_json(url, {
             '_id': expected_id,
@@ -754,13 +754,13 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
             'is_guest': expected_is_guest,
             'actionType': expected_actionType,
             'emailType': expected_emailType,
-            'regType': expected_regType
+            'regAuto': expected_regAuto
         }, auth=self.user.auth)
         rvBodyJson = json.loads(rv.body)
         result = Attendees.objects.get(_id=expected_id)
 
         assert_equals(rvBodyJson['result'], 'outside_email')
-        assert_equals(rvBodyJson['regType'], expected_regType)
+        assert_equals(rvBodyJson['regAuto'], expected_regAuto)
         assert_equals(result.user_guid, expected_guid)
         assert_equals(result.fullname, expected_fullname)
         assert_equals(result.email_address, expected_email)

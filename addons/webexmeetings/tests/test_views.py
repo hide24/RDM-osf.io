@@ -524,7 +524,7 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
         expected_fullname = osfUser.fullname
         expected_actionType = 'create'
         expected_emailType = True
-        expected_regType = True
+        expected_regAuto = True
 
         rv = self.app.post_json(url, {
             '_id': _id,
@@ -534,7 +534,7 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
             'is_guest': expected_is_guest,
             'actionType': expected_actionType,
             'emailType': expected_emailType,
-            'regType': expected_regType
+            'regAuto': expected_regAuto
         }, auth=self.user.auth)
 
         rvBodyJson = json.loads(rv.body)
@@ -564,7 +564,7 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
         assert_equals(result.external_account.id, self.external_account.id)
         assert_equals(result.node_settings.id, self.node_settings.id)
         assert_equals(rvBodyJson['result'], '')
-        assert_equals(rvBodyJson['regType'], True)
+        assert_equals(rvBodyJson['regAuto'], True)
         assert_equals(rvBodyJson['newAttendee'], expected_newAttendee)
 
         #clear
@@ -588,7 +588,7 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
         expected_fullname = osfUser.fullname
         expected_actionType = 'create'
         expected_emailType = True
-        expected_regType = True
+        expected_regAuto = True
         rv = self.app.post_json(url, {
             '_id': _id,
             'guid': expected_guid,
@@ -597,7 +597,7 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
             'is_guest': expected_is_guest,
             'actionType': expected_actionType,
             'emailType': expected_emailType,
-            'regType': expected_regType
+            'regAuto': expected_regAuto
         }, auth=self.user.auth)
         rvBodyJson = json.loads(rv.body)
         result = Attendees.objects.all()
@@ -605,7 +605,7 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
         logger.info('rv::' + str(rv))
         logger.info('rvBodyJson::' + str(rvBodyJson))
         assert_equals(rvBodyJson['result'], 'outside_email')
-        assert_equals(rvBodyJson['regType'], True)
+        assert_equals(rvBodyJson['regAuto'], True)
 
     @mock.patch('addons.webexmeetings.utils.api_get_webex_meetings_username')
     def test_webexmeetings_register_email_update(self, mock_api_get_webex_meetings_username):
@@ -635,7 +635,7 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
         expected_fullname = osfUser.fullname
         expected_actionType = 'update'
         expected_emailType = True
-        expected_regType = False
+        expected_regAuto = False
 
         rv = self.app.post_json(url, {
             '_id': expected_id,
@@ -645,7 +645,7 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
             'is_guest': expected_is_guest,
             'actionType': expected_actionType,
             'emailType': expected_emailType,
-            'regType': expected_regType
+            'regAuto': expected_regAuto
         }, auth=self.user.auth)
 
         rvBodyJson = json.loads(rv.body)
@@ -673,7 +673,7 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
         assert_equals(result.external_account.id, expected_external_id)
         assert_equals(result.node_settings.id, self.node_settings.id)
         assert_equals(rvBodyJson['result'], '')
-        assert_equals(rvBodyJson['regType'], expected_regType)
+        assert_equals(rvBodyJson['regAuto'], expected_regAuto)
         assert_equals(rvBodyJson['newAttendee'], expected_newAttendee)
 
         #clear
@@ -707,7 +707,7 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
         expected_fullname = AttendeesFactory.fullname
         expected_actionType = 'update'
         expected_emailType = True
-        expected_regType = False
+        expected_regAuto = False
 
         rv = self.app.post_json(url, {
             '_id': expected_id,
@@ -716,7 +716,7 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
             'is_guest': expected_is_guest,
             'actionType': expected_actionType,
             'emailType': expected_emailType,
-            'regType': expected_regType
+            'regAuto': expected_regAuto
         }, auth=self.user.auth)
 
         rvBodyJson = json.loads(rv.body)
@@ -731,7 +731,7 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
         assert_equals(result.external_account.id, expected_external_id)
         assert_equals(result.node_settings.id, self.node_settings.id)
         assert_equals(rvBodyJson['result'], 'outside_email')
-        assert_equals(rvBodyJson['regType'], expected_regType)
+        assert_equals(rvBodyJson['regAuto'], expected_regAuto)
 
         #clear
         Attendees.objects.all().delete()
