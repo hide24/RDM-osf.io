@@ -674,7 +674,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         rv = self.app.post_json(url, {
             '_id': expected_id,
             'guid': expected_guid,
-            'fullname': 'MicrosoftTeams Fake User',
+            'fullname': expected_fullname,
             'email': expected_email,
             'is_guest': expected_is_guest,
             'actionType': expected_actionType,

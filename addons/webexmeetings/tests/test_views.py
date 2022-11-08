@@ -543,7 +543,7 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
             'guid': expected_guid,
             'dispName': expected_fullname,
             'fullname': expected_fullname,
-            'email': '',
+            'email': expected_email,
             'institution': '',
             'appUsername': expected_username,
             'appEmail': expected_email,
@@ -674,7 +674,7 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
         assert_equals(result.node_settings.id, self.node_settings.id)
         assert_equals(rvBodyJson['result'], '')
         assert_equals(rvBodyJson['regAuto'], expected_regAuto)
-        assert_equals(rvBodyJson['newAttendee'], expected_newAttendee)
+        assert_equals(rvBodyJson['newAttendee'], {})
 
         #clear
         Attendees.objects.all().delete()
