@@ -551,6 +551,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         expected_email = 'teamstestusera@test.onmicrosoft.com'
         expected_username = mock_api_get_microsoft_username.return_value
         expected_is_guest = False
+        expected_has_grdm_account = True
         expected_fullname = osfUser.fullname
         expected_actionType = 'create'
         expected_emailType = True
@@ -562,6 +563,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
             'email': expected_email,
             'fullname': expected_fullname,
             'is_guest': expected_is_guest,
+            'has_grdm_account': expected_has_grdm_account,
             'actionType': expected_actionType,
             'emailType': expected_emailType,
             'regAuto': expected_regAuto
@@ -589,6 +591,8 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         assert_equals(result.email_address, expected_email)
         assert_equals(result.display_name, expected_username)
         assert_equals(result.is_guest, expected_is_guest)
+        assert_equals(result.is_active, True)
+        assert_equals(result.has_grdm_account, expected_has_grdm_account)
         assert_equals(result.external_account.id, self.external_account.id)
         assert_equals(result.node_settings.id, self.node_settings.id)
         assert_equals(rvBodyJson['result'], '')
@@ -613,6 +617,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         expected_guid = osfUserGuid
         expected_email = 'teamstestusera@test.onmicrosoft.com'
         expected_is_guest = False
+        expected_has_grdm_account = True
         expected_fullname = osfUser.fullname
         expected_actionType = 'create'
         expected_emailType = True
@@ -628,6 +633,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
             'email': expected_email,
             'fullname': expected_fullname,
             'is_guest': expected_is_guest,
+            'has_grdm_account': expected_has_grdm_account,
             'actionType': expected_actionType,
             'emailType': expected_emailType,
             'regAuto': expected_regAuto
@@ -666,7 +672,8 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         expected_guid = AttendeesFactory.user_guid
         expected_email = 'teamstestuserbedit@test.onmicrosoft.com'
         expected_username = mock_api_get_microsoft_username.return_value
-        expected_is_guest = False
+        expected_is_guest = True
+        expected_has_grdm_account = True
         expected_actionType = 'update'
         expected_emailType = True
         expected_regAuto = False
@@ -677,6 +684,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
             'fullname': expected_fullname,
             'email': expected_email,
             'is_guest': expected_is_guest,
+            'has_grdm_account': expected_has_grdm_account,
             'actionType': expected_actionType,
             'emailType': expected_emailType,
             'regAuto': expected_regAuto
@@ -703,6 +711,8 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         assert_equals(result.email_address, expected_email)
         assert_equals(result.display_name, expected_username)
         assert_equals(result.is_guest, expected_is_guest)
+        assert_equals(result.is_active, True)
+        assert_equals(result.has_grdm_account, expected_has_grdm_account)
         assert_equals(result.external_account.id, expected_external_id)
         assert_equals(result.node_settings.id, self.node_settings.id)
         assert_equals(rvBodyJson['result'], '')
@@ -741,6 +751,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         expected_email = AttendeesFactory.email_address
         expected_username = AttendeesFactory.display_name
         expected_is_guest = False
+        has_grdm_account = True
         expected_fullname = AttendeesFactory.fullname
         expected_actionType = 'update'
         expected_emailType = True
@@ -752,6 +763,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
             'fullname': expected_username,
             'email': expected_email,
             'is_guest': expected_is_guest,
+            'has_grdm_account': expected_has_grdm_account,
             'actionType': expected_actionType,
             'emailType': expected_emailType,
             'regAuto': expected_regAuto

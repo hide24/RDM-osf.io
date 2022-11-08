@@ -47,6 +47,7 @@ class WebexMeetingsAttendeesFactory(DjangoModelFactory):
     display_name = 'Webex Test User1'
     is_guest = False
     is_active = True
+    has_grdm_account = True
     external_account = factory.SubFactory(WebexMeetingsAccountFactory)
     node_settings = factory.SubFactory(WebexMeetingsNodeSettingsFactory)
 
