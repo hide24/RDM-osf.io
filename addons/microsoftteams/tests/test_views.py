@@ -672,7 +672,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         expected_guid = AttendeesFactory.user_guid
         expected_email = 'teamstestuserbedit@test.onmicrosoft.com'
         expected_username = mock_api_get_microsoft_username.return_value
-        expected_is_guest = True
+        expected_is_guest = False
         expected_has_grdm_account = True
         expected_actionType = 'update'
         expected_emailType = True
@@ -751,7 +751,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         expected_email = AttendeesFactory.email_address
         expected_username = AttendeesFactory.display_name
         expected_is_guest = False
-        has_grdm_account = True
+        expected_has_grdm_account = True
         expected_fullname = AttendeesFactory.fullname
         expected_actionType = 'update'
         expected_emailType = True
