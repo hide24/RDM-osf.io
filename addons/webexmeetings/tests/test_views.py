@@ -637,7 +637,7 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
         expected_guid = AttendeesFactory.user_guid
         expected_email = 'webextestuserbedit@test.webex.com'
         expected_username = mock_api_get_webex_meetings_username.return_value
-        expected_is_guest = True
+        expected_is_guest = False
         expected_has_grdm_account = True
         expected_fullname = osfUser.fullname
         expected_actionType = 'update'

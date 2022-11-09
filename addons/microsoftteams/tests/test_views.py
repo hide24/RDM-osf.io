@@ -717,7 +717,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         assert_equals(result.node_settings.id, self.node_settings.id)
         assert_equals(rvBodyJson['result'], '')
         assert_equals(rvBodyJson['regAuto'], False)
-        assert_equals(rvBodyJson['newAttendee'], expected_newAttendee)
+        assert_equals(rvBodyJson['newAttendee'], {})
 
         #clear
         Attendees.objects.all().delete()
