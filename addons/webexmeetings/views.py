@@ -19,6 +19,7 @@ from addons.webexmeetings import models
 from addons.webexmeetings import utils
 from website.oauth.utils import get_service
 from requests.exceptions import HTTPError
+from django.db import transaction
 logger = logging.getLogger(__name__)
 
 webexmeetings_account_list = generic_views.account_list(
@@ -143,7 +144,6 @@ def webexmeetings_register_email(**kwargs):
     nodeSettings = models.NodeSettings.objects.get(_id=addon._id)
     newAttendee = {}
 
-
     if actionType == 'create':
         if regAuto:
             if models.Attendees.objects.filter(node_settings_id=nodeSettings.id, external_account_id=account_id, email_address=email).exists():
@@ -239,12 +239,9 @@ def webexmeetings_register_contributors_email(**kwargs):
         provider=SHORT_NAME, id=account_id
     )
 
-    displayName = ''
-    result = ''
     nodeSettings = models.NodeSettings.objects.get(_id=addon._id)
     canNotRegister = ''
     registered = []
-    info = {}
 
     for unregisteredContrib in unregisteredContribs:
         guid = unregisteredContrib.get('guid', '')

@@ -141,7 +141,6 @@ def microsoftteams_register_email(**kwargs):
     nodeSettings = models.NodeSettings.objects.get(_id=addon._id)
     newAttendee = {}
 
-
     if actionType == 'create':
         if regAuto:
             if models.Attendees.objects.filter(node_settings_id=nodeSettings.id, external_account_id=account_id, email_address=email).exists():
@@ -237,12 +236,9 @@ def microsoftteams_register_contributors_email(**kwargs):
         provider='microsoftteams', id=account_id
     )
 
-    displayName = ''
-    result = ''
     nodeSettings = models.NodeSettings.objects.get(_id=addon._id)
     canNotRegister = ''
     registered = []
-    info = {}
 
     for unregisteredContrib in unregisteredContribs:
         guid = unregisteredContrib.get('guid', '')
