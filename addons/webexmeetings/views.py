@@ -143,6 +143,7 @@ def webexmeetings_register_email(**kwargs):
     nodeSettings = models.NodeSettings.objects.get(_id=addon._id)
     newAttendee = {}
 
+
     if actionType == 'create':
         if regAuto:
             if models.Attendees.objects.filter(node_settings_id=nodeSettings.id, external_account_id=account_id, email_address=email).exists():
@@ -218,4 +219,69 @@ def webexmeetings_register_email(**kwargs):
         'result': result,
         'regAuto': regAuto,
         'newAttendee': newAttendee,
+    }
+
+@must_be_valid_project
+@must_have_permission(WRITE)
+@must_have_addon(SHORT_NAME, 'node')
+def webexmeetings_register_contributors_email(**kwargs):
+
+    auth = kwargs['auth']
+    user = auth.user
+    requestData = request.get_data()
+    unregisteredContribs = json.loads(requestData)
+    logger.info('{} Email will be created with following attribute by {}=> '.format(settings.WEBEX_MEETINGS, str(user)) + str(unregisteredContribs))
+
+    node = kwargs['node'] or kwargs['project']
+    addon = node.get_addon(SHORT_NAME)
+    account_id = addon.external_account_id
+    account = ExternalAccount.objects.get(
+        provider=SHORT_NAME, id=account_id
+    )
+
+    displayName = ''
+    result = ''
+    nodeSettings = models.NodeSettings.objects.get(_id=addon._id)
+    canNotRegister = ''
+    registered = []
+    info = {}
+
+    for unregisteredContrib in unregisteredContribs:
+        guid = unregisteredContrib.get('guid', '')
+        email = unregisteredContrib.get('email', '')
+        fullname = unregisteredContrib.get('fullname', '')
+        try:
+            with transaction.atomic():
+                attendee = models.Attendees(
+                    user_guid=guid,
+                    fullname=fullname,
+                    is_guest=True,
+                    has_grdm_account=True,
+                    email_address=email,
+                    display_name=fullname,
+                    external_account=account,
+                    node_settings=nodeSettings,
+                )
+                attendee.save()
+                newAttendee = {
+                    'guid': guid,
+                    'dispName': fullname,
+                    'fullname': fullname,
+                    'email': email,
+                    'institution': '',
+                    'appUsername': fullname,
+                    'appEmail': email,
+                    'profile': '',
+                    '_id': '',
+                    'is_guest': True,
+                }
+                registered.append(newAttendee)
+                logger.info('{} Email was created with following attribute by {}=> '.format(settings.WEBEX_MEETINGS, str(user)) + str(vars(attendee)))
+        except Exception as e:
+            logger.info(str(e))
+            canNotRegister += fullname
+            canNotRegister += ','
+    return {
+        'result': registered,
+        'canNotRegister': canNotRegister[:-1],
     }

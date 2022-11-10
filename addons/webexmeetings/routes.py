@@ -75,6 +75,16 @@ api_routes = {
             json_renderer,
         ),
 
+        Rule(
+            [
+                '/project/<pid>/webexmeetings/register_contributors_email',
+                '/project/<pid>/node/<nid>/webexmeetings/register_contributors_email',
+            ],
+            'post',
+            views.webexmeetings_register_contributors_email,
+            json_renderer,
+        ),
+
     ],
     'prefix': '/api/v1'
 }
