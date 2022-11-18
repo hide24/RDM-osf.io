@@ -123,7 +123,6 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
                 'attendees': expected_attendees,
                 'isOnlineMeeting': True,
             };
-        expected_guestOrNot = {'teamstestuser1@test.onmicrosoft.com': False}
 
         mock_api_create_teams_meeting.return_value = {
             'id': expected_meetingId,
@@ -155,7 +154,6 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
             'deleteMeetingId': expected_DeleteMeetinId,
             'contentExtract': expected_contentExtract,
             'body': expected_body,
-            'guestOrNot': expected_guestOrNot,
         }, auth=self.user.auth)
         rvBodyJson = json.loads(rv.body)
 
@@ -237,7 +235,6 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
                 'attendees': expected_attendees,
                 'isOnlineMeeting': True,
             };
-        expected_guestOrNot = {'teamstestuser1@test.onmicrosoft.com': False}
         mock_api_create_teams_meeting.side_effect = HTTPError(401)
         rv = self.app.post_json(url, {
             'actionType': expected_action,
@@ -245,7 +242,6 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
             'deleteMeetingId': expected_DeleteMeetinId,
             'contentExtract': expected_contentExtract,
             'body': expected_body,
-            'guestOrNot': expected_guestOrNot,
         }, auth=self.user.auth)
         rvBodyJson = json.loads(rv.body)
         assert_equals(rvBodyJson['errCode'], '401')
@@ -308,7 +304,6 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
                 'attendees': expected_attendees,
                 'isOnlineMeeting': True,
             };
-        expected_guestOrNot = {'teamstestuser1@test.onmicrosoft.com': False, updateEmailAddress: False}
 
         mock_api_update_teams_meeting.return_value = {
             'id': expected_UpdateMeetinId,
@@ -344,7 +339,6 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
             'deleteMeetingId': expected_DeleteMeetinId,
             'contentExtract': expected_contentExtract,
             'body': expected_body,
-            'guestOrNot': expected_guestOrNot,
         }, auth=self.user.auth)
         rvBodyJson = json.loads(rv.body)
 
@@ -429,7 +423,6 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
                 'attendees': expected_attendees,
                 'isOnlineMeeting': True,
             };
-        expected_guestOrNot = {'teamstestuser1@test.onmicrosoft.com': False, updateEmailAddress: False}
         mock_api_update_teams_meeting.side_effect = HTTPError(401)
         rv = self.app.post_json(url, {
             'actionType': expected_action,
@@ -437,7 +430,6 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
             'deleteMeetingId': expected_DeleteMeetinId,
             'contentExtract': expected_contentExtract,
             'body': expected_body,
-            'guestOrNot': expected_guestOrNot,
         }, auth=self.user.auth)
         rvBodyJson = json.loads(rv.body)
         assert_equals(rvBodyJson['errCode'], '401')
@@ -483,7 +475,6 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
             'updateMeetingId': expected_UpdateMeetinId,
             'deleteMeetingId': expected_DeleteMeetinId,
             'body': expected_body,
-            'guestOrNot': {}
         }, auth=self.user.auth)
         rvBodyJson = json.loads(rv.body)
 
@@ -527,7 +518,6 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
             'updateMeetingId': expected_UpdateMeetinId,
             'deleteMeetingId': expected_DeleteMeetinId,
             'body': expected_body,
-            'guestOrNot': {}
         }, auth=self.user.auth)
         rvBodyJson = json.loads(rv.body)
         assert_equals(rvBodyJson['errCode'], '401')

@@ -105,7 +105,6 @@ class TestZoomMeetingsViews(ZoomMeetingsAddonTestCase, OAuthAddonConfigViewsTest
                 'timezone': 'UTC',
                 'type':2
             };
-        expected_guestOrNot = {}
 
         mock_api_create_zoom_meeting.return_value = {
             'id': expected_meetingId,
@@ -125,7 +124,6 @@ class TestZoomMeetingsViews(ZoomMeetingsAddonTestCase, OAuthAddonConfigViewsTest
             'deleteMeetingId': expected_DeleteMeetinId,
             'contentExtract': expected_contentExtract,
             'body': expected_body,
-            'guestOrNot': expected_guestOrNot,
         }, auth=self.user.auth)
         rvBodyJson = json.loads(rv.body)
 
@@ -176,7 +174,6 @@ class TestZoomMeetingsViews(ZoomMeetingsAddonTestCase, OAuthAddonConfigViewsTest
                 'timezone': 'UTC',
                 'type':2
             };
-        expected_guestOrNot = {}
         mock_api_create_zoom_meeting.side_effect = HTTPError(401)
         rv = self.app.post_json(url, {
             'actionType': expected_action,
@@ -184,7 +181,6 @@ class TestZoomMeetingsViews(ZoomMeetingsAddonTestCase, OAuthAddonConfigViewsTest
             'deleteMeetingId': expected_DeleteMeetinId,
             'contentExtract': expected_contentExtract,
             'body': expected_body,
-            'guestOrNot': expected_guestOrNot,
         }, auth=self.user.auth)
         rvBodyJson = json.loads(rv.body)
         assert_equals(rvBodyJson['errCode'], '401')
@@ -227,7 +223,6 @@ class TestZoomMeetingsViews(ZoomMeetingsAddonTestCase, OAuthAddonConfigViewsTest
                 'timezone': 'UTC',
                 'type':2
             };
-        expected_guestOrNot = {}
 
         mock_api_update_zoom_meeting.return_value = {}
 
@@ -237,7 +232,6 @@ class TestZoomMeetingsViews(ZoomMeetingsAddonTestCase, OAuthAddonConfigViewsTest
             'deleteMeetingId': expected_DeleteMeetinId,
             'contentExtract': expected_contentExtract,
             'body': expected_body,
-            'guestOrNot': expected_guestOrNot,
         }, auth=self.user.auth)
         rvBodyJson = json.loads(rv.body)
 
@@ -290,7 +284,6 @@ class TestZoomMeetingsViews(ZoomMeetingsAddonTestCase, OAuthAddonConfigViewsTest
                 'timezone': 'UTC',
                 'type':2
             };
-        expected_guestOrNot = {}
         mock_api_update_zoom_meeting.side_effect = HTTPError(401)
         rv = self.app.post_json(url, {
             'actionType': expected_action,
@@ -298,7 +291,6 @@ class TestZoomMeetingsViews(ZoomMeetingsAddonTestCase, OAuthAddonConfigViewsTest
             'deleteMeetingId': expected_DeleteMeetinId,
             'contentExtract': expected_contentExtract,
             'body': expected_body,
-            'guestOrNot': expected_guestOrNot,
         }, auth=self.user.auth)
         rvBodyJson = json.loads(rv.body)
         assert_equals(rvBodyJson['errCode'], '401')
@@ -334,7 +326,6 @@ class TestZoomMeetingsViews(ZoomMeetingsAddonTestCase, OAuthAddonConfigViewsTest
             'deleteMeetingId': expected_DeleteMeetinId,
             'updateMeetingId': expected_UpdateMeetinId,
             'body': expected_body,
-            'guestOrNot': {},
         }, auth=self.user.auth)
         rvBodyJson = json.loads(rv.body)
 
@@ -370,7 +361,6 @@ class TestZoomMeetingsViews(ZoomMeetingsAddonTestCase, OAuthAddonConfigViewsTest
             'deleteMeetingId': expected_DeleteMeetinId,
             'updateMeetingId': expected_UpdateMeetinId,
             'body': expected_body,
-            'guestOrNot': {},
         }, auth=self.user.auth)
         rvBodyJson = json.loads(rv.body)
         assert_equals(rvBodyJson['errCode'], '401')

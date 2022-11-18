@@ -112,8 +112,6 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
                 'invitees': expected_attendees,
             }
 
-        expected_guestOrNot = {'webextestuser1@test.webex.com': False}
-
         mock_api_create_webex_meeting.return_value = {
             'id': expected_meetingId,
             'title': expected_subject,
@@ -134,7 +132,6 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
             'updateMeetingId': expected_UpdateMeetinId,
             'deleteMeetingId': expected_DeleteMeetinId,
             'body': expected_body,
-            'guestOrNot': expected_guestOrNot,
         }, auth=self.user.auth)
         rvBodyJson = json.loads(rv.body)
 
@@ -201,9 +198,6 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
                 'agenda': expected_content,
                 'invitees': expected_attendees,
             }
-
-        expected_guestOrNot = {'webextestuser1@test.webex.com': False}
-
         mock_api_create_webex_meeting.side_effect = HTTPError(401)
         mock_get_invitees.return_value = [{
                     'email': expected_attendee_email,
@@ -215,7 +209,6 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
             'updateMeetingId': expected_UpdateMeetinId,
             'deleteMeetingId': expected_DeleteMeetinId,
             'body': expected_body,
-            'guestOrNot': expected_guestOrNot,
         }, auth=self.user.auth)
         rvBodyJson = json.loads(rv.body)
         assert_equals(rvBodyJson['errCode'], '401')
@@ -286,7 +279,6 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
                 'agenda': expected_content,
                 'invitees': expected_attendees,
             }
-        expected_guestOrNot = {createEmailAddress: False}
 
         mock_api_update_webex_meeting.return_value = {
             'id': expected_UpdateMeetinId,
@@ -309,7 +301,6 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
             'updateMeetingId': expected_UpdateMeetinId,
             'deleteMeetingId': expected_DeleteMeetinId,
             'body': expected_body,
-            'guestOrNot': expected_guestOrNot,
             'created': createdInvitees,
             'deleted': deletedInvitees,
         }, auth=self.user.auth)
@@ -405,7 +396,6 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
                 'agenda': expected_content,
                 'invitees': expected_attendees,
             }
-        expected_guestOrNot = {createEmailAddress: False}
 
         mock_api_update_webex_meeting.side_effect = HTTPError(401)
         mock_api_update_webex_meeting_attendees.return_value = {
@@ -418,7 +408,6 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
             'updateMeetingId': expected_UpdateMeetinId,
             'deleteMeetingId': expected_DeleteMeetinId,
             'body': expected_body,
-            'guestOrNot': expected_guestOrNot,
             'created': createdInvitees,
             'deleted': deletedInvitees,
         }, auth=self.user.auth)
@@ -456,7 +445,6 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
             'updateMeetingId': expected_UpdateMeetinId,
             'deleteMeetingId': expected_DeleteMeetinId,
             'body': expected_body,
-            'guestOrNot': {}
         }, auth=self.user.auth)
         rvBodyJson = json.loads(rv.body)
 
@@ -495,7 +483,6 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
             'updateMeetingId': expected_UpdateMeetinId,
             'deleteMeetingId': expected_DeleteMeetinId,
             'body': expected_body,
-            'guestOrNot': {}
         }, auth=self.user.auth)
         rvBodyJson = json.loads(rv.body)
         assert_equals(rvBodyJson['errCode'], '401')

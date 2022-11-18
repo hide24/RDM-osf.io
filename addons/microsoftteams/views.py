@@ -2,6 +2,7 @@
 from flask import request
 import logging
 import json
+import time
 from addons.microsoftteams import SHORT_NAME
 from addons.base import generic_views
 from framework.auth.decorators import must_be_logged_in
@@ -68,7 +69,6 @@ def microsoftteams_request_api(**kwargs):
     updateMeetingId = requestDataJsonLoads['updateMeetingId']
     deleteMeetingId = requestDataJsonLoads['deleteMeetingId']
     requestBody = requestDataJsonLoads['body']
-    guestOrNot = requestDataJsonLoads['guestOrNot']
 
     account = ExternalAccount.objects.get(
         provider='microsoftteams', id=account_id
@@ -77,7 +77,7 @@ def microsoftteams_request_api(**kwargs):
         try:
             createdMeetings = utils.api_create_teams_meeting(requestBody, account)
             #synchronize data
-            utils.grdm_create_teams_meeting(addon, account, requestDataJsonLoads, createdMeetings, guestOrNot)
+            utils.grdm_create_teams_meeting(addon, account, requestDataJsonLoads, createdMeetings)
         except HTTPError as e1:
             logger.info(str(e1))
             errCode = str(e1) if e1.response is None else e1.response.status_code
@@ -89,7 +89,7 @@ def microsoftteams_request_api(**kwargs):
         try:
             updatedMeetings = utils.api_update_teams_meeting(updateMeetingId, requestBody, account)
             #synchronize data
-            utils.grdm_update_teams_meeting(addon, requestDataJsonLoads, updatedMeetings, guestOrNot)
+            utils.grdm_update_teams_meeting(addon, requestDataJsonLoads, updatedMeetings)
         except HTTPError as e1:
             logger.info(str(e1))
             errCode = str(e1) if e1.response is None else e1.response.status_code
@@ -215,7 +215,9 @@ def microsoftteams_register_email(**kwargs):
 
     elif actionType == 'delete':
         attendee = models.Attendees.objects.get(node_settings_id=nodeSettings.id, _id=_id)
+        timestamp = int(time.time())
         attendee.is_active = False
+        attendee.email_address = '{}{}{}'.format(attendee.email_address, '_', timestamp)
         attendee.save()
 
     logger.info('{} Email was {}d with following attribute by {}=> '.format(settings.MICROSOFT_TEAMS, str(actionType), str(user)) + str(vars(attendee)))
