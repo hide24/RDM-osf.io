@@ -171,7 +171,7 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
         self.node_settings.set_auth(self.external_account, self.user)
         self.node_settings.save()
 
-        AttendeesFactory = WebexMeetingsAttendeesFactory(node_settings=self.node_settings)
+        AttendeesFactory = WebexMeetingsAttendeesFactory(node_settings=self.node_settings, external_account=self.external_account)
         url = self.project.api_url_for('webexmeetings_request_api')
 
         expected_action = 'create'

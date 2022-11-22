@@ -83,7 +83,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         self.node_settings.set_auth(self.external_account, self.user)
         self.node_settings.save()
 
-        AttendeesFactory = MicrosoftTeamsAttendeesFactory(node_settings=self.node_settings)
+        AttendeesFactory = MicrosoftTeamsAttendeesFactory(node_settings=self.node_settings, external_account=self.external_account)
         url = self.project.api_url_for('microsoftteams_request_api')
 
         expected_action = 'create'
@@ -197,7 +197,7 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
     def test_microsoftteams_request_api_create_401(self, mock_api_create_teams_meeting):
         self.node_settings.set_auth(self.external_account, self.user)
         self.node_settings.save()
-        AttendeesFactory = MicrosoftTeamsAttendeesFactory(node_settings=self.node_settings)
+        AttendeesFactory = MicrosoftTeamsAttendeesFactory(node_settings=self.node_settings, external_account=self.external_account)
         url = self.project.api_url_for('microsoftteams_request_api')
         expected_action = 'create'
         expected_UpdateMeetinId = ''
@@ -258,8 +258,8 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         updateEmailAddress = 'teamstestuser2@test.onmicrosoft.com'
         updateDisplayName = 'Teams Test User2'
 
-        AttendeesFactory = MicrosoftTeamsAttendeesFactory(node_settings=self.node_settings)
-        AttendeesFactory2 = MicrosoftTeamsAttendeesFactory(node_settings=self.node_settings, user_guid='teamstestuser2', fullname='TEAMS TEST USER 2', email_address=updateEmailAddress, display_name=updateDisplayName)
+        AttendeesFactory = MicrosoftTeamsAttendeesFactory(node_settings=self.node_settings, external_account=self.external_account)
+        AttendeesFactory2 = MicrosoftTeamsAttendeesFactory(node_settings=self.node_settings, external_account=self.external_account, user_guid='teamstestuser2', fullname='TEAMS TEST USER 2', email_address=updateEmailAddress, display_name=updateDisplayName)
         MeetingsFactory = MicrosoftTeamsMeetingsFactory(node_settings=self.node_settings)
 
         qsMeetings = Meetings.objects.all()
