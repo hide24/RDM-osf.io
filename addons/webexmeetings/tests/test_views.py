@@ -231,9 +231,9 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
         expected_UpdateMeetinId = 'qwertyuiopasdfghjklzxcvbnm'
         expected_DeleteMeetinId = ''
 
-        AttendeesFactory = WebexMeetingsAttendeesFactory(node_settings=self.node_settings)
-        AttendeesFactory2 = WebexMeetingsAttendeesFactory(node_settings=self.node_settings, user_guid='webextestuser2', fullname='WEBEX TEST USER 2', email_address=createEmailAddress, display_name=createDisplayName)
-        MeetingsFactory = WebexMeetingsMeetingsFactory(node_settings=self.node_settings)
+        AttendeesFactory = WebexMeetingsAttendeesFactory(node_settings=self.node_settings, external_account=self.external_account)
+        AttendeesFactory2 = WebexMeetingsAttendeesFactory(node_settings=self.node_settings, external_account=self.external_account, user_guid='webextestuser2', fullname='WEBEX TEST USER 2', email_address=createEmailAddress, display_name=createDisplayName)
+        MeetingsFactory = WebexMeetingsMeetingsFactory(node_settings=self.node_settings, external_account=self.external_account)
 
         deleteInviteeId = 'zxcvbnmasdfghjkl'
 
@@ -348,9 +348,9 @@ class TestWebexMeetingsViews(WebexMeetingsAddonTestCase, OAuthAddonConfigViewsTe
         expected_UpdateMeetinId = 'qwertyuiopasdfghjklzxcvbnm'
         expected_DeleteMeetinId = ''
 
-        AttendeesFactory = WebexMeetingsAttendeesFactory(node_settings=self.node_settings)
-        AttendeesFactory2 = WebexMeetingsAttendeesFactory(node_settings=self.node_settings, user_guid='webextestuser2', fullname='WEBEX TEST USER 2', email_address=createEmailAddress, display_name=createDisplayName)
-        MeetingsFactory = WebexMeetingsMeetingsFactory(node_settings=self.node_settings)
+        AttendeesFactory = WebexMeetingsAttendeesFactory(node_settings=self.node_settings, external_account=self.external_account)
+        AttendeesFactory2 = WebexMeetingsAttendeesFactory(node_settings=self.node_settings, external_account=self.external_account, user_guid='webextestuser2', fullname='WEBEX TEST USER 2', email_address=createEmailAddress, display_name=createDisplayName)
+        MeetingsFactory = WebexMeetingsMeetingsFactory(node_settings=self.node_settings, external_account=self.external_account)
 
         deleteInviteeId = 'zxcvbnmasdfghjkl'
 
