@@ -48,7 +48,8 @@ def api_get_microsoft_username(account, email):
     }
     response = requests.get(url, headers=requestHeaders, timeout=60)
     responseData = response.json()
-    logger.info(str(response.status_code))
+    logger.info('Get the following user => {}'.format(str(responseData)))
+    logger.info('StatusCode: {}'.format(str(response.status_code)))
     username = responseData.get('displayName', '')
     return username
 
@@ -178,7 +179,7 @@ def grdm_update_teams_meeting(addon, requestData, updatedData):
     updateData.attendees = attendeeIds
     updateData.content = content
     updateData.save()
-    logger.info('A meeting information on GRDM was updated with following attributes => '.format(settings.MICROSOFT_TEAMS) + str(vars(updateData)))
+    logger.info('A {} meeting information on GRDM was updated with following attributes => '.format(settings.MICROSOFT_TEAMS) + str(vars(updateData)))
     return {}
 
 def api_delete_teams_meeting(meetingId, account):
@@ -201,5 +202,5 @@ def grdm_delete_teams_meeting(meetingId):
 
     deleteData = models.Meetings.objects.get(meetingid=meetingId)
     deleteData.delete()
-    logger.info('A {} meeting information on GRDM was deleted.=> '.format(settings.MICROSOFT_TEAMS))
+    logger.info('A {} meeting information on GRDM was deleted. meetingId => '.format(settings.MICROSOFT_TEAMS) + str(meetingId))
     return {}

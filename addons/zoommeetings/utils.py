@@ -23,30 +23,6 @@ def serialize_zoommeetings_widget(node):
     return ret
 # widget: ここまで
 
-def get_user_info(user_id, jwt_token):
-
-    url = settings.ZOOM_API_URL_USERS + user_id
-    payload = {}
-    token = 'Bearer ' + jwt_token
-    headers = {
-        'Authorization': token,
-    }
-
-    response = requests.request('GET', url, headers=headers, data=payload)
-    status_code = response.status_code
-    responseData = response.json()
-    userInfo = {}
-
-    if status_code != 200:
-        if status_code == 404:
-            logger.info('Failed to authenticate Zoom account' + '[' + str(status_code) + ']' + ':' + response.message)
-    else:
-        userInfo['id'] = responseData['id']
-        userInfo['first_name'] = responseData['first_name']
-        userInfo['last_name'] = responseData['last_name']
-
-    return userInfo
-
 def api_create_zoom_meeting(requestData, account):
 
     token = account.oauth_key
@@ -77,7 +53,7 @@ def grdm_create_zoom_meeting(addon, account, createdData):
     organizer_fullname = account.display_name
     target = '('
     idx = organizer_fullname.find(target)
-    organizer_fullname = organizer_fullname[idx + 1: len(organizer_fullname) - 1]
+    organizer_fullname = organizer_fullname[idx+1:len(organizer_fullname)-1]
 
     with transaction.atomic():
 
@@ -154,5 +130,5 @@ def grdm_delete_zoom_meeting(meetingId):
 
     deleteData = models.Meetings.objects.get(meetingid=meetingId)
     deleteData.delete()
-    logger.info('A {} meeting information on GRDM was deleted.=> '.format(settings.ZOOM_MEETINGS))
+    logger.info('A {} meeting information on GRDM was deleted. meetingId => '.format(settings.ZOOM_MEETINGS) + str(meetingId))
     return {}

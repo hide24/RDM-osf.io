@@ -160,18 +160,13 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         result = Meetings.objects.get(meetingid=expected_meetingId)
 
         tz = pytz.timezone('Asia/Tokyo')
-        logger.info('1::' + str(expected_startDatetime))
         expected_startDatetime = date_parse.parse(expected_startDatetime)
-        logger.info('2::' + str(expected_startDatetime))
         expected_startDatetime = tz.localize(expected_startDatetime)
-        logger.info('3::' + str(expected_startDatetime))
         expected_startDatetime = expected_startDatetime.astimezone(gettz('UTC'))
-        logger.info('4::' + str(expected_startDatetime))
         expected_endDatetime = date_parse.parse(expected_endDatetime)
         expected_endDatetime = tz.localize(expected_endDatetime)
         expected_endDatetime = expected_endDatetime.astimezone(gettz('UTC'))
         expected_startDatetime_format = expected_startDatetime.strftime('%Y/%m/%d %H:%M:%S')
-        logger.info('5::' + str(expected_startDatetime_format))
         expected_endDatetime_format = expected_endDatetime.strftime('%Y/%m/%d %H:%M:%S')
 
         assert_equals(result.subject, expected_subject)
@@ -353,8 +348,6 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         expected_endDatetime = expected_endDatetime.astimezone(gettz('UTC'))
         expected_startDatetime_format = expected_startDatetime.strftime('%Y/%m/%d %H:%M:%S')
         expected_endDatetime_format = expected_endDatetime.strftime('%Y/%m/%d %H:%M:%S')
-
-        logger.info('result.start_datetime::' + str(result.start_datetime))
 
         assert_equals(result.subject, expected_subject)
         assert_equals(result.organizer, expected_organizer)
@@ -615,7 +608,6 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
 
         result = Attendees.objects.all()
         resultJson = json.loads(serializers.serialize('json', result, ensure_ascii=False))
-        logger.info('attendeesJson1::' + str(resultJson))
 
         rv = self.app.post_json(url, {
             '_id': _id,
@@ -629,11 +621,8 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
             'regAuto': expected_regAuto
         }, auth=self.user.auth)
         rvBodyJson = json.loads(rv.body)
-        logger.info('rv::' + str(rv))
-        logger.info('rvBodyJson::' + str(rvBodyJson))
         result = Attendees.objects.all()
         resultJson = json.loads(serializers.serialize('json', result, ensure_ascii=False))
-        logger.info('attendeesJson2::' + str(resultJson))
         assert_equals(rvBodyJson['result'], 'outside_email')
         assert_equals(rvBodyJson['regAuto'], True)
         assert_equals(result.count(), 0)
@@ -657,7 +646,6 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
         qsAttendees = Attendees.objects.all()
         attendeesJson = json.loads(serializers.serialize('json', qsAttendees, ensure_ascii=False))
         expected_external_id = attendeesJson[0]['fields']['external_account']
-        logger.info('attendeesJson1::' + str(attendeesJson))
         expected_id = AttendeesFactory._id
         expected_guid = AttendeesFactory.user_guid
         expected_email = 'teamstestuserbedit@test.onmicrosoft.com'
@@ -734,7 +722,6 @@ class TestMicrosoftTeamsViews(MicrosoftTeamsAddonTestCase, OAuthAddonConfigViews
 
         result = Attendees.objects.all()
         resultJson = json.loads(serializers.serialize('json', result, ensure_ascii=False))
-        logger.info('attendeesJson1::' + str(resultJson))
 
         expected_id = AttendeesFactory._id
         expected_guid = AttendeesFactory.user_guid

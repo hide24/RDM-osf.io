@@ -121,7 +121,7 @@ def microsoftteams_register_email(**kwargs):
     requestData = request.get_data()
     requestDataJson = json.loads(requestData)
     actionType = requestDataJson.get('actionType', '')
-    logger.info('{} Email will be {}d with following attribute by {}=> '.format(settings.MICROSOFT_TEAMS, str(actionType), str(user)) + str(requestDataJson))
+    logger.info('{} Email will be {}d with following attribute by {} => '.format(settings.MICROSOFT_TEAMS, str(actionType), str(user)) + str(requestDataJson))
 
     node = kwargs['node'] or kwargs['project']
     addon = node.get_addon(SHORT_NAME)
@@ -144,6 +144,7 @@ def microsoftteams_register_email(**kwargs):
     if actionType == 'create':
         if regAuto:
             if models.Attendees.objects.filter(node_settings_id=nodeSettings.id, external_account_id=account_id, email_address=email, is_active=True).exists():
+                logger.info('{} Email({}) was duplicated when {} in node:{}, external:{}'.format(settings.MICROSOFT_TEAMS, str(email), str(actionType), str(nodeSettings.id), str(account_id)))
                 return {
                     'result': 'duplicated_email',
                     'regAuto': regAuto,
@@ -157,6 +158,7 @@ def microsoftteams_register_email(**kwargs):
         else:
             displayName = utils.api_get_microsoft_username(account, email)
             if not displayName:
+                logger.info('{} Email({}) was outside when {}.'.format(settings.MICROSOFT_TEAMS, str(email), str(actionType)))
                 return {
                     'result': 'outside_email',
                     'regAuto': regAuto,
@@ -200,6 +202,7 @@ def microsoftteams_register_email(**kwargs):
         else:
             displayName = utils.api_get_microsoft_username(account, email)
             if not displayName:
+                logger.info('{} Email({}) was outside when {}.'.format(settings.MICROSOFT_TEAMS, str(email), str(actionType)))
                 return {
                     'result': 'outside_email',
                     'regAuto': regAuto,
@@ -280,7 +283,7 @@ def microsoftteams_register_contributors_email(**kwargs):
                     'is_guest': True,
                 }
                 registered.append(newAttendee)
-                logger.info('{} Email was created with following attribute by {}=> '.format(settings.MICROSOFT_TEAMS, str(user)) + str(vars(attendee)))
+                logger.info('{} Email was created with following attribute by {} => '.format(settings.MICROSOFT_TEAMS, str(user)) + str(vars(attendee)))
         except Exception as e:
             logger.info(str(e))
             canNotRegister += fullname

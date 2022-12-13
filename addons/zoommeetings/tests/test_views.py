@@ -200,7 +200,6 @@ class TestZoomMeetingsViews(ZoomMeetingsAddonTestCase, OAuthAddonConfigViewsTest
         qsMeetings = Meetings.objects.all()
         meetingsJson = json.loads(serializers.serialize('json', qsMeetings, ensure_ascii=False))
         expected_external_id = meetingsJson[0]['fields']['external_account']
-        logger.info('meetingsJson::' + str(meetingsJson))
         expected_action = 'update'
         expected_UpdateMeetinId = 'qwertyuiopasdfghjklzxcvbnm'
         expected_DeleteMeetinId = ''
