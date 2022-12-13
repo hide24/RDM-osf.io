@@ -53,7 +53,7 @@ def grdm_create_zoom_meeting(addon, account, createdData):
     organizer_fullname = account.display_name
     target = '('
     idx = organizer_fullname.find(target)
-    organizer_fullname = organizer_fullname[idx+1:len(organizer_fullname)-1]
+    organizer_fullname = organizer_fullname[idx + 1: len(organizer_fullname) - 1]
 
     with transaction.atomic():
 
