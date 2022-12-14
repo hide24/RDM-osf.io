@@ -15,7 +15,7 @@ class MicrosoftTeamsAddonConfig(BaseAddonAppConfig):
     short_name = SHORT_NAME
     full_name = FULL_NAME
     views = ['widget']
-    categories = ['web meetings']
+    categories = ['other']
     owners = ['user', 'node']
     configs = ['accounts', 'node']
     has_page_icon = False
