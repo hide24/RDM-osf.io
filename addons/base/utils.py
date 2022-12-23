@@ -58,7 +58,6 @@ def format_last_known_metadata(auth, node, file, error_type):
 
 def getProjectContribs(node):
 
-    info = {}
     projectContribs = []
     nodeContribs = node.contributors
 
