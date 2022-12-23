@@ -18,7 +18,7 @@ class ZoomMeetingsAccountFactory(ExternalAccountFactory):
     provider = SHORT_NAME
     provider_id = factory.Sequence(lambda n: 'id-{0}'.format(n))
     oauth_key = factory.Sequence(lambda n: 'key-{0}'.format(n))
-    display_name = 'zoomtestuser1@test.zoom.com(ZoomMeetings Fake User)'
+    display_name = 'ZoomMeetings Fake User'
 
 
 class ZoomMeetingsUserSettingsFactory(DjangoModelFactory):

@@ -55,7 +55,7 @@ var WebexMeetingsFolderPickerViewModel = oop.extend(OauthAddonFolderPicker, {
                 message = response.message;
             }
             self.changeMessage(message, 'text-danger');
-            Raven.captureMessage(_('Could not add Zoom Meetings credentials'), {
+            Raven.captureMessage(_('Could not add Webex Meetings credentials'), {
                 extra: {
                     url: self.urls().importAuth,
                     textStatus: status,

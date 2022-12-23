@@ -37,7 +37,7 @@ class ZoomMeetingsProvider(ExternalProvider):
         info = response.json()
         return {
             'provider_id': info['id'],
-            'display_name': '{}{}'.format(info['first_name'], info['last_name'])
+            'display_name': '{}({} {})'.format(info['email'], info['first_name'], info['last_name'])
         }
 
     def fetch_access_token(self, force_refresh=False):
