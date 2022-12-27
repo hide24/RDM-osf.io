@@ -45,7 +45,6 @@ class WebexMeetingsProvider(ExternalProvider):
         return self.account.oauth_key
 
     def get_authorization_url(self, client_id):
-
         # create a dict on the session object if it's not already there
         if session.data.get('oauth_states') is None:
             session.data['oauth_states'] = {}

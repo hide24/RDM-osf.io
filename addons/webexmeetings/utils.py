@@ -21,7 +21,6 @@ def serialize_webexmeetings_widget(node):
 # widget: ここまで
 
 def makeInstitutionUserList(users):
-
     institutionUsers = []
     userInfo = {}
     for user in users:
@@ -55,7 +54,6 @@ def api_get_webex_meetings_username(account, email):
     return displayName
 
 def api_create_webex_meeting(requestData, account):
-
     token = account.oauth_key
     url = '{}{}'.format(settings.WEBEX_API_BASE_URL, 'v1/meetings')
     requestToken = 'Bearer ' + token
@@ -71,7 +69,6 @@ def api_create_webex_meeting(requestData, account):
     return responseData
 
 def get_invitees(account, meetingId):
-
     token = account.oauth_key
     url = '{}{}{}'.format(settings.WEBEX_API_BASE_URL, 'v1/meetingInvitees?meetingId=', meetingId)
     requestToken = 'Bearer ' + token
@@ -86,7 +83,6 @@ def get_invitees(account, meetingId):
     return invitees['items']
 
 def grdm_create_webex_meeting(addon, account, createdData):
-
     subject = createdData['title']
     organizer = createdData['hostEmail']
     startDatetime = createdData['start']
@@ -139,7 +135,6 @@ def grdm_create_webex_meeting(addon, account, createdData):
     return {}
 
 def api_update_webex_meeting(meetingId, requestData, account):
-
     token = account.oauth_key
     url = '{}{}{}'.format(settings.WEBEX_API_BASE_URL, 'v1/meetings/', meetingId)
     requestToken = 'Bearer ' + token
@@ -155,7 +150,6 @@ def api_update_webex_meeting(meetingId, requestData, account):
     return responseData
 
 def api_update_webex_meeting_attendees(requestData, account):
-
     token = account.oauth_key
     url = '{}{}'.format(settings.WEBEX_API_BASE_URL, 'v1/meetingInvitees/')
     requestToken = 'Bearer ' + token
@@ -187,7 +181,6 @@ def api_update_webex_meeting_attendees(requestData, account):
     return updatedAttendees
 
 def grdm_update_webex_meeting(updatedAttendees, updatedMeeting, addon):
-
     subject = updatedMeeting['title']
     startDatetime = updatedMeeting['start']
     endDatetime = updatedMeeting['end']
@@ -242,7 +235,6 @@ def grdm_update_webex_meeting(updatedAttendees, updatedMeeting, addon):
     return {}
 
 def api_delete_webex_meeting(meetingId, account):
-
     token = account.oauth_key
     url = '{}{}{}'.format(settings.WEBEX_API_BASE_URL, '/v1/meetings/', meetingId)
     requestToken = 'Bearer ' + token
@@ -257,7 +249,6 @@ def api_delete_webex_meeting(meetingId, account):
     return {}
 
 def grdm_delete_webex_meeting(meetingId):
-
     deleteData = models.Meetings.objects.get(meetingid=meetingId)
     deleteData.delete()
     logger.info('A {} meeting information on GRDM was deleted. meetingId => '.format(settings.WEBEX_MEETINGS) + str(meetingId))

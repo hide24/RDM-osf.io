@@ -18,6 +18,7 @@ class UserSettings(BaseOAuthUserSettings):
     oauth_provider = MicrosoftTeamsProvider
     serializer = MicrosoftTeamsSerializer
 
+
 class NodeSettings(BaseOAuthNodeSettings, BaseStorageAddon):
     oauth_provider = MicrosoftTeamsProvider
     serializer = MicrosoftTeamsSerializer
@@ -93,8 +94,8 @@ class NodeSettings(BaseOAuthNodeSettings, BaseStorageAddon):
     def fetch_access_token(self):
         return self.api.fetch_access_token()
 
-class Attendees(ObjectIDMixin, BaseModel):
 
+class Attendees(ObjectIDMixin, BaseModel):
     user_guid = models.CharField(max_length=255, default=None)
     fullname = models.CharField(max_length=255)
     email_address = models.CharField(max_length=254, blank=True, null=True)
@@ -108,8 +109,8 @@ class Attendees(ObjectIDMixin, BaseModel):
     class Meta:
         unique_together = ('email_address', 'node_settings', 'external_account', 'is_active')
 
-class Meetings(ObjectIDMixin, BaseModel):
 
+class Meetings(ObjectIDMixin, BaseModel):
     subject = models.CharField(max_length=255)
     organizer = models.CharField(max_length=255)
     organizer_fullname = models.CharField(max_length=255)

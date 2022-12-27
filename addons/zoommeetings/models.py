@@ -16,6 +16,7 @@ class UserSettings(BaseOAuthUserSettings):
     oauth_provider = ZoomMeetingsProvider
     serializer = ZoomMeetingsSerializer
 
+
 class NodeSettings(BaseOAuthNodeSettings, BaseStorageAddon):
     oauth_provider = ZoomMeetingsProvider
     serializer = ZoomMeetingsSerializer
@@ -91,8 +92,8 @@ class NodeSettings(BaseOAuthNodeSettings, BaseStorageAddon):
     def fetch_access_token(self):
         return self.api.fetch_access_token()
 
-class Meetings(ObjectIDMixin, BaseModel):
 
+class Meetings(ObjectIDMixin, BaseModel):
     subject = models.CharField(max_length=255)
     organizer = models.CharField(max_length=255)
     organizer_fullname = models.CharField(max_length=255)

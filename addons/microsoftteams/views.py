@@ -45,7 +45,6 @@ microsoftteams_deauthorize_node = generic_views.deauthorize_node(
 @must_be_logged_in
 @must_be_rdm_addons_allowed(SHORT_NAME)
 def microsoftteams_oauth_connect(auth, **kwargs):
-
     provider = get_service(SHORT_NAME)
     authorization_url = provider.get_authorization_url(provider.client_id)
 
@@ -55,7 +54,6 @@ def microsoftteams_oauth_connect(auth, **kwargs):
 @must_have_permission(WRITE)
 @must_have_addon(SHORT_NAME, 'node')
 def microsoftteams_request_api(**kwargs):
-
     auth = kwargs['auth']
     user = auth.user
     requestData = request.get_data()
@@ -115,7 +113,6 @@ def microsoftteams_request_api(**kwargs):
 @must_have_permission(WRITE)
 @must_have_addon(SHORT_NAME, 'node')
 def microsoftteams_register_email(**kwargs):
-
     auth = kwargs['auth']
     user = auth.user
     requestData = request.get_data()
@@ -235,7 +232,6 @@ def microsoftteams_register_email(**kwargs):
 @must_have_permission(WRITE)
 @must_have_addon(SHORT_NAME, 'node')
 def microsoftteams_register_contributors_email(**kwargs):
-
     auth = kwargs['auth']
     user = auth.user
     requestData = request.get_data()

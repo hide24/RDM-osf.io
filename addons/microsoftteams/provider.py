@@ -10,11 +10,9 @@ import requests
 import logging
 logger = logging.getLogger(__name__)
 
-
 OAUTH2 = 2
 
 class MicrosoftTeamsProvider(ExternalProvider):
-
     name = FULL_NAME
     short_name = SHORT_NAME
     serializer = MicrosoftTeamsSerializer
@@ -27,7 +25,6 @@ class MicrosoftTeamsProvider(ExternalProvider):
     expiry_time = settings.EXPIRY_TIME
 
     def handle_callback(self, response):
-
         url = '{}{}'.format(settings.MICROSOFT_GRAPH_API_BASE_URL, 'v1.0/me')
         requestToken = 'Bearer ' + response['access_token']
         requestHeaders = {
@@ -47,7 +44,6 @@ class MicrosoftTeamsProvider(ExternalProvider):
         return self.account.oauth_key
 
     def get_authorization_url(self, client_id):
-
         # create a dict on the session object if it's not already there
         if session.data.get('oauth_states') is None:
             session.data['oauth_states'] = {}

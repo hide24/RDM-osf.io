@@ -24,7 +24,6 @@ def serialize_zoommeetings_widget(node):
 # widget: ここまで
 
 def api_create_zoom_meeting(requestData, account):
-
     token = account.oauth_key
     url = '{}{}'.format(settings.ZOOM_API_BASE_URL, 'v2/users/me/meetings')
     requestToken = 'Bearer ' + token
@@ -40,7 +39,6 @@ def api_create_zoom_meeting(requestData, account):
     return responseData
 
 def grdm_create_zoom_meeting(addon, account, createdData):
-
     subject = createdData['topic']
     organizer = createdData['host_email']
     startDatetime = createdData['start_time']
@@ -75,7 +73,6 @@ def grdm_create_zoom_meeting(addon, account, createdData):
 
 
 def api_update_zoom_meeting(meetingId, requestData, account):
-
     token = account.oauth_key
     url = '{}{}{}'.format(settings.ZOOM_API_BASE_URL, 'v2/meetings/', meetingId)
     requestToken = 'Bearer ' + token
@@ -90,7 +87,6 @@ def api_update_zoom_meeting(meetingId, requestData, account):
     return {}
 
 def grdm_update_zoom_meeting(meetingId, requestData):
-
     subject = requestData['topic']
     timeZone = requestData['timezone']
     tz = pytz.timezone(timeZone)
@@ -112,7 +108,6 @@ def grdm_update_zoom_meeting(meetingId, requestData):
     return {}
 
 def api_delete_zoom_meeting(meetingId, account):
-
     token = account.oauth_key
     url = '{}{}{}'.format(settings.ZOOM_API_BASE_URL, 'v2/meetings/', meetingId)
     requestToken = 'Bearer ' + token
@@ -127,7 +122,6 @@ def api_delete_zoom_meeting(meetingId, account):
     return {}
 
 def grdm_delete_zoom_meeting(meetingId):
-
     deleteData = models.Meetings.objects.get(meetingid=meetingId)
     deleteData.delete()
     logger.info('A {} meeting information on GRDM was deleted. meetingId => '.format(settings.ZOOM_MEETINGS) + str(meetingId))

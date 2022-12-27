@@ -24,7 +24,6 @@ def serialize_microsoftteams_widget(node):
 # widget: ここまで
 
 def makeInstitutionUserList(users):
-
     institutionUsers = []
     userInfo = {}
     for user in users:
@@ -54,7 +53,6 @@ def api_get_microsoft_username(account, email):
     return username
 
 def api_create_teams_meeting(requestData, account):
-
     token = account.oauth_key
     url = '{}{}'.format(settings.MICROSOFT_GRAPH_API_BASE_URL, 'v1.0/me/events')
     requestToken = 'Bearer ' + token
@@ -70,7 +68,6 @@ def api_create_teams_meeting(requestData, account):
     return responseData
 
 def grdm_create_teams_meeting(addon, account, requestData, createdData):
-
     subject = createdData['subject']
     organizer = createdData['organizer']['emailAddress']['address']
     timeZone = createdData['start']['timeZone']
@@ -126,7 +123,6 @@ def grdm_create_teams_meeting(addon, account, requestData, createdData):
     return {}
 
 def api_update_teams_meeting(meetingId, requestData, account):
-
     token = account.oauth_key
     url = '{}{}{}'.format(settings.MICROSOFT_GRAPH_API_BASE_URL, 'v1.0/me/events/', meetingId)
     requestToken = 'Bearer ' + token
@@ -142,7 +138,6 @@ def api_update_teams_meeting(meetingId, requestData, account):
     return responseData
 
 def grdm_update_teams_meeting(addon, requestData, updatedData):
-
     meetingId = updatedData['id']
     subject = updatedData['subject']
     timeZone = updatedData['start']['timeZone']
@@ -183,7 +178,6 @@ def grdm_update_teams_meeting(addon, requestData, updatedData):
     return {}
 
 def api_delete_teams_meeting(meetingId, account):
-
     token = account.oauth_key
     url = '{}{}{}'.format(settings.MICROSOFT_GRAPH_API_BASE_URL, 'v1.0/me/events/', meetingId)
     requestToken = 'Bearer ' + token
@@ -199,7 +193,6 @@ def api_delete_teams_meeting(meetingId, account):
     return {}
 
 def grdm_delete_teams_meeting(meetingId):
-
     deleteData = models.Meetings.objects.get(meetingid=meetingId)
     deleteData.delete()
     logger.info('A {} meeting information on GRDM was deleted. meetingId => '.format(settings.MICROSOFT_TEAMS) + str(meetingId))

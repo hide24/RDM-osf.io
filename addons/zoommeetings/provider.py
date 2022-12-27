@@ -10,7 +10,6 @@ from addons.zoommeetings import settings
 import logging
 logger = logging.getLogger(__name__)
 
-
 OAUTH2 = 2
 
 class ZoomMeetingsProvider(ExternalProvider):
@@ -26,7 +25,6 @@ class ZoomMeetingsProvider(ExternalProvider):
     expiry_time = settings.EXPIRY_TIME
 
     def handle_callback(self, response):
-
         url = '{}{}'.format(settings.ZOOM_API_BASE_URL, 'v2/users/me')
         requestToken = 'Bearer ' + response['access_token']
         requestHeaders = {
@@ -46,7 +44,6 @@ class ZoomMeetingsProvider(ExternalProvider):
         return self.account.oauth_key
 
     def get_authorization_url(self, client_id):
-
         # create a dict on the session object if it's not already there
         if session.data.get('oauth_states') is None:
             session.data['oauth_states'] = {}

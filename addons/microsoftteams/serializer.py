@@ -9,7 +9,6 @@ class MicrosoftTeamsSerializer(StorageAddonSerializer):
 
     @property
     def addon_serialized_urls(self):
-
         node = self.node_settings.owner
         user_settings = self.node_settings.user_settings or self.user_settings
 
@@ -26,14 +25,12 @@ class MicrosoftTeamsSerializer(StorageAddonSerializer):
         return result
 
     def serialized_folder(self, node_settings):
-
         return {
             'path': node_settings.folder_id,
             'name': node_settings.folder_name
         }
 
     def credentials_are_valid(self, user_settings, client=None):
-
         if user_settings:
             return True
 
