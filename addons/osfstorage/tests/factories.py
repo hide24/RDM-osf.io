@@ -5,10 +5,11 @@ from django.utils import timezone
 from factory import SubFactory, post_generation, Sequence
 from factory.django import DjangoModelFactory
 
-from osf_tests.factories import AuthUserFactory
+from osf_tests.factories import AuthUserFactory, ProjectFactory, RegionFactory
 
 from osf import models
 from addons.osfstorage.models import Region
+from addons.osfstorage.models import NodeSettings
 
 
 settings = apps.get_app_config('addons_osfstorage')
@@ -35,3 +36,10 @@ class FileVersionFactory(DjangoModelFactory):
         if not create:
             return
         self.reload()
+
+class OsfStorageNodeSettingsFactory(DjangoModelFactory):
+    class Meta:
+        model = NodeSettings
+
+    owner = SubFactory(ProjectFactory)
+    region = SubFactory(RegionFactory)
