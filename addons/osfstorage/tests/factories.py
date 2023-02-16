@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 # encoding: utf-8
+import factory
 from django.apps import apps
 from django.utils import timezone
 from factory import SubFactory, post_generation, Sequence
 from factory.django import DjangoModelFactory
 
-from osf_tests.factories import AuthUserFactory, ProjectFactory, RegionFactory
+from osf_tests.factories import AuthUserFactory, ProjectFactory, RegionFactory, ExternalAccountFactory
 
 from osf import models
 from addons.osfstorage.models import Region
@@ -43,3 +44,10 @@ class OsfStorageNodeSettingsFactory(DjangoModelFactory):
 
     owner = SubFactory(ProjectFactory)
     region = SubFactory(RegionFactory)
+
+
+class OsfStorageAccountFactory(ExternalAccountFactory):
+    provider = 'osfstorage'
+    provider_id = factory.Sequence(lambda n: 'id-{0}'.format(n))
+    oauth_key = factory.Sequence(lambda n: 'key-{0}'.format(n))
+    display_name = 'abc'

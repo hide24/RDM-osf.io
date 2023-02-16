@@ -24,12 +24,13 @@ from osf.models import Session
 from osf.utils import permissions
 from osf_tests.factories import (AuthUserFactory, ProjectFactory,
                                  )
-from osf_tests.factories import InstitutionFactory
+from osf_tests.factories import InstitutionFactory, RegionFactory
 from tests.base import OsfTestCase
 from tests.test_timestamp import create_test_file
 from website import settings
 from website.util import api_url_for
 from website.util import web_url_for
+from addons.osfstorage.tests.factories import OsfStorageAccountFactory
 
 
 class OAuthAddonAuthViewsTestCaseMixin(OAuthAddonTestCaseMixin):
@@ -513,20 +514,19 @@ class TestAddonLogsDifferentProvider(OsfTestCase):
         self.user_addon.oauth_grants[self.node._id] = {self.oauth_settings._id: []}
         self.user_addon.save()
 
-        self.user.add_addon('googledrive')
-        self.user_addon2 = self.user.get_addon('googledrive')
-        self.oauth_settings2 = GoogleDriveAccountFactory(display_name='john')
+        self.user.add_addon('osfstorage')
+        self.user_addon2 = self.user.get_addon('osfstorage')
+        self.oauth_settings2 = OsfStorageAccountFactory(display_name='john')
         self.oauth_settings2.save()
         self.user.external_accounts.add(self.oauth_settings2)
         self.user.save()
-        self.node.add_addon('googledrive', self.auth_obj)
-        self.node_addon2 = self.node.get_addon('googledrive')
+        self.node.add_addon('osfstorage', self.auth_obj)
+        self.node_addon2 = self.node.get_addon('osfstorage')
         self.node_addon2.user = 'john'
         self.node_addon2.repo = 'youre-my-best-friend'
         self.node_addon2.user_settings = self.user_addon2
         self.node_addon2.external_account = self.oauth_settings2
         self.node_addon2.save()
-        self.user_addon2.oauth_grants[self.node._id] = {self.oauth_settings._id: []}
         self.user_addon2.save()
 
     def build_payload(self, metadata, **kwargs):
@@ -557,7 +557,7 @@ class TestAddonLogsDifferentProvider(OsfTestCase):
         mock_get.return_value.status_code = 200
         wb_log_url = self.node.api_url_for('create_waterbutler_log')
         src_provider = 'github'
-        dest_provider = 'googledrive'
+        dest_provider = 'osfstorage'
         # Create file
         filename = 'file_ver1'
         file_node = create_test_file(node=self.node, user=self.user, filename=filename)
@@ -575,11 +575,11 @@ class TestAddonLogsDifferentProvider(OsfTestCase):
             'extra': {
                 'version': '1'
             }
-        }), headers={'Content-Type': 'application/json'})
+        }), headers={'Content-Type': 'application/json'}, expect_errors=True)
 
         # Move the file
         movedfilepath = 'cool_folder/' + filename
-        self.app.put_json(wb_log_url, self.build_payload(
+        res = self.app.put_json(wb_log_url, self.build_payload(
             action='move',
             metadata={
                 'path': '/' + movedfilepath,
@@ -602,4 +602,5 @@ class TestAddonLogsDifferentProvider(OsfTestCase):
                 'kind': 'file',
                 'nid': self.node._id,
             },
-        ), headers={'Content-Type': 'application/json'})
+        ), headers={'Content-Type': 'application/json'}, expect_errors=True)
+        assert res.status_code == 404
