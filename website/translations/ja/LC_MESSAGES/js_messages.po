@@ -708,6 +708,18 @@ msgstr ""
 msgid "Are you sure you want to change institutional storage?"
 msgstr "機関のストレージを変更してもよろしいですか？"
 
+#: admin/static/js/rdm_custom_storage_location/rdm-institutional-storage-page.js:130
+msgid "Are you sure you want to add institutional storage?"
+msgstr "機関ストレージを追加してもよろしいですか？"
+
+#: admin/static/js/rdm_custom_storage_location/rdm-institutional-storage-page.js:477
+msgid "Configure read-only for this institutional storage fail."
+msgstr "失敗した機関ストレージにコンフィグは読み取り専用です。"
+
+#: admin/static/js/rdm_custom_storage_location/rdm-institutional-storage-page.js:469
+msgid "Storage id is missing."
+msgstr "ストレージIDがありません。"
+
 #: admin/static/js/rdm_custom_storage_location/rdm-institutional-storage-page.js:85
 msgid ""
 "<p>The previous storage will no longer be available to all contributors "

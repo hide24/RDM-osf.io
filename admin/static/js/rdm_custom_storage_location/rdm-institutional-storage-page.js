@@ -18,6 +18,9 @@ var preload_accounts_type2 = ['nextcloudinstitutions',
                 'ociinstitutions',
                 's3compatinstitutions']
 
+var NAME_CURRENT = null;
+var NEW_NAME_CURRENT = null;
+
 function preload(provider, callback) {
     if (preload_accounts_type1.indexOf(provider) >= 0) {
         var div = $('#' + provider + '_authorization_div');
@@ -48,7 +51,7 @@ function disable_storage_name(provider) {
 }
 
 function selectedProvider() {
-     return $('input[name=\'options\']:checked').val();
+    return $('select[name=\'options\']').val();
 }
 
 $(window).on('load', function () {
@@ -67,9 +70,52 @@ $('.modal').on('hidden.bs.modal', function (e) {
     $('body').css('overflow', 'auto');
 });
 
+function toggle_button(element) {
+    element.classList.toggle('checked');
+    element.value = element.classList.contains('checked') ? 'on' : 'off';
+    element.checked = true;
+}
+
+$('button[type=reset]').click(function () {
+    NEW_NAME_CURRENT = null;
+    NAME_CURRENT = null;
+});
+
+$('button[data-dismiss="modal"]').click(function () {
+    NEW_NAME_CURRENT = null;
+    NAME_CURRENT = null;
+});
+
+$('.change_allow').change(function () {
+    let is_allowed = !($(this).val() === 'on');
+    let id = this.dataset.id;
+    let providerShortName = this.dataset.provider;
+    let params = {
+        'id': id,
+        'is_allowed': is_allowed,
+        'provider_short_name': providerShortName
+    };
+    ajaxRequest(params, providerShortName, 'change_allow', toggle_button, this);
+});
+
+$('.change_readonly').change(function () {
+    let is_readonly = !($(this).val() === 'on');
+    let id = this.dataset.id;
+    let providerShortName = this.dataset.provider;
+    let params = {
+        'id': id,
+        'is_readonly': is_readonly,
+        'provider_short_name': providerShortName
+    };
+    ajaxRequest(params, providerShortName, 'change_readonly', toggle_button, this);
+});
+
 $('#institutional_storage_form').submit(function (e) {
+    NEW_NAME_CURRENT = null;
+    NAME_CURRENT = null;
     if ($('#institutional_storage_form')[0].checkValidity()) {
-        var provider = selectedProvider()
+        var provider = selectedProvider();
+
         preload(provider, null);
         var showModal = function () {
             $('#' + provider + '_modal').modal('show');
@@ -77,12 +123,11 @@ $('#institutional_storage_form').submit(function (e) {
             $('.modal').css('overflow', 'auto');
             validateRequiredFields(provider);
         };
-        if (provider === 'osfstorage' && $('[checked]').val() === 'osfstorage') {
+        if (provider === 'osfstorage') {
             showModal();
         } else {
             $osf.confirmDangerousAction({
-                title: _('Are you sure you want to change institutional storage?'),
-                message: _('<p>The previous storage will no longer be available to all contributors on the project.</p>'),
+                title: _('Are you sure you want to add institutional storage?'),
                 callback: showModal,
                 buttons: {
                     success: {
@@ -91,8 +136,39 @@ $('#institutional_storage_form').submit(function (e) {
                 }
             });
         }
+        e.preventDefault();
     }
-    e.preventDefault();
+});
+
+$('.save_button').click(function (e) {
+    var id = $(this).attr('id');
+    var element = $(`input[type=text][id=${id}]`);
+    var provider = element.attr('name');
+    NEW_NAME_CURRENT = element.val().trim();
+    NAME_CURRENT = element.attr('value').trim();
+    if ($('#institutional_storage_form_update_' + id)[0].checkValidity()) {
+        preload(provider, null);
+        var showModal = function () {
+            $('#' + provider + '_modal').modal('show');
+            $('body').css('overflow', 'hidden');
+            $('.modal').css('overflow', 'auto');
+            validateRequiredFields(provider);
+        };
+        if (provider === 'osfstorage') {
+            showModal();
+        } else {
+            $osf.confirmDangerousAction({
+                title: _('Are you sure you want to change institutional storage?'),
+                callback: showModal,
+                buttons: {
+                    success: {
+                        label: _('Change')
+                    }
+                }
+            });
+        }
+        e.preventDefault();
+    }
 });
 
 $('#s3_modal input').keyup(function () {
@@ -277,9 +353,15 @@ function buttonClicked(button, route) {
     }
 
     var params = {
-        'provider_short_name': providerShortName
+        'provider_short_name': providerShortName,
+        'new_storage_name': '',
+        'storage_name': '',
     };
     getParameters(params);
+    if (NEW_NAME_CURRENT != null) {
+        params.new_storage_name = NEW_NAME_CURRENT;
+        params.storage_name = NAME_CURRENT;
+    }
     ajaxRequest(params, providerShortName, route, null);
 }
 
@@ -298,7 +380,7 @@ $.ajaxSetup({
     }
 });
 
-function ajaxCommon(type, params, providerShortName, route, callback) {
+function ajaxCommon(type, params, providerShortName, route, callback, element) {
     if (type === 'POST') {
       params = JSON.stringify(params);
     }
@@ -312,7 +394,7 @@ function ajaxCommon(type, params, providerShortName, route, callback) {
         success: function (data) {
             afterRequest[route].success(this.custom, data);
             if (callback) {
-                callback();
+                callback(element);
             }
         },
         error: function (jqXHR) {
@@ -322,7 +404,7 @@ function ajaxCommon(type, params, providerShortName, route, callback) {
                 afterRequest[route].fail(this.custom, _('Some errors occurred'));
             }
             if (callback) {
-                callback();
+                callback(element);
             }
         }
     });
@@ -333,8 +415,8 @@ function ajaxGET(params, providerShortName, route, callback) {
 }
 
 // ajaxPOST
-function ajaxRequest(params, providerShortName, route, callback) {
-    ajaxCommon('POST', params, providerShortName, route, callback);
+function ajaxRequest(params, providerShortName, route, callback, element) {
+    ajaxCommon('POST', params, providerShortName, route, callback, element);
 }
 
 var afterRequest = {
@@ -366,7 +448,6 @@ var afterRequest = {
             $('.modal').modal('hide');
             $('#' + id + '_message').addClass('text-success');
             $('#' + id + '_message').removeClass('text-danger');
-            $osf.growl('Success', _('Institutional Storage set successfully'), 'success');
             location.reload(true);
         },
         'fail': function (id, message) {
@@ -378,6 +459,22 @@ var afterRequest = {
                 $('#' + id + '_message').addClass('text-danger');
                 $('#' + id + '_message').removeClass('text-success');
             }
+        }
+    },
+    'change_allow': {
+        'success': function (id, data) {
+            location.reload(true);
+        },
+        'fail': function (id, message) {
+            $osf.growl('Failed', _(message));
+        }
+    },
+    'change_readonly': {
+        'success': function (id, data) {
+            location.reload(true);
+        },
+        'fail': function (id, message) {
+            $osf.growl('Failed', _(message));
         }
     },
     'credentials': {
