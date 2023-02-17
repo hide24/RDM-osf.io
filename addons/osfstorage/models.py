@@ -597,7 +597,7 @@ class NodeSettings(BaseNodeSettings, BaseStorageAddon):
         params = {
             'node': self.owner._id,
             'project': self.owner.parent_id,
-
+            'region': self.region.id,
             'path': metadata['materialized'],
         }
 

@@ -490,6 +490,9 @@ def create_waterbutler_log(payload, **kwargs):
                 }
             })
 
+            if destination.config.short_name == 'osfstorage':
+                payload['region'] = destination.region.id
+
             if not payload.get('errors'):
                 destination_node.add_log(
                     action=action,
