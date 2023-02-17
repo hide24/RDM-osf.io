@@ -554,6 +554,26 @@ class AddonModelMixin(models.Model):
             pass
         return None
 
+    def get_first_addon(self, addon_name, *args, **kwargs):
+        """
+        This method searches in the list of owned addons
+        and returns the first addon by addon name.
+        """
+        try:
+            settings_model = self._settings_model(addon_name)
+        except LookupError:
+            return None
+
+        if not settings_model:
+            return None
+
+        try:
+            is_deleted = kwargs['is_deleted']
+        except KeyError:
+            is_deleted = False
+
+        return settings_model.objects.filter(owner=self, is_deleted=is_deleted).first()
+
     def add_addon(self, addon_name, auth=None, override=False, _force=False):
         """Add an add-on to the node.
 

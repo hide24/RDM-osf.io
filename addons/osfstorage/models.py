@@ -506,7 +506,7 @@ class UserSettings(BaseUserSettings):
 
     def set_region(self, region_id):
         try:
-            region = Region.objects.get(_id=region_id)
+            region = Region.objects.get(id=region_id)
         except Region.DoesNotExist:
             raise ValueError('Region cannot be found.')
 
