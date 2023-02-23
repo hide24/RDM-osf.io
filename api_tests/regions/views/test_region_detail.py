@@ -91,7 +91,7 @@ class TestRegionDetail:
         fake_request = EmbeddedRequest(request, parents={Node: {node.id: node}})
         reg_factory = RegionMixinFactory(kwargs, fake_request)
         res = RegionMixin.get_region(reg_factory)
-        assert res != None
+        assert res is not None
 
 
 class RegionMixinFactory:

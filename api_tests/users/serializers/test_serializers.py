@@ -265,4 +265,4 @@ class TestUserSerializer:
         user_serializer = UserSerializer(user, context={'request': req})
         with pytest.raises(Exception):
             res = user_serializer.get_default_region_id(None)
-            assert res == None
+            assert res is None

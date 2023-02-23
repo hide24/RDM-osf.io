@@ -48,62 +48,59 @@ class TestNodeLogSerializer:
 @pytest.mark.django_db
 class TestNodeLogParamsSerializer:
 
-   def test_get_storage_name(self):
-       user = AuthUserFactory()
-       auth = Auth(user)
-       user_quota = UserQuotaFactory(user_id=user.id,storage_type=2)
-       node = ProjectFactory(creator=user)
-       institution = InstitutionFactory()
-       region = RegionFactory(_id=institution._id, name='Storage')
-       user.affiliated_institutions.add(institution)
-       obj_value = {
-           'path': 'fake_path',
-           'node': node,
-           'region': region.id
-       }
-       mock_abstractnode = mock.MagicMock()
-       mock_abstractnode.return_value = node
-       with mock.patch('osf.models.project_storage_type.ProjectStorageType.objects.get', return_value=user_quota):
-           with mock.patch('osf.models.node.AbstractNode.load', mock_abstractnode):
-               res = NodeLogParamsSerializer.get_storage_name(None, obj_value)
-               assert res == region.name
+    def test_get_storage_name(self):
+        user = AuthUserFactory()
+        auth = Auth(user)
+        user_quota = UserQuotaFactory(user_id=user.id, storage_type=2)
+        node = ProjectFactory(creator=user)
+        institution = InstitutionFactory()
+        region = RegionFactory(_id=institution._id, name='Storage')
+        user.affiliated_institutions.add(institution)
+        obj_value = {
+            'path': 'fake_path',
+            'node': node,
+            'region': region.id
+        }
+        mock_abstractnode = mock.MagicMock()
+        mock_abstractnode.return_value = node
+        with mock.patch('osf.models.project_storage_type.ProjectStorageType.objects.get', return_value=user_quota):
+            with mock.patch('osf.models.node.AbstractNode.load', mock_abstractnode):
+                res = NodeLogParamsSerializer.get_storage_name(None, obj_value)
+                assert res == region.name
 
-   def test_get_storage_name_with_nii_type(self):
-       user = AuthUserFactory()
-       auth = Auth(user)
-       user_quota = UserQuotaFactory(user_id=user.id,storage_type=1)
-       node = ProjectFactory(creator=user)
-       institution = InstitutionFactory()
-       region = RegionFactory(_id=institution._id, name='Storage')
-       user.affiliated_institutions.add(institution)
-       obj_value = {
-           'path': 'fake_path',
-           'node': node,
-           'region': region.id
-       }
-       mock_abstractnode = mock.MagicMock()
-       mock_abstractnode.return_value = node
-       with mock.patch('osf.models.project_storage_type.ProjectStorageType.objects.get', return_value=user_quota):
-           with mock.patch('osf.models.node.AbstractNode.load', mock_abstractnode):
-               res = NodeLogParamsSerializer.get_storage_name(None, obj_value)
-               assert res == 'NII Storage'
+    def test_get_storage_name_with_nii_type(self):
+        user = AuthUserFactory()
+        user_quota = UserQuotaFactory(user_id=user.id, storage_type=1)
+        node = ProjectFactory(creator=user)
+        institution = InstitutionFactory()
+        region = RegionFactory(_id=institution._id, name='Storage')
+        user.affiliated_institutions.add(institution)
+        obj_value = {
+            'path': 'fake_path',
+            'node': node,
+            'region': region.id
+        }
+        mock_abstractnode = mock.MagicMock()
+        mock_abstractnode.return_value = node
+        with mock.patch('osf.models.project_storage_type.ProjectStorageType.objects.get', return_value=user_quota):
+            with mock.patch('osf.models.node.AbstractNode.load', mock_abstractnode):
+                res = NodeLogParamsSerializer.get_storage_name(None, obj_value)
+                assert res == 'NII Storage'
 
-   def test_get_storage_name_exception(self):
-       user = AuthUserFactory()
-       auth = Auth(user)
-       user_quota = UserQuotaFactory(user_id=user.id,storage_type=1)
-       node = ProjectFactory(creator=user)
-       institution = InstitutionFactory()
-       region = RegionFactory(_id=institution._id, name='Storage')
-       user.affiliated_institutions.add(institution)
-       obj_value = {
-           'path': 'fake_path',
-           'node': node,
-           'region': region.id
-       }
-       mock_abstractnode = mock.MagicMock()
-       mock_abstractnode.return_value = node
-       with mock.patch('osf.models.project_storage_type.ProjectStorageType.objects.get', side_effect=ProjectStorageType.DoesNotExist('mock error')):
-           with mock.patch('osf.models.node.AbstractNode.load', mock_abstractnode):
-               res = NodeLogParamsSerializer.get_storage_name(None, obj_value)
-               assert res == 'NII Storage'
+    def test_get_storage_name_exception(self):
+        user = AuthUserFactory()
+        node = ProjectFactory(creator=user)
+        institution = InstitutionFactory()
+        region = RegionFactory(_id=institution._id, name='Storage')
+        user.affiliated_institutions.add(institution)
+        obj_value = {
+            'path': 'fake_path',
+            'node': node,
+            'region': region.id
+        }
+        mock_abstractnode = mock.MagicMock()
+        mock_abstractnode.return_value = node
+        with mock.patch('osf.models.project_storage_type.ProjectStorageType.objects.get', side_effect=ProjectStorageType.DoesNotExist('mock error')):
+            with mock.patch('osf.models.node.AbstractNode.load', mock_abstractnode):
+                res = NodeLogParamsSerializer.get_storage_name(None, obj_value)
+                assert res == 'NII Storage'

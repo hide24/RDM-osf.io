@@ -183,7 +183,7 @@ class TestNodeList:
         # For asserting region properly returned when queryset is annotated with region property
         res = app.get(url)
         assert res.status_code == 200
-        assert res.json['data'][0]['relationships']['region']['data']['id'] == public_project.osfstorage_region._id
+        assert res.json['data'][0]['relationships']['region']['data']['id'] == str(public_project.osfstorage_region.id)
 
     def test_preprint_attribute(self, app, url, public_project, preprint, user):
         # For asserting region properly returned when queryset is annotated with has_viewable_preprints property
@@ -1750,7 +1750,7 @@ class TestNodeCreate:
             'region': {
                 'data': {
                     'type': 'region',
-                    'id': region._id
+                    'id': region.id
                 }
             }
         }
@@ -1759,7 +1759,7 @@ class TestNodeCreate:
         )
         assert res.status_code == 201
         region_id = res.json['data']['relationships']['region']['data']['id']
-        assert region_id == region._id
+        assert region_id == str(region.id)
 
         institution_two = InstitutionFactory()
         user_one.affiliated_institutions.add(institution_two)
