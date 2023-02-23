@@ -58,9 +58,9 @@ def test_institution_banner_path():
 
 
 @pytest.mark.django_db
-def test_get_institutional_storage():
+def test_get_default_region():
     inst = InstitutionFactory()
-    res = inst.get_institutional_storage()
+    res = inst.get_default_region()
     assert isinstance(res, QuerySet)
 
 

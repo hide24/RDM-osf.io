@@ -2,7 +2,7 @@
 import logging
 
 from addons.base import signals as file_signals
-from addons.osfstorage.models import OsfStorageFileNode, Region
+from addons.osfstorage.models import OsfStorageFileNode
 from api.base import settings as api_settings
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Sum
