@@ -483,7 +483,6 @@ class TestRestartStuckRegistrationsView(AdminTestCase):
 
         nt.assert_equal(self.registration.archive_job.status, u'SUCCESS')
 
-
     def test_restart_stuck_registration_exception(self):
         # Prevents circular import that prevents admin app from starting up
         from django.contrib.messages.storage.fallback import FallbackStorage

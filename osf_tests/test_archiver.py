@@ -605,7 +605,6 @@ class TestArchiverTasks(ArchiverTestCase):
                 )
             ))
 
-
     def test_archive_success(self):
         node = factories.NodeFactory(creator=self.user)
         file_trees, selected_files, node_index = generate_file_tree([node])

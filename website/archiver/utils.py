@@ -150,7 +150,7 @@ def link_archive_provider(node, user):
         addon = node.get_addon(settings.ARCHIVE_PROVIDER, auth=Auth(user), log=False)
         if addon is None:
             addon = node.add_addon(settings.ARCHIVE_PROVIDER, auth=Auth(user), log=False)
-    except Exception as ex:
+    except Exception:
         # Get the first addon if multiple values are returned
         addon = node.get_first_addon(settings.ARCHIVE_PROVIDER)
     if hasattr(addon, 'on_add'):

@@ -31,4 +31,4 @@ class TestArchiveUtils(OsfTestCase):
         NodeFactory(parent=comp2)
         reg = RegistrationFactory(project=proj)
         with pytest.raises(HTTPError):
-            res = archive(reg, self.region.id)
+            archive(reg, self.region.id)
