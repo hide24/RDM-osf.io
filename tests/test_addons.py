@@ -1968,34 +1968,54 @@ class TestLegacyViews(OsfTestCase):
                     assert_urls_equal(res.location, expected_url)
 
     def test_other_addon_redirect(self):
+        mock_request = mock.MagicMock()
+        mock_request.return_value = {'region_id': '123', 'action': 'view'}
         url = '/project/{0}/mycooladdon/files/{1}/'.format(
             self.project._id,
-            self.path,
+            self.file._id,
         )
-        res = self.app.get(url, auth=self.user.auth)
-        assert_equal(res.status_code, 301)
-        expected_url = self.project.web_url_for(
-            'addon_view_or_download_file',
-            action='view',
-            path=self.path,
-            provider='mycooladdon',
-        )
-        assert_urls_equal(res.location, expected_url)
+        with mock.patch('addons.twofactor.models.UserSettings.verify_code', return_value=True):
+            with mock.patch('addons.base.views.request', mock_request):
+                with mock.patch('osf.models.mixins.AddonModelMixin.get_addon', side_effect=[self.user_addon, self.node_addon]):
+                    res = self.app.get(
+                        url,
+                        auth=self.user.auth,
+                        headers={'X-OSF-OTP': 'fake_otp'},
+                        expect_errors=True
+                    )
+                    assert_equal(res.status_code, 301)
+                    expected_url = self.project.web_url_for(
+                        'addon_view_or_download_file',
+                        path=self.file._id,
+                        action='download',
+                        provider='mycooladdon',
+                    )
+                    assert_urls_equal(res.location, expected_url)
 
     def test_other_addon_redirect_download(self):
+        mock_request = mock.MagicMock()
+        mock_request.return_value = {'region_id': '123', 'action': 'view'}
         url = '/project/{0}/mycooladdon/files/{1}/download/'.format(
             self.project._id,
-            self.path,
+            self.file._id,
         )
-        res = self.app.get(url, auth=self.user.auth)
-        assert_equal(res.status_code, 301)
-        expected_url = self.project.web_url_for(
-            'addon_view_or_download_file',
-            path=self.path,
-            action='download',
-            provider='mycooladdon',
-        )
-        assert_urls_equal(res.location, expected_url)
+        with mock.patch('addons.twofactor.models.UserSettings.verify_code', return_value=True):
+            with mock.patch('addons.base.views.request', mock_request):
+                with mock.patch('osf.models.mixins.AddonModelMixin.get_addon', side_effect=[self.user_addon, self.node_addon]):
+                    res = self.app.get(
+                        url,
+                        auth=self.user.auth,
+                        headers={'X-OSF-OTP': 'fake_otp'},
+                        expect_errors=True
+                    )
+                    assert_equal(res.status_code, 301)
+                    expected_url = self.project.web_url_for(
+                        'addon_view_or_download_file',
+                        path=self.file._id,
+                        action='download',
+                        provider='mycooladdon',
+                    )
+                    assert_urls_equal(res.location, expected_url)
 
 class TestViewUtils(OsfTestCase):
 

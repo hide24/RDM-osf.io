@@ -61,8 +61,9 @@ class TestAddonModelMixin(OsfTestCase):
             assert res is None
 
     def test_add_addon(self):
+        temp_region = RegionFactory(name='Frankfort', _id='eu-central-1')
         with mock.patch('osf.models.mixins.AddonModelMixin.get_addon', side_effect=MultipleObjectsReturned('mocked error')):
-            res = AddonModelMixin.add_addon(self.new_component, 'osfstorage', None, False, self.region.id)
+            res = AddonModelMixin.add_addon(self.new_component, 'osfstorage', None, False, temp_region.id)
             assert res is not None
 
     def test_delete_addon(self):
