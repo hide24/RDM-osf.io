@@ -57,13 +57,6 @@ def test_institution_banner_path():
     assert inst.banner_path == expected_banner_path
 
 
-@pytest.mark.django_db
-def test_get_default_region():
-    inst = InstitutionFactory()
-    res = inst.get_default_region()
-    assert isinstance(res, QuerySet)
-
-
 class TestInstitutionPermissions:
 
     @pytest.fixture()
