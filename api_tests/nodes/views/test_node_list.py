@@ -29,6 +29,7 @@ from rest_framework import exceptions
 from tests.utils import assert_equals
 from website.views import find_bookmark_collection
 from osf.utils.workflows import DefaultStates
+from unittest import mock
 
 
 @pytest.fixture()
@@ -1746,6 +1747,8 @@ class TestNodeCreate:
 
     def test_create_project_with_region_relationship(
             self, app, user_one, region, institution_one, private_project, url):
+        mock_get_region_id = mock.MagicMock()
+        mock_get_region_id.return_value = region.id
         private_project['data']['relationships'] = {
             'region': {
                 'data': {
@@ -1754,47 +1757,48 @@ class TestNodeCreate:
                 }
             }
         }
-        res = app.post_json_api(
-            url, private_project, auth=user_one.auth
-        )
-        assert res.status_code == 201
-        region_id = res.json['data']['relationships']['region']['data']['id']
-        assert region_id == str(region.id)
+        with mock.patch('api.nodes.serializers.NodeSerializer.get_region_id', mock_get_region_id):
+            res = app.post_json_api(
+                url, private_project, auth=user_one.auth
+            )
+            assert res.status_code == 201
+            region_id = res.json['data']['relationships']['region']['data']['id']
+            assert region_id == str(region.id)
 
-        institution_two = InstitutionFactory()
-        user_one.affiliated_institutions.add(institution_two)
+            institution_two = InstitutionFactory()
+            user_one.affiliated_institutions.add(institution_two)
 
-        private_project['data']['relationships'] = {
-            'affiliated_institutions': {
-                'data': [
-                    {
-                        'type': 'institutions',
-                        'id': institution_one._id
-                    },
-                    {
-                        'type': 'institutions',
-                        'id': institution_two._id
+            private_project['data']['relationships'] = {
+                'affiliated_institutions': {
+                    'data': [
+                        {
+                            'type': 'institutions',
+                            'id': institution_one._id
+                        },
+                        {
+                            'type': 'institutions',
+                            'id': institution_two._id
+                        }
+                    ]
+                },
+                'region': {
+                    'data': {
+                        'type': 'region',
+                        'id': region.id
                     }
-                ]
-            },
-            'region': {
-                'data': {
-                    'type': 'region',
-                    'id': region._id
                 }
             }
-        }
-        res = app.post_json_api(
-            url, private_project, auth=user_one.auth
-        )
-        assert res.status_code == 201
-        region_id = res.json['data']['relationships']['region']['data']['id']
-        assert region_id == region._id
+            res = app.post_json_api(
+                url, private_project, auth=user_one.auth
+            )
+            assert res.status_code == 201
+            region_id = res.json['data']['relationships']['region']['data']['id']
+            assert region_id == str(region.id)
 
-        node_id = res.json['data']['id']
-        node = AbstractNode.load(node_id)
-        assert institution_one in node.affiliated_institutions.all()
-        assert institution_two in node.affiliated_institutions.all()
+            node_id = res.json['data']['id']
+            node = AbstractNode.load(node_id)
+            assert institution_one in node.affiliated_institutions.all()
+            assert institution_two in node.affiliated_institutions.all()
 
     def test_create_project_with_region_query_param(
             self, app, user_one, region, private_project, url_with_region_query_param):

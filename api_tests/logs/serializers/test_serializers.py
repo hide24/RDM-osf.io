@@ -50,7 +50,6 @@ class TestNodeLogParamsSerializer:
 
     def test_get_storage_name(self):
         user = AuthUserFactory()
-        auth = Auth(user)
         user_quota = UserQuotaFactory(user_id=user.id, storage_type=2)
         node = ProjectFactory(creator=user)
         institution = InstitutionFactory()
