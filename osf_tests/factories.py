@@ -1108,3 +1108,9 @@ class BrandFactory(DjangoModelFactory):
 
     primary_color = factory.Faker('hex_color')
     secondary_color = factory.Faker('hex_color')
+
+
+class RegionExtraFactory:
+    def __init__(self, institution_id, name):
+        self.institution_id = institution_id
+        self.name = name
