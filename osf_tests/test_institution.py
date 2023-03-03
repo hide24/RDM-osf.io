@@ -3,7 +3,6 @@ from osf.models import Institution
 
 from .factories import InstitutionFactory, AuthUserFactory
 import pytest
-from django.db.models import QuerySet
 
 @pytest.mark.django_db
 def test_factory():
