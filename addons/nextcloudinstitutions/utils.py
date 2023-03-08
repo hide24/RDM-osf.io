@@ -161,7 +161,7 @@ def set_timestamp(node_settings, path, timestamp_data, timestamp_status, context
     encoded_timestamp = base64.b64encode(timestamp_data)
     # DEBUG(u'set timestamp: {}'.format(encoded_timestamp))
     attributes = {
-        settings.PROPERTY_KEY_TIMESTAMP: encoded_timestamp,
+        settings.PROPERTY_KEY_TIMESTAMP: encoded_timestamp.decode('utf-8'),
         settings.PROPERTY_KEY_TIMESTAMP_STATUS: str(timestamp_status)
     }
     cli = MetadataClient(url, username, password)
