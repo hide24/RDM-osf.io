@@ -102,7 +102,7 @@ def get_storage_quota_info(institution, user, region):
         return user_storage_quota.max_quota, user_storage_quota.used
     except UserStorageQuota.DoesNotExist:
         return (
-            api_settings.DEFAULT_MAX_QUOTA_PER_STORAGE[region.provider_short_name],
+            api_settings.DEFAULT_MAX_QUOTA,
             user_per_storage_used_quota(institution, user, region)
         )
 
@@ -361,11 +361,7 @@ def update_institutional_storage_used_quota(creator, region, provider, size, add
 
         user_storage_quota.save()
     except UserStorageQuota.DoesNotExist:
-        try:
-            storage_max_quota = api_settings.DEFAULT_MAX_QUOTA_PER_STORAGE[provider]
-        except KeyError:
-            # Using DEFAULT_MAX_QUOTA if max quota of storage is not defined
-            storage_max_quota = api_settings.DEFAULT_MAX_QUOTA
+        storage_max_quota = api_settings.DEFAULT_MAX_QUOTA
 
         UserStorageQuota.objects.create(
             user=creator,
