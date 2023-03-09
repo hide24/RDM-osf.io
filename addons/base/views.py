@@ -608,16 +608,18 @@ def addon_delete_file_node(self, target, user, event_type, payload):
                     BaseFileNode.delete(item)
         else:
             try:
-                file_node = BaseFileNode.resolve_class(provider, BaseFileNode.FILE).objects.get(
+                list_file_node = BaseFileNode.resolve_class(provider, BaseFileNode.FILE).objects.filter(
                     target_object_id=target.id,
                     target_content_type=content_type,
                     _materialized_path=materialized_path
                 )
             except BaseFileNode.DoesNotExist:
-                file_node = None
+                list_file_node = None
 
-            if file_node and not TrashedFileNode.load(file_node._id):
-                file_node.delete(user=user)
+            if list_file_node:
+                for file_node in list_file_node:
+                    if not TrashedFileNode.load(file_node._id):
+                        file_node.delete(user=user)
 
 
 @must_be_valid_project
