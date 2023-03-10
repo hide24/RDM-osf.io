@@ -21,7 +21,6 @@ from scripts import refresh_addon_tokens
 from website import settings as osf_settings
 from distutils.util import strtobool
 from framework.exceptions import HTTPError
-from framework.flask import redirect
 
 
 logger = logging.getLogger(__name__)
@@ -606,7 +605,7 @@ class ChangeAllowedViews(InstitutionalStorageBaseView, View):
         is_allowed = data.get('is_allowed')
         if not region_id:
             response = {
-                'message': 'Storage id is missing.'
+                'message': 'Failed to change Allow settings.'
             }
             return JsonResponse(response, status=http_status.HTTP_400_BAD_REQUEST)
         region = Region.objects.filter(id=region_id)
@@ -629,7 +628,7 @@ class ChangeReadonlyViews(InstitutionalStorageBaseView, View):
         is_readonly = data.get('is_readonly')
         if not region_id:
             response = {
-                'message': 'Configure read-only for this institutional storage fail'
+                'message': 'Failed to change Read-only settings.'
             }
             return JsonResponse(response, status=http_status.HTTP_400_BAD_REQUEST)
 
@@ -637,7 +636,7 @@ class ChangeReadonlyViews(InstitutionalStorageBaseView, View):
 
         if regions is None:
             return JsonResponse(
-                {'message': 'Configure read-only for this institutional storage fail'},
+                {'message': 'Failed to change Read-only settings.'},
                 status=http_status.HTTP_400_BAD_REQUEST
             )
         regions.update(is_readonly=is_readonly)

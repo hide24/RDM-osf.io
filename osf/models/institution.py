@@ -153,7 +153,7 @@ class Institution(DirtyFieldsMixin, Loggable, base.ObjectIDMixin, base.BaseModel
         rv = super(Institution, self).save(*args, **kwargs)
         self.update_search()
         return rv
-    
+
     def get_institutional_storage(self):
         from addons.osfstorage.models import Region
         return Region.objects.filter(_id=self._id).order_by('pk')
