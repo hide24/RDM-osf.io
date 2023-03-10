@@ -758,7 +758,7 @@ class NodeSerializer(TaxonomizableSerializerMixin, JSONAPISerializer):
         except AttributeError:
             # use computed property if region annotation does not exist
             # i.e. after creating a node
-            region_id = obj.osfstorage_region._id
+            region_id = obj.osfstorage_region.id
         return region_id
 
     def get_wiki_enabled(self, obj):
@@ -856,12 +856,15 @@ class NodeSerializer(TaxonomizableSerializerMixin, JSONAPISerializer):
             except ValidationError as e:
                 raise InvalidModelValueError(detail=str(e.message))
 
-        if not region_id:
-            region_id = self.context.get('region_id')
-        if region_id:
-            node_settings = node.get_addon('osfstorage')
-            node_settings.region_id = region_id
-            node_settings.save()
+        # If there is no affiliated institution, set the node setting region by the user's default one,
+        # else continue to use the setting of affiliated institutions.
+        if not user.affiliated_institutions.exists():
+            if not region_id:
+                region_id = self.context.get('region_id')
+            if region_id:
+                node_settings = node.get_addon('osfstorage')
+                node_settings.region_id = region_id
+                node_settings.save()
 
         return node
 

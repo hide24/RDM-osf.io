@@ -363,15 +363,15 @@ def osfstorage_create_child(file_node, payload, **kwargs):
 @must_be_signed
 @must_not_be_registration
 @decorators.autoload_filenode()
-def osfstorage_delete(file_node, payload, target, **kwargs):
+def osfstorage_delete(file_node, payload, **kwargs):
     user = OSFUser.load(payload['user'])
     auth = Auth(user)
 
     #TODO Auth check?
     if not auth:
         raise HTTPError(http_status.HTTP_400_BAD_REQUEST)
-    if file_node == OsfStorageFolder.objects.get_root(target=target):
-            raise HTTPError(http_status.HTTP_400_BAD_REQUEST)
+    if file_node.parent_id is None:
+        raise HTTPError(http_status.HTTP_400_BAD_REQUEST)
 
     try:
         file_node.delete(user=user)

@@ -158,6 +158,7 @@ class Institution(DirtyFieldsMixin, Loggable, base.ObjectIDMixin, base.BaseModel
         from addons.osfstorage.models import Region
         return Region.objects.filter(_id=self._id).order_by('pk')
 
+
 @receiver(post_save, sender=Institution)
 def create_institution_auth_groups(sender, instance, created, **kwargs):
     if created:
