@@ -42,7 +42,6 @@ class OsfStorageNodeSettingsFactory(DjangoModelFactory):
     class Meta:
         model = NodeSettings
 
-    owner = SubFactory(ProjectFactory)
     region = SubFactory(RegionFactory)
 
 

@@ -1037,5 +1037,12 @@ class TestOsfStorageCheckout(StorageTestCase):
             'kind': 'file',
             'path': 'fake_path',
         }
-        node = OsfStorageNodeSettingsFactory()
-        node.create_waterbutler_log(auth, action, metadata)
+        node = ProjectFactory(creator=user)
+        osf_storage_node_setting = OsfStorageNodeSettingsFactory()
+        osf_storage_node_setting.owner = node
+        nlog = node.logs.count()
+        osf_storage_node_setting.create_waterbutler_log(auth, action, metadata)
+        osf_storage_node_setting.reload()
+        assert_equal(node.logs.count(), nlog + 1)
+        assert_equal(node.logs.latest().params['path'], metadata['materialized'])
+

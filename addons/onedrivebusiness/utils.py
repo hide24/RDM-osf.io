@@ -35,7 +35,7 @@ def get_region_external_account(node):
         return None
 
     regions = Region.objects.filter(_id=institution._id, waterbutler_settings__storage__provider=SHORT_NAME)
-    if regions.exists() is True:
+    if regions.exists():
         return RegionExternalAccount.objects.get(region=regions)
     else:
         return None
