@@ -4,6 +4,7 @@ from osf.models import Institution
 from .factories import InstitutionFactory, AuthUserFactory
 import pytest
 
+
 @pytest.mark.django_db
 def test_factory():
     inst = InstitutionFactory()
