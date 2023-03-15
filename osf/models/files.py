@@ -515,6 +515,8 @@ class File(models.Model):
         :returns: FileVersion
         """
         if isinstance(data, list):
+            if len(data) == 0:
+                return
             data = data[0]
         self.name = data['name']
         self.materialized_path = data['materialized']
@@ -620,6 +622,8 @@ class Folder(models.Model):
         See dataversefile.update
         """
         if isinstance(data, list):
+            if len(data) == 0:
+                return
             data = data[0]
         self.name = data['name']
         self.materialized_path = data['materialized']
