@@ -6,7 +6,7 @@ from django.utils import timezone
 from factory import SubFactory, post_generation, Sequence
 from factory.django import DjangoModelFactory
 
-from osf_tests.factories import AuthUserFactory, ProjectFactory, RegionFactory, ExternalAccountFactory
+from osf_tests.factories import AuthUserFactory, RegionFactory, ExternalAccountFactory
 
 from osf import models
 from addons.osfstorage.models import Region

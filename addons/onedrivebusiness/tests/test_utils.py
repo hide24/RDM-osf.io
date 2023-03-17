@@ -16,7 +16,6 @@ class TestOneDriveBusinessAddonTestCase(OAuthAddonTestCaseMixin, AddonTestCase):
 
     def test_get_region_external_account(self):
         user = AuthUserFactory()
-        auth = Auth(user)
         node = ProjectFactory(creator=user)
         institution = InstitutionFactory()
         region = RegionFactory(_id=institution._id, name='Storage')
@@ -29,9 +28,8 @@ class TestOneDriveBusinessAddonTestCase(OAuthAddonTestCaseMixin, AddonTestCase):
                     assert res.id == region.id
                     assert res.name == region.name
 
-    def test_get_region_external_account_with_addon_option_none(self):
+    def test_get_region_external_account_with_region_not_exists(self):
         user = AuthUserFactory()
-        auth = Auth(user)
         node = ProjectFactory(creator=user)
         institution = InstitutionFactory()
         region = RegionFactory(_id=institution._id, name='Storage')
@@ -40,17 +38,16 @@ class TestOneDriveBusinessAddonTestCase(OAuthAddonTestCaseMixin, AddonTestCase):
         with mock.patch('addons.osfstorage.models.Region.objects.filter', return_value=user.affiliated_institutions):
             with mock.patch('osf.models.region_external_account.RegionExternalAccount.objects.get', return_value=region):
                 res = utils.get_region_external_account(node)
-                assert res == None
+                assert res is None
 
     def test_get_region_external_account_with_user_no_institution(self):
         user = AuthUserFactory()
         node = ProjectFactory(creator=user)
         res = utils.get_region_external_account(node)
-        assert res == None
+        assert res is None
 
-    def test_get_region_external_account_with_region_not_exists(self):
+    def test_get_region_external_account_with_addon_option_none(self):
         user = AuthUserFactory()
-        auth = Auth(user)
         node = ProjectFactory(creator=user)
         institution = InstitutionFactory()
         region = RegionFactory(_id=institution._id, name='Storage')
@@ -59,4 +56,4 @@ class TestOneDriveBusinessAddonTestCase(OAuthAddonTestCaseMixin, AddonTestCase):
         with mock.patch('osf.models.rdm_addons.RdmAddonOption.objects.filter', return_value=user.affiliated_institutions):
             with mock.patch('osf.models.region_external_account.RegionExternalAccount.objects.get', return_value=region):
                 res = utils.get_region_external_account(node)
-                assert res == None
+                assert res is None
