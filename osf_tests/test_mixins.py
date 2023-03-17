@@ -26,6 +26,11 @@ class TestAddonModelMixin(OsfTestCase):
         self.region = RegionFactory(waterbutler_settings=self.config)
         self.new_component = NodeFactory(parent=self.project)
 
+    def test_get_addon_region(self):
+        root_id = 1
+        res = self.new_component.get_addon('osfstorage', False, self.region.id, root_id)
+        assert res is None
+
     def test_get_addon_region_not_exist(self):
         res = self.new_component.get_addon('osfstorage', False, self.region.id)
         assert res is None
