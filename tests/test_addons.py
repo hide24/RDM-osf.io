@@ -1999,7 +1999,8 @@ class TestViewUtils(OsfTestCase):
         res = AddonModelMixin.get_first_addon(self.node, 'not_correct_name')
         assert res == None
 
-    @mock.patch('osf.models.mixins.AddonModelMixin')
+    @mock.patch('osf.models.mixins.AddonModelMixin._settings_model')
     def test_get_first_addon_settings_model_is_none(self, mock_settings_model):
-        mock_settings_model.get_first_addon.self._settings_model.return_value = None
-        AddonModelMixin.get_first_addon(self.node, 'osfstorage')
+        mock_settings_model.return_value = None
+        res = AddonModelMixin.get_first_addon(self.node, 'osfstorage')
+        assert res is None
