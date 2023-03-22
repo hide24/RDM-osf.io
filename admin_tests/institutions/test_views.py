@@ -14,9 +14,10 @@ from osf_tests.factories import (
     AuthUserFactory,
     InstitutionFactory,
     ProjectFactory,
-    RegionFactory
+    RegionFactory,
+    UserFactory
 )
-from osf.models import Institution, Node, UserQuota, OSFUser
+from osf.models import Institution, Node, UserQuota, OSFUser, BaseFileNode
 from osf.models.user_storage_quota import UserStorageQuota
 
 from admin_tests.utilities import setup_form_view, setup_user_view, setup_view
@@ -1025,6 +1026,87 @@ class TestQuotaUserStorageList(AdminTestCase):
 
         nt.assert_equal(response['quota'], user_storage_quota.max_quota)
         nt.assert_equal(response['usage'], user_storage_quota.used)
+
+    def test_get_storage_quota_info_exception(self):
+        user = UserFactory(username='username')
+        self.view.get_institution = self.get_institution
+        self.view.get_region = self.get_region
+        project = ProjectFactory(creator=user)
+        project.affiliated_institutions.add(self.institution)
+        response = self.view.get_user_storage_quota_info(user)
+        nt.assert_equal(response['quota'], api_settings.DEFAULT_MAX_QUOTA)
+
+    def test_user_per_storage_used_quota(self):
+        user = UserFactory(username='username2')
+        self.view.get_institution = self.get_institution
+        self.view.get_region = self.get_region
+        project = ProjectFactory(creator=user)
+        project.affiliated_institutions.add(self.institution)
+        addon = project.get_or_add_addon('osfstorage', auth=None)
+        addon.region = self.view.get_region()
+        addon.save()
+        project.creator.add_addon('osfstorage')
+        response = self.view.get_user_storage_quota_info(user)
+        nt.assert_equal(response['quota'], api_settings.DEFAULT_MAX_QUOTA)
+
+    @mock.patch('website.util.quota.BaseFileNode.objects.filter')
+    def test_get_file_ids_by_institutional_storage_base_file_node_none(self, mock_basefilenode):
+        user = UserFactory(username='username2')
+        self.view.get_institution = self.get_institution
+        self.view.get_region = self.get_region
+        project = ProjectFactory(creator=user)
+        project.affiliated_institutions.add(self.institution)
+        addon = project.get_or_add_addon('osfstorage', auth=None)
+        addon.region = self.view.get_region()
+        addon.save()
+        project.creator.add_addon('osfstorage')
+        mock_basefilenode.return_value = None
+        response = self.view.get_user_storage_quota_info(user)
+        nt.assert_equal(response['quota'], api_settings.DEFAULT_MAX_QUOTA)
+
+    @mock.patch('website.util.quota.BaseFileNode.objects.filter')
+    def test_get_file_ids_by_institutional_storage_type_osfstoragefile(self, mock_basefilenode):
+        user = UserFactory(username='username2')
+        self.view.get_institution = self.get_institution
+        self.view.get_region = self.get_region
+        project = ProjectFactory(creator=user)
+        project.affiliated_institutions.add(self.institution)
+        addon = project.get_or_add_addon('osfstorage', auth=None)
+        addon.region = self.view.get_region()
+        addon.save()
+        project.creator.add_addon('osfstorage')
+        mock_basefilenode.return_value = [BaseFileNode(type='osf.osfstoragefile',target_content_type_id=2,
+                                 target_object_id=project.id,parent_id=addon.id,
+                                 deleted_on=None, deleted_by_id=None,)]
+        response = self.view.get_user_storage_quota_info(user)
+        nt.assert_equal(response['quota'], api_settings.DEFAULT_MAX_QUOTA)
+
+    @mock.patch('website.util.quota.BaseFileNode.objects.filter')
+    def test_get_file_ids_by_institutional_storage_type_osfstoragefolder(self, mock_basefilenode):
+        user = UserFactory(username='username2')
+        self.view.get_institution = self.get_institution
+        self.view.get_region = self.get_region
+        project = ProjectFactory(creator=user)
+        project.affiliated_institutions.add(self.institution)
+        addon = project.get_or_add_addon('osfstorage', auth=None)
+        addon.region = self.view.get_region()
+        addon.save()
+        project.creator.add_addon('osfstorage')
+
+        def mock_files_effect(**kwargs):
+            parent_id = kwargs.get('parent_id')
+            if parent_id == addon.root_node_id:
+                return [BaseFileNode(type='osf.osfstoragefolder', target_content_type_id=2,
+                                     target_object_id=project.id, is_root=True,
+                                     deleted_on=None, deleted_by_id=None,),
+                        BaseFileNode(type='osf.osfstoragefile', target_content_type_id=2,
+                                     target_object_id=project.id, parent_id=addon.root_node_id,
+                                     deleted_on=None, deleted_by_id=None,)]
+            return []
+
+        mock_basefilenode.side_effect = mock_files_effect
+        response = self.view.get_user_storage_quota_info(user)
+        nt.assert_equal(response['quota'], api_settings.DEFAULT_MAX_QUOTA)
 
     def test_get_context_data(self):
         self.view.object_list = self.view.get_queryset()
