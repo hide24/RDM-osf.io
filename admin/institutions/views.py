@@ -558,8 +558,7 @@ class StatisticalStatusDefaultInstitutionalStorage(QuotaUserStorageList, RdmPerm
     paginate_by = 10
 
     def test_func(self):
-        return not self.is_super_admin and self.is_admin \
-               and self.request.user.affiliated_institutions.exists()
+        return not self.is_super_admin and self.is_admin and self.request.user.affiliated_institutions.exists()
 
     def get_userlist(self):
         user_list = []
