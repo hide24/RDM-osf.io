@@ -4,9 +4,7 @@ import pytest
 from addons.osfstorage.tests import factories
 from osf_tests.factories import ProjectFactory, RegionFactory, NodeFactory
 from tests.base import OsfTestCase
-from django.core.exceptions import MultipleObjectsReturned
 from unittest import mock
-from osf.models.mixins import AddonModelMixin
 
 
 @pytest.mark.django_db

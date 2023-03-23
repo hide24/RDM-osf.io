@@ -891,8 +891,6 @@ class TestInstitutionalStorage(AdminTestCase):
             waterbutler_url='http://123.456.test.woo',
             mfr_url='http://localhost:7778',
             waterbutler_settings=waterbutler_settings,
-            is_allowed=True,
-            is_readonly=False,
             _id=self.institution._id)
 
         waterbutler_settings2 = {'storage': {'provider': 'nextcloud', 'container': 'osf_storage', 'use_public': True}}
@@ -902,8 +900,6 @@ class TestInstitutionalStorage(AdminTestCase):
             waterbutler_url='http://123.456.test.woo',
             mfr_url='http://localhost:7778',
             waterbutler_settings=waterbutler_settings2,
-            is_allowed=True,
-            is_readonly=False,
             _id=self.institution._id)
 
         self.user.affiliated_institutions.add(self.institution)
@@ -1075,8 +1071,8 @@ class TestQuotaUserStorageList(AdminTestCase):
         addon.region = self.view.get_region()
         addon.save()
         project.creator.add_addon('osfstorage')
-        mock_basefilenode.return_value = [BaseFileNode(type='osf.osfstoragefile',target_content_type_id=2,
-                                 target_object_id=project.id,parent_id=addon.id,
+        mock_basefilenode.return_value = [BaseFileNode(type='osf.osfstoragefile', target_content_type_id=2,
+                                 target_object_id=project.id, parent_id=addon.id,
                                  deleted_on=None, deleted_by_id=None,)]
         response = self.view.get_user_storage_quota_info(user)
         nt.assert_equal(response['quota'], api_settings.DEFAULT_MAX_QUOTA)
