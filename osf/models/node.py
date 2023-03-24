@@ -2528,9 +2528,9 @@ def set_project_storage_type(instance):
         # Then project type is NII_STORAGE
         if nodeSettings.region_id == api_settings.NII_STORAGE_REGION_ID:
             storage_type = ProjectStorageType.NII_STORAGE
-    except NodeSettings.DoesNotExist as e:
+    except NodeSettings.DoesNotExist:
         return
-    except NodeSettings.MultipleObjectsReturned as e:
+    except NodeSettings.MultipleObjectsReturned:
         pass
     obj, created = ProjectStorageType.objects.update_or_create(
         node_id=instance.id, defaults={'node_id': instance.id, 'storage_type': storage_type}

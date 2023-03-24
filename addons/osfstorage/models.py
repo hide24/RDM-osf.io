@@ -307,12 +307,12 @@ class OsfStorageFile(OsfStorageFileNode, File):
         if metadata:
             version.update_metadata(metadata, save=False)
 
-        root_folder_id = get_root_institutional_storage(self._id)
-        if root_folder_id is not None:
-            root_folder_id = root_folder_id.id
-        region = self.target.get_addon(self._provider, root_id=root_folder_id).region
-        # The region of file version should be region of corresponding addon
-        if region is not None:
+        if hasattr(self.target, 'get_addon'):
+            root_folder_id = get_root_institutional_storage(self._id)
+            if root_folder_id is not None:
+                root_folder_id = root_folder_id.id
+            region = self.target.get_addon(self._provider, root_id=root_folder_id).region
+            # The region of file version should be region of corresponding addon
             version.region = region
         else:
             version.region = self.target.osfstorage_region

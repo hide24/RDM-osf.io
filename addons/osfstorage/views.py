@@ -28,7 +28,6 @@ from website.project.model import has_anonymous_link
 from website.files import exceptions
 from addons.osfstorage import utils
 from addons.osfstorage import decorators
-from addons.osfstorage.models import OsfStorageFolder
 from addons.osfstorage import settings as osf_storage_settings
 
 
