@@ -2379,7 +2379,9 @@ class AbstractNode(DirtyFieldsMixin, TypedModel, AddonModelMixin, IdentifierMixi
             root_folder_id = None
 
             if payload['provider'] == 'osfstorage':
-                root_folder_id = get_root_institutional_storage(file_id.strip('/').split('/')[0]).id
+                root_folder_id = get_root_institutional_storage(file_id.strip('/').split('/')[0])
+                if root_folder_id is not None:
+                    root_folder_id = root_folder_id.id
 
             node_addon = self.get_addon(payload['provider'], root_id=root_folder_id)
         except KeyError:

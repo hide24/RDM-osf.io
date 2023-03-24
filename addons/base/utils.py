@@ -1,8 +1,6 @@
 import markupsafe
 from os.path import basename
 from website.settings import MFR_SERVER_URL
-from rest_framework import status as http_status
-from framework.exceptions import HTTPError
 
 from website import settings
 
@@ -73,4 +71,4 @@ def get_root_institutional_storage(file_id):
             file_node = BaseFileNode.objects.get(id=parent_id)
         return file_node
     except BaseFileNode.DoesNotExist:
-        raise HTTPError(http_status.HTTP_404_NOT_FOUND)
+        return None

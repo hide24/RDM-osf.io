@@ -409,7 +409,9 @@ def get_addon_osfstorage_by_path(target, path, provider):
     :return Object: The addon is found
 
     """
-    root_folder_id = get_root_institutional_storage(path.strip('/').split('/')[0]).id
+    root_folder_id = get_root_institutional_storage(path.strip('/').split('/')[0])
+    if root_folder_id is not None:
+        root_folder_id = root_folder_id.id
     if hasattr(target, 'get_addon'):
         node_addon = target.get_addon(provider, root_id=root_folder_id)
         if node_addon is None:

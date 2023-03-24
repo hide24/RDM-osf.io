@@ -137,7 +137,9 @@ class ComplexFileEvent(FileEvent):
         root_id = None
         try:
             if payload['destination']['provider'] == 'osfstorage':
-                root_id = get_root_institutional_storage(payload['destination']['path'].strip('/').split('/')[0]).id
+                root_id = get_root_institutional_storage(payload['destination']['path'].strip('/').split('/')[0])
+                if root_id is not None:
+                    root_id = root_id.id
         except KeyError:
             pass
         self.source_node = AbstractNode.load(source_nid) or Preprint.load(source_nid)

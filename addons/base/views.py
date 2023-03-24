@@ -317,7 +317,9 @@ def get_auth(auth, **kwargs):
             # From path of file or folder, get root folder by the path
             # Using this root folder to get the corresponding addon
             file_id = path.strip('/').split('/')[0]
-            file_node_root_id = get_root_institutional_storage(file_id).id
+            file_node_root_id = get_root_institutional_storage(file_id)
+            if file_node_root_id is not None:
+                file_node_root_id = file_node_root_id.id
 
     check_access(node, auth, action, cas_resp)
     provider_settings = None
@@ -472,9 +474,13 @@ def create_waterbutler_log(payload, **kwargs):
             src_root_id = None
             try:
                 if dest['provider'] == 'osfstorage':
-                    dest_root_id = get_root_institutional_storage(dest['path'].strip('/').split('/')[0]).id
+                    dest_root_id = get_root_institutional_storage(dest['path'].strip('/').split('/')[0])
+                    if dest_root_id is not None:
+                        dest_root_id = dest_root_id.id
                 if src['provider'] == 'osfstorage':
-                    src_root_id = get_root_institutional_storage(src['old_root_id'].strip('/').split('/')[0]).id
+                    src_root_id = get_root_institutional_storage(src['old_root_id'].strip('/').split('/')[0])
+                    if src_root_id is not None:
+                        src_root_id = src_root_id.id
             except KeyError:
                 pass
             if src is not None and dest is not None:
@@ -690,7 +696,9 @@ def addon_view_or_download_file_legacy(**kwargs):
     # This prevents invalid GUIDs from being created
     if provider == 'osfstorage' and path is not None:
         file_id = path.strip('/').split('/')[0]
-        file_node_root_id = get_root_institutional_storage(file_id).id
+        file_node_root_id = get_root_institutional_storage(file_id)
+        if file_node_root_id is not None:
+            file_node_root_id = file_node_root_id.id
         node_settings = node.get_addon('osfstorage', root_id=file_node_root_id)
 
         try:
@@ -746,7 +754,9 @@ def addon_deleted_file(auth, target, error_type='BLAME_PROVIDER', **kwargs):
 
     root_folder_id = None
     if file_node.provider == 'osfstorage' and file_name is not None:
-        root_folder_id = get_root_institutional_storage(file_path).id
+        root_folder_id = get_root_institutional_storage(file_path)
+        if root_folder_id is not None:
+            root_folder_id = root_folder_id.id
 
     try:
         file_guid = file_node.get_guid()._id
@@ -864,7 +874,9 @@ def addon_view_or_download_file(auth, path, provider, **kwargs):
     if hasattr(target, 'get_addon'):
         if provider == 'osfstorage':
             file_id = path.strip('/').split('/')[0]
-            file_node_root_id = get_root_institutional_storage(file_id).id
+            file_node_root_id = get_root_institutional_storage(file_id)
+            if file_node_root_id is not None:
+                file_node_root_id = file_node_root_id.id
 
         node_addon = target.get_addon(provider, root_id=file_node_root_id)
 
