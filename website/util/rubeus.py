@@ -3,7 +3,7 @@
 formatted hgrid list/folders.
 """
 import logging
-
+import re
 from django.utils import timezone
 
 from framework import sentry
@@ -17,6 +17,7 @@ from website.util import paths
 from website.settings import DISK_SAVING_MODE
 from osf.utils import sanitize
 from osf.utils.permissions import WRITE_NODE
+from api.base import settings as api_settings
 
 
 logger = logging.getLogger(__name__)
@@ -126,9 +127,12 @@ def build_addon_root(node_settings, name, permissions=None,
     if hasattr(node_settings, 'region'):
         ret.update({'nodeRegion': node_settings.region.name})
         ret.update({'waterbutlerURL': node_settings.region.waterbutler_url})
-        if node_settings.region.is_readonly is True:
+        is_readonly = check_authentication_attribute(user,
+                                                     node_settings.region.readonly_expression,
+                                                     node_settings.region.is_readonly)
+        if is_readonly:
             ret.update({'permissions': {
-                'view': False,
+                'view': True,
                 'edit': False
             }})
 
@@ -271,6 +275,9 @@ class NodeFileCollector(object):
                 storage = region.waterbutler_settings.get('storage', None)
                 if storage:
                     region_provider = storage.get('provider', None)
+            region.is_allowed = check_authentication_attribute(self.auth.user,
+                                                               region.allow_expression,
+                                                               region.is_allowed)
             data[osf_addon.id] = {
                 'region_disabled': region_disabled,
                 'region_provider': region_provider,
@@ -359,3 +366,48 @@ def delta_date(d):
     diff = d - timezone.now()
     s = diff.total_seconds()
     return s
+
+
+def check_authentication_attribute(user, expression, is_enabled):
+    """Check authentication attribute for user
+
+    :param Object user: user use institutional storage
+    :param str expression: logical expression
+    :param bool is_enabled: turn on or off
+    :return bool: user satisfy condition or note
+
+    """
+
+    from osf.models import AuthenticationAttribute
+    institution = user.affiliated_institutions.first()
+    if institution:
+        if institution.is_authentication_attribute:
+            if is_enabled and expression:
+                indexes = re.findall(r'\d+', expression)
+                indexes = [int(i) for i in indexes]
+                sorted(indexes, reverse=True)
+                for index in indexes:
+                    attribute = AuthenticationAttribute.objects.get(
+                        institution=institution, index_number=index, is_deleted=False
+                    )
+                    result = 'False'
+                    if attribute:
+                        try:
+                            attribute_name = api_settings.ATTRIBUTE_LIST[attribute.attribute_name]
+                            if hasattr(user, attribute_name):
+                                if attribute.attribute_value in str(getattr(user, attribute_name)):
+                                    result = 'True'
+                        except KeyError:
+                            result = 'False'
+                        except AttributeError:
+                            result = 'False'
+                    expression = expression.replace(str(index), result)
+                try:
+                    if eval(expression
+                            .replace('&&', ' and ')
+                            .replace('||', ' or ')
+                            .replace('!', ' not ')) is False:
+                        return False
+                except SyntaxError:
+                    return False
+    return is_enabled

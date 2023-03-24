@@ -58,6 +58,7 @@ from osf.features import (
     SLOAN_DATA_DISPLAY,
     SLOAN_PREREG_DISPLAY
 )
+from website.util.rubeus import check_authentication_attribute
 
 SLOAN_FLAGS = (
     SLOAN_COI_DISPLAY,
@@ -328,10 +329,18 @@ def get_auth(auth, **kwargs):
         if not provider_settings:
             raise HTTPError(http_status.HTTP_400_BAD_REQUEST)
         if provider_name == 'osfstorage':
-            if (provider_settings.region.is_allowed is False) or \
-                    (provider_settings.region.is_readonly is True
-                     and action not in ['metadata', 'download']):
+            region = provider_settings.region
+            is_allowed = check_authentication_attribute(auth.user,
+                                                        region.allow_expression,
+                                                        region.is_allowed)
+            if is_allowed is False:
                 raise HTTPError(http_status.HTTP_403_FORBIDDEN)
+            else:
+                is_readonly = check_authentication_attribute(auth.user,
+                                                             region.readonly_expression,
+                                                             region.is_readonly)
+                if is_readonly is True and action not in ['metadata', 'download']:
+                    raise HTTPError(http_status.HTTP_403_FORBIDDEN)
 
     credentials = None
     waterbutler_settings = None

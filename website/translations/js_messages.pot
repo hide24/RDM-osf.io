@@ -3737,6 +3737,27 @@ msgstr ""
 msgid "Failed to change Allow settings."
 msgstr ""
 
+#: admin/rdm_custom_storage_location/view.py:703
+msgid "The maximum number of registrations has been reached."
+msgstr ""
+
+#: admin/rdm_custom_storage_location/view.py:762
+msgid "Please specify a valid attribute name."
+msgstr ""
+
+#: admin/rdm_custom_storage_location/view.py:738
+msgid "Cannot be deleted because it is in use."
+msgstr ""
+
+#: admin/rdm_custom_storage_location/view.py:796
+#: admin/rdm_custom_storage_location/view.py:807
+msgid "Invalid expression."
+msgstr ""
+
+#: admin/rdm_custom_storage_location/view.py:356
+msgid "The name of institutional storage already exists."
+msgstr ""
+
 #: website/static/js/folderPickerNodeConfig.js:431
 msgid "Failed to import %1$s access token."
 msgstr ""
