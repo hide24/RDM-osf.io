@@ -572,7 +572,8 @@ class AddonModelMixin(models.Model):
         except KeyError:
             is_deleted = False
 
-        return settings_model.objects.filter(owner=self, is_deleted=is_deleted).first()
+        return settings_model.objects.filter(owner=self,
+                                             is_deleted=is_deleted).order_by('id').first()
 
     def add_addon(self, addon_name, auth=None, override=False, _force=False):
         """Add an add-on to the node.

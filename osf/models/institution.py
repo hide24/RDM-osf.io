@@ -157,7 +157,7 @@ class Institution(DirtyFieldsMixin, Loggable, base.ObjectIDMixin, base.BaseModel
     # Get the default region of this institution
     def get_default_region(self):
         from addons.osfstorage.models import Region
-        return Region.objects.filter(_id=self._id).first()
+        return Region.objects.filter(_id=self._id).order_by('id').first()
 
 
 @receiver(post_save, sender=Institution)
