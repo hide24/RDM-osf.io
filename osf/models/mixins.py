@@ -560,18 +560,20 @@ class AddonModelMixin(models.Model):
         if not settings_model:
             return None
         try:
-            if root_id:
-                settings_obj = settings_model.objects.filter(owner=self, root_node_id=root_id).first()
-            elif region_id:
-                settings_obj = settings_model.objects.filter(owner=self, region_id=region_id).first()
-            else:
-                settings_obj = settings_model.objects.get(owner=self)
-
-            if settings_obj and (not settings_obj.is_deleted or is_deleted):
-                return settings_obj
+            settings_obj = None
+            settings_obj = settings_model.objects.get(owner=self, is_deleted=is_deleted)
         except ObjectDoesNotExist:
             pass
-        return None
+        except MultipleObjectsReturned:
+            if root_id:
+                settings_obj = settings_model.objects.filter(owner=self,
+                                                             is_deleted=is_deleted,
+                                                             root_node_id=root_id).first()
+            elif region_id:
+                settings_obj = settings_model.objects.filter(owner=self,
+                                                             is_deleted=is_deleted,
+                                                             region_id=region_id).first()
+        return settings_obj
 
     def get_osfstorage_addons(self):
         """Get all osfstorage addons were owned
@@ -623,10 +625,7 @@ class AddonModelMixin(models.Model):
             return False
 
         # Reactivate deleted add-on if present
-        try:
-            addon = self.get_addon(addon_name, is_deleted=True, region_id=region_id)
-        except MultipleObjectsReturned:
-            addon = self.get_first_addon(addon_name, is_deleted=True)
+        addon = self.get_addon(addon_name, is_deleted=True, region_id=region_id)
         if addon:
             if addon.deleted:
                 addon.undelete(save=True)
