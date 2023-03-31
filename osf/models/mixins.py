@@ -575,7 +575,7 @@ class AddonModelMixin(models.Model):
         return settings_model.objects.filter(owner=self,
                                              is_deleted=is_deleted).order_by('id').first()
 
-    def add_addon(self, addon_name, auth=None, override=False, _force=False):
+    def add_addon(self, addon_name, auth=None, override=False, _force=False, region_id=None):
         """Add an add-on to the node.
 
         :param str addon_name: Name of add-on
@@ -603,6 +603,8 @@ class AddonModelMixin(models.Model):
         model = self._settings_model(addon_name, config=config)
         ret = model(owner=self)
         ret.on_add()
+        if region_id:
+            ret.region_id = region_id
         ret.save(clean=False)  # TODO This doesn't feel right
         return ret
 
