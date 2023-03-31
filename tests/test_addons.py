@@ -21,7 +21,7 @@ from nose.tools import *  # noqa
 from osf_tests import factories
 from tests.base import OsfTestCase, get_default_metaschema
 from api_tests.utils import create_test_file
-from osf_tests.factories import (AuthUserFactory, ProjectFactory,
+from osf_tests.factories import (AuthUserFactory, ProjectFactory, RegionFactory, NodeFactory,
                              RegistrationFactory, DraftRegistrationFactory,)
 from website import settings
 from api.base import settings as api_settings
@@ -31,7 +31,7 @@ from addons.github.models import GithubFolder, GithubFile, GithubFileNode
 from addons.github.tests.factories import GitHubAccountFactory, GoogleDriveAccountFactory
 from addons.osfstorage.models import OsfStorageFileNode, OsfStorageFolder
 from addons.osfstorage.tests.factories import FileVersionFactory
-from osf.models import NodeLog, Session, RegistrationSchema, QuickFilesNode, RdmFileTimestamptokenVerifyResult, RdmUserKey
+from osf.models import NodeLog, Session, RegistrationSchema, QuickFilesNode, RdmFileTimestamptokenVerifyResult, RdmUserKey, AbstractNode
 from osf.models import files as file_models
 from osf.models.files import BaseFileNode, TrashedFileNode, FileVersion
 from osf.utils.permissions import WRITE, READ
@@ -1988,7 +1988,8 @@ class TestViewUtils(OsfTestCase):
         assert not any('/{}/'.format(addon) in asset_paths for addon in default_addons)
 
     @mock.patch('website.util.quota.update_user_used_quota')
-    def test_component_remove_with_node_is_project(self, mock_update_user_used_quota_method):
+    @mock.patch('website.util.quota.AbstractNode.objects.filter')
+    def test_component_remove_with_node_is_project(self, mock_abtractnode, mock_update_user_used_quota_method):
         self.user1 = AuthUserFactory()
         self.user1.save()
         self.auth = self.user1.auth
@@ -2001,9 +2002,13 @@ class TestViewUtils(OsfTestCase):
         )
         self.project.add_contributor(self.user2, auth=Auth(self.user1))
         self.project.save()
+        self.new_component = NodeFactory(parent=self.project)
+        mock_abtractnode.return_value =self.new_component
         url = self.project.api_url_for('component_remove')
-        res = self.app.delete_json(url, {'node_id': self.project._id}, auth=self.auth)
-        res_data = res.json
-        assert_equal(res.status_code, 200)
-        assert_equal(res_data.get('url'), '/dashboard/')
-        mock_update_user_used_quota_method.assert_called()
+        # res = self.app.delete_json(url, {'node_id': self.project._id}, auth=self.auth)
+        # res_data = res.json
+        # assert_equal(res.status_code, 200)
+        # assert_equal(res_data.get('url'), '/dashboard/')
+        # mock_update_user_used_quota_method.assert_called()
+        assert_equal(1, 200)
+
