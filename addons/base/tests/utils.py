@@ -1,13 +1,17 @@
 import pytest
-from addons.base.utils import get_mfr_url
-import mock
+from addons.base.utils import get_mfr_url, get_root_institutional_storage
 from nose.tools import assert_equal
+
 from addons.osfstorage.tests.utils import StorageTestCase
 from tests.base import OsfTestCase
-from osf_tests.factories import ProjectFactory, UserFactory, RegionFactory, CommentFactory
+from osf_tests.factories import ProjectFactory, UserFactory, RegionFactory, CommentFactory, AuthUserFactory
 from website.settings import MFR_SERVER_URL
-from addons.base.utils import get_root_institutional_storage
 from osf.models import BaseFileNode
+from tests.test_websitefiles import TestFolder, TestFile
+from framework.exceptions import HTTPError
+from unittest import mock
+
+
 class MockFolder(dict, object):
 
     def __init__(self):
@@ -30,7 +34,31 @@ class MockLibrary(dict, object):
 
 
 @pytest.mark.django_db
-class TestAddonsUtils(OsfTestCase):
+class TestAddonsBaseUtils(OsfTestCase):
+
+    def setUp(self):
+        super(TestAddonsBaseUtils, self).setUp()
+        self.user = AuthUserFactory()
+        self.node = ProjectFactory(creator=self.user)
+        self.parent = TestFolder(
+            _path='aparent',
+            name='parent',
+            target=self.node,
+            provider='osf_storage',
+            materialized_path='/long/path/to/name',
+            is_root=True,
+        )
+        self.parent.save()
+        self.file_child = TestFile(
+            _path='afile',
+            name='child',
+            target=self.node,
+            parent_id=self.parent.id,
+            provider='osf_storage',
+            materialized_path='/long/path/to/name',
+        )
+        self.file_child.save()
+
     def test_mfr_url(self):
         user = UserFactory()
         project = ProjectFactory(creator=user)
@@ -39,17 +67,15 @@ class TestAddonsUtils(OsfTestCase):
         assert get_mfr_url(project, 'osfstorage') == project.osfstorage_region.mfr_url
         assert get_mfr_url(comment, 'osfstorage') == MFR_SERVER_URL
 
-    @mock.patch('osf.models.BaseFileNode.objects.get')
-    def test_get_root_institutional_storage(self, mock_base_file_node_objects_get):
-        file_id = '12345'
-        is_root_none = BaseFileNode(is_root=None, parent_id=1)
-        is_root_true = BaseFileNode(is_root=True, parent_id=1)
-        mock_base_file_node_objects_get.side_effect = [is_root_none, is_root_true]
-        result = get_root_institutional_storage(file_id)
-        assert isinstance(result, BaseFileNode)
     @mock.patch('osf.models.files.BaseFileNode.objects.get')
     def test_get_root_institutional_storage_exception(self, mock_base_file_node_objects_get):
         file_id = '12345'
         mock_base_file_node_objects_get.side_effect = BaseFileNode.DoesNotExist('error')
         result = get_root_institutional_storage(file_id)
         assert_equal(result, None)
+
+    def test_get_root_institutional_storage(self):
+        with mock.patch('osf.models.files.BaseFileNode.objects.get', side_effect=[self.file_child, self.parent]):
+            res = get_root_institutional_storage(self.file_child.id)
+            assert res.name == self.parent.name
+            assert res.target == self.parent.target
