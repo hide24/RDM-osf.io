@@ -561,19 +561,20 @@ class AddonModelMixin(models.Model):
             return None
         try:
             settings_obj = None
-            settings_obj = settings_model.objects.get(owner=self, is_deleted=is_deleted)
+            settings_obj = settings_model.objects.get(owner=self)
         except ObjectDoesNotExist:
             pass
         except MultipleObjectsReturned:
             if root_id:
                 settings_obj = settings_model.objects.filter(owner=self,
-                                                             is_deleted=is_deleted,
                                                              root_node_id=root_id).first()
             elif region_id:
                 settings_obj = settings_model.objects.filter(owner=self,
-                                                             is_deleted=is_deleted,
                                                              region_id=region_id).first()
-        return settings_obj
+        if settings_obj and (not settings_obj.is_deleted or is_deleted):
+            return settings_obj
+        else:
+            return None
 
     def get_osfstorage_addons(self):
         """Get all osfstorage addons were owned
