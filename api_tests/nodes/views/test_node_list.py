@@ -1402,8 +1402,15 @@ class TestNodeCreate:
         return RegionFactory(name='Frankfort', _id='eu-central-1')
 
     @pytest.fixture()
-    def url_with_region_query_param(self, region, url):
-        return url + '?region={}'.format(region._id)
+    def region_institution(self, institution_one):
+        region = RegionFactory()
+        region._id = institution_one._id
+        region.save()
+        return region
+
+    @pytest.fixture()
+    def url_with_region_query_param(self, region_institution, url):
+        return url + '?region={}'.format(region_institution._id)
 
     @pytest.fixture()
     def public_project(self, title, description, category, institution_one):
@@ -1797,7 +1804,7 @@ class TestNodeCreate:
         assert institution_two in node.affiliated_institutions.all()
 
     def test_create_project_with_region_query_param(
-            self, app, user_one, region, private_project, url_with_region_query_param):
+            self, app, user_one, region_institution, private_project, url_with_region_query_param):
         res = app.post_json_api(
             url_with_region_query_param, private_project, auth=user_one.auth
         )
@@ -1806,7 +1813,20 @@ class TestNodeCreate:
         project = AbstractNode.load(pid)
 
         node_settings = project.get_addon('osfstorage')
-        assert node_settings.region_id == region.id
+        assert node_settings.region_id == region_institution.id
+
+    def test_create_project_with_normal_user(
+            self, app, region_institution, private_project, url_with_region_query_param):
+        user = AuthUserFactory()
+        res = app.post_json_api(
+            url_with_region_query_param, private_project, auth=user.auth
+        )
+        assert res.status_code == 201
+        pid = res.json['data']['id']
+        project = AbstractNode.load(pid)
+
+        node_settings = project.get_addon('osfstorage')
+        assert node_settings.region_id == region_institution.id
 
     def test_create_project_with_no_region_specified(self, app, user_one, private_project, url):
         res = app.post_json_api(
@@ -1827,7 +1847,7 @@ class TestNodeCreate:
             auth=user_one.auth, expect_errors=True
         )
         assert res.status_code == 400
-        assert res.json['errors'][0]['detail'] == 'Region {} is invalid.'.format(bad_region_id)
+        assert res.json['errors'][0]['detail'] == 'Region {} is invalid.'.format(None)
 
     def test_create_project_errors(
             self, app, user_one, title, description, category, url):
