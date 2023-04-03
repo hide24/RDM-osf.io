@@ -3,6 +3,8 @@ import datetime
 import mock
 from nose.tools import *  # noqa (PEP8 asserts)
 import pytest
+
+from api_tests.utils import create_test_file
 from tests.test_websitefiles import TestFolder, TestFile
 from addons.osfstorage.models import OsfStorageFileNode
 from api.base import settings as api_settings
@@ -254,6 +256,49 @@ class TestUsedQuota(OsfTestCase):
 
         assert_equal(quota.used_quota(self.user._id, storage_type=UserQuota.NII_STORAGE), 0)
         assert_equal(quota.used_quota(self.user._id, storage_type=UserQuota.CUSTOM_STORAGE), 0)
+
+
+class TestUserStorageQuota(OsfTestCase):
+    def setUp(self):
+        super(TestUserStorageQuota, self).setUp()
+        self.user = UserFactory()
+        self.node = [
+            ProjectFactory(creator=self.user),
+            ProjectFactory(creator=self.user)
+        ]
+        ProjectStorageType.objects.filter(node=self.node[0]).update(storage_type=UserQuota.CUSTOM_STORAGE)
+        ProjectStorageType.objects.filter(node=self.node[1]).update(storage_type=UserQuota.CUSTOM_STORAGE)
+        file_1 = create_test_file(target=self.node[0], user=self.user)
+        file_2 = create_test_file(target=self.node[1], user=self.user)
+        FileInfo.objects.create(file=file_1, file_size=400)
+        FileInfo.objects.create(file=file_2, file_size=500)
+
+    def tearDown(self):
+        super(TestUserStorageQuota, self).tearDown()
+
+    def test_recalculate_used_quota_by_user(self):
+        UserStorageQuota.objects.create(user=self.user, region_id=1)
+        quota.recalculate_used_quota_by_user(self.user._id)
+        user_storage_quota = UserStorageQuota.objects.get(user=self.user, region_id=1)
+        assert_equal(user_storage_quota.used, 900)
+
+    def test_recalculate_used_quota_by_user_not_found(self):
+        res = quota.recalculate_used_quota_by_user(self.user._id)
+        assert_is_none(res)
+
+    def test_get_file_ids_by_institutional_storage(self):
+        node = ProjectFactory(creator=self.user)
+        files_ids = []
+        res = quota.get_file_ids_by_institutional_storage(files_ids, node.id, None)
+        assert_is_none(res)
+
+    @mock.patch('website.util.quota.BaseFileNode.objects.filter')
+    def test_get_file_ids_by_institutional_storage_not_found(self, mock_base_file_node):
+        mock_base_file_node.return_value = None
+        node = ProjectFactory(creator=self.user)
+        files_ids = []
+        res = quota.get_file_ids_by_institutional_storage(files_ids, node.id, '')
+        assert_is_none(res)
 
 
 class TestSaveFileInfo(OsfTestCase):
@@ -587,15 +632,6 @@ class TestSaveFileInfo(OsfTestCase):
             }
         )
         assert_equal(res, None)
-
-    def test_recalculate_used_quota_by_user(self):
-        self.user = AuthUserFactory()
-        self.project = ProjectFactory(creator=self.user)
-        self.project.add_contributor(self.user)
-        self.project.save()
-        self.region = RegionFactory()
-        self.new_component = NodeFactory(parent=self.project)
-        quota.recalculate_used_quota_by_user(self.user.id)
 
     def test_update_institutional_storage_used_quota(self):
         UserStorageQuota.objects.create(user=self.project_creator, region=self.region, max_quota=self.storage_max_quota, used=1000)
