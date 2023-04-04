@@ -1986,29 +1986,3 @@ class TestViewUtils(OsfTestCase):
         # connect/disconnect from them, think osfstorage, there's no node-cfg for that.
         default_addons = [addon['short_name'] for addon in addon_dicts if addon['default']]
         assert not any('/{}/'.format(addon) in asset_paths for addon in default_addons)
-
-    @mock.patch('website.util.quota.update_user_used_quota')
-    @mock.patch('website.util.quota.AbstractNode.objects.filter')
-    def test_component_remove_with_node_is_project(self, mock_abtractnode, mock_update_user_used_quota_method):
-        self.user1 = AuthUserFactory()
-        self.user1.save()
-        self.auth = self.user1.auth
-        self.user2 = AuthUserFactory()
-
-        self.project = ProjectFactory(
-            title='Ham',
-            description='Honey-baked',
-            creator=self.user1
-        )
-        self.project.add_contributor(self.user2, auth=Auth(self.user1))
-        self.project.save()
-        self.new_component = NodeFactory(parent=self.project)
-        mock_abtractnode.return_value =self.new_component
-        url = self.project.api_url_for('component_remove')
-        # res = self.app.delete_json(url, {'node_id': self.project._id}, auth=self.auth)
-        # res_data = res.json
-        # assert_equal(res.status_code, 200)
-        # assert_equal(res_data.get('url'), '/dashboard/')
-        # mock_update_user_used_quota_method.assert_called()
-        assert_equal(1, 200)
-

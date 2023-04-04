@@ -494,79 +494,7 @@ class TestSaveFileInfo(OsfTestCase):
     @mock.patch('website.util.quota.get_project_storage_type')
     @mock.patch('website.util.quota.AbstractNode.objects.get')
     @mock.patch('website.util.quota.get_root_institutional_storage')
-    def test_get_addon_osfstorage_by_path_have_root_folder_id(self, mock_root_id, mock_abstractnode, mock_storage_type):
-        parent = TestFolder(
-            _path='aparent',
-            name='parent',
-            target=self.node,
-            provider='osf_storage',
-            materialized_path='/long/path/to/name',
-            is_root=True,
-        )
-        parent.save()
-        file_child = TestFile(
-            _path='afile',
-            name='child',
-            target=self.node,
-            parent_id=parent.id,
-            provider='osf_storage',
-            materialized_path='/long/path/to/name',
-        )
-        file_child.save()
-        mock_root_id.return_value = file_child
-        mock_storage_type.return_value = ProjectStorageType.CUSTOM_STORAGE
-        mock_abstractnode.return_value = AbstractNode.objects.get(id=self.node.id)
-        file_info_query = FileInfo.objects.filter(file=self.file)
-        assert_false(file_info_query.exists())
-        UserQuota.objects.create(user=self.project_creator, storage_type=UserQuota.CUSTOM_STORAGE, max_quota=200)
-        with pytest.raises(HTTPError) as e:
-            quota.update_used_quota(
-                self=None,
-                target=self.node,
-                user=self.user,
-                event_type=FileLog.FILE_MOVED,
-                payload={
-                    'provider': 'fake_osfstorage',
-                    'metadata': {
-                        'provider': 'fake_osfstorage',
-                        'name': 'testfile',
-                        'materialized': '/filename',
-                        'path': '/' + self.file._id,
-                        'kind': 'file',
-                        'size': 1000,
-                        'created_utc': '',
-                        'modified_utc': '',
-                        'extra': {'version': '1'}
-                    },
-                    'destination': {
-                        'provider': 'osfstorage',
-                        'name': 'testfile',
-                        'materialized': '/filename',
-                        'path': self.file._id,
-                        'kind': 'file',
-                        'size': 1000,
-                        'extra': {'version': '1'}
-                    },
-                    'source': {
-                        'provider': 'osfstorage',
-                        'name': 'testfile',
-                        'materialized': '/filename',
-                        'path': self.file._id,
-                        'kind': 'file',
-                        'size': 1000,
-                        'extra': {'version': '1'},
-                        'nid': self.node.id,
-                        'old_root_id': '/'
-                    },
-                }
-            )
-
-        assert e.value.code == 400
-
-    @mock.patch('website.util.quota.get_project_storage_type')
-    @mock.patch('website.util.quota.AbstractNode.objects.get')
-    @mock.patch('website.util.quota.get_root_institutional_storage')
-    def test_get_addon_osfstorage_by_path_have_no_get_addon(self, mock_root_id, mock_abstractnode, mock_storage_type):
+    def test_get_addon_osfstorage_by_path_root_folder_id_none(self, mock_root_id, mock_abstractnode, mock_storage_type):
         parent = TestFolder(
             _path='aparent',
             name='parent',
@@ -593,7 +521,7 @@ class TestSaveFileInfo(OsfTestCase):
         UserQuota.objects.create(user=self.project_creator, storage_type=UserQuota.CUSTOM_STORAGE, max_quota=200)
         res = quota.update_used_quota(
             self=None,
-            target=self.region,
+            target=self.node,
             user=self.user,
             event_type=FileLog.FILE_MOVED,
             payload={

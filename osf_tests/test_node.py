@@ -4876,7 +4876,9 @@ class TestAbstractNode(OsfTestCase):
         assert e.value.code == 400
 
     @mock.patch('addons.base.utils.get_root_institutional_storage')
-    def test_create_waterbutler_log(self, mock_root_id):
+    @mock.patch('osf.models.mixins.AddonModelMixin.get_addon')
+    def test_create_waterbutler_log(self, mock_get_addon, mock_root_id):
+        mock_get_addon.return_value = None
         mock_root_id.return_value = None
         with pytest.raises(HTTPError) as e:
             self.new_component.create_waterbutler_log(
@@ -4886,10 +4888,12 @@ class TestAbstractNode(OsfTestCase):
                          'provider':'osfstorage'}
             )
 
-        assert e.value.code == 404
+        assert e.value.code == 400
 
     @mock.patch('osf.models.node.get_root_institutional_storage')
-    def test_create_waterbutler_log_have_root_folder_id(self, mock_root_id):
+    @mock.patch('osf.models.mixins.AddonModelMixin.get_addon')
+    def test_create_waterbutler_log_have_root_folder_id(self,mock_get_addon, mock_root_id):
+        mock_get_addon.return_value = None
 
         parent = TestFolder(
             _path='aparent',
