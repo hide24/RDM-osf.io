@@ -4,9 +4,7 @@ from nose import tools as nt
 from addons.osfstorage.tests import factories
 from osf_tests.factories import ProjectFactory, RegionFactory, NodeFactory
 from tests.base import OsfTestCase
-from django.core.exceptions import MultipleObjectsReturned
 from unittest import mock
-from osf.models.mixins import AddonModelMixin
 from addons.osfstorage.models import NodeSettings
 
 
@@ -25,8 +23,6 @@ class TestAddonModelMixin(OsfTestCase):
         self.user = factories.AuthUserFactory()
         self.region = RegionFactory(waterbutler_settings=self.config)
         self.project = ProjectFactory(creator=self.user)
-        self.project.add_addon('osfstorage', auth=None, region_id=55)
-        self.project.add_addon('osfstorage', auth=None, region_id=22)
         self.project.save()
 
         self.new_component = NodeFactory(parent=self.project, creator=self.user)
@@ -44,6 +40,22 @@ class TestAddonModelMixin(OsfTestCase):
     def test_get_addon_exception_lookuperror(self):
         with mock.patch('osf.models.mixins.AddonModelMixin._settings_model', side_effect=LookupError()):
             self.new_component.get_addon(None)
+
+    def test_get_addon_except_mutiple(self):
+        project = ProjectFactory(creator=self.user)
+        region_1 = RegionFactory()
+        region_2 = RegionFactory()
+        project.add_addon('osfstorage', auth=None, region_id=region_1.id)
+        project.add_addon('osfstorage', auth=None, region_id=region_2.id)
+        project.save()
+        addon = project.get_addon('osfstorage', region_id=region_1.id)
+
+        assert addon.region.id == region_1.id
+
+        root_id = project.get_addon('osfstorage', region_id=region_2.id).get_root().id
+        addon_1 = project.get_addon('osfstorage', root_id=root_id)
+
+        assert addon_1.region.id == region_2.id
 
     def test_get_addon_not_settings_model(self):
         with mock.patch('osf.models.mixins.AddonModelMixin._settings_model', return_value=None):
@@ -69,22 +81,6 @@ class TestAddonModelMixin(OsfTestCase):
         with mock.patch('osf.models.mixins.AddonModelMixin._settings_model', return_value=None):
             res = self.new_component.get_first_addon('osfstorage')
             assert res is None
-
-    # def test_add_addon(self):
-    #     mock_node_settings = mock.MagicMock()
-    #     mock_node_settings.on_add.return_value = None
-    #     mock_node_settings.save.return_value = None
-    #     temp_region = RegionFactory(name='Frankfort', _id='eu-central-1')
-    #     with mock.patch('osf.models.mixins.AddonModelMixin._settings_model', return_value=mock_node_settings):
-    #         with mock.patch('osf.models.mixins.AddonModelMixin.get_addon', side_effect=MultipleObjectsReturned('mocked error')):
-    #             res = AddonModelMixin.add_addon(self.new_component, 'osfstorage', None, False, temp_region.id)
-    #             assert res is not None
-
-    # def test_add_addon_have_region_id(self):
-    #     temp_region = RegionFactory(name='Frankfort', _id='eu-central-1')
-    #
-    #     res = self.new_component.add_addon('osfstorage', None, False, temp_region.id)
-    #     nt.assert_is_instance(res, NodeSettings)
 
     def test_delete_addon(self):
         with mock.patch('osf.models.mixins.AddonModelMixin.get_addon', return_value=None):
