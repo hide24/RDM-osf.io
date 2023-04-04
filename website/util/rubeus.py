@@ -128,7 +128,7 @@ def build_addon_root(node_settings, name, permissions=None,
         ret.update({'waterbutlerURL': node_settings.region.waterbutler_url})
         if node_settings.region.is_readonly is True:
             ret.update({'permissions': {
-                'view': False,
+                'view': True,
                 'edit': False
             }})
 
