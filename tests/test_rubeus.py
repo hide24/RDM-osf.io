@@ -115,7 +115,7 @@ class TestRubeus(OsfTestCase):
 
         del actual['urls']
 
-        assert_false(actual['permissions']['view'])
+        assert_true(actual['permissions']['view'])
         assert_false(actual['permissions']['edit'])
 
     def test_build_addon_root_has_correct_upload_limits(self):

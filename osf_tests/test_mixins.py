@@ -82,6 +82,22 @@ class TestAddonModelMixin(OsfTestCase):
             res = self.new_component.get_first_addon('osfstorage')
             assert res is None
 
+    @mock.patch('osf.models.mixins.AddonModelMixin._settings_model')
+    def test_add_addon_not_settings_model(self, mock_settings_model):
+        mock_settings_model.return_value = None
+        temp_region = RegionFactory(name='Frankfort', _id='eu-central-1')
+
+        res = self.new_component.add_addon('osfstorage', None, False, temp_region.id)
+        assert res is None
+
+    @mock.patch('osf.models.mixins.AddonModelMixin._settings_model')
+    def test_add_addon_not_raise_lookup_error(self, mock_settings_model):
+        mock_settings_model.side_effect = LookupError('mock error')
+        temp_region = RegionFactory(name='Frankfort', _id='eu-central-1')
+
+        res = self.new_component.add_addon('osfstorage', None, False, temp_region.id)
+        assert res is None
+
     def test_delete_addon(self):
         with mock.patch('osf.models.mixins.AddonModelMixin.get_addon', return_value=None):
             res = self.new_component.delete_addon('node', auth=self.user.auth)
