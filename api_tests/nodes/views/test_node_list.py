@@ -2,6 +2,8 @@ import pytest
 from nose.tools import *  # noqa:
 
 from django.utils import timezone
+from api.base import settings as api_settings
+
 from api.base.settings.defaults import API_BASE, MAX_PAGE_SIZE
 from api.base.utils import default_node_permission_queryset
 from api_tests.nodes.filters.test_filters import NodesListFilteringMixin, NodesListDateFilteringMixin
@@ -1766,7 +1768,7 @@ class TestNodeCreate:
         )
         assert res.status_code == 201
         region_id = res.json['data']['relationships']['region']['data']['id']
-        assert region_id == region._id
+        assert int(region_id) == api_settings.NII_STORAGE_REGION_ID
 
         institution_two = InstitutionFactory()
         user_one.affiliated_institutions.add(institution_two)
@@ -1796,7 +1798,7 @@ class TestNodeCreate:
         )
         assert res.status_code == 201
         region_id = res.json['data']['relationships']['region']['data']['id']
-        assert region_id == region._id
+        assert int(region_id) == api_settings.NII_STORAGE_REGION_ID
 
         node_id = res.json['data']['id']
         node = AbstractNode.load(node_id)
