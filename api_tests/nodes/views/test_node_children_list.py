@@ -281,9 +281,7 @@ class TestNodeChildrenList:
             self, app, user, public_project_url):
         bad_region_id = 'bad-region-1'
         with pytest.raises(Exception):
-            res = app.get(
-                public_project_url + '?region={}'.format(bad_region_id),
-                auth=user.auth)
+            app.get(public_project_url + '?region={}'.format(bad_region_id), auth=user.auth)
 
 
 @pytest.mark.django_db

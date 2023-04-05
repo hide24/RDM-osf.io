@@ -69,7 +69,6 @@ from website.util import api_url_for, web_url_for
 from website.views import find_bookmark_collection
 from addons.osfstorage.tests import factories
 from .factories import get_default_metaschema
-from unittest import mock
 from tests.base import OsfTestCase
 from framework.exceptions import HTTPError
 from tests.test_websitefiles import TestFolder, TestFile
@@ -4871,7 +4870,7 @@ class TestAbstractNode(OsfTestCase):
                 auth=Auth(user=self.user),
                 action='file_added',
                 payload={'metadata': {'path': None},
-                         'provider':'osfstorage'}
+                         'provider': 'osfstorage'}
             )
         assert e.value.code == 400
 
@@ -4885,14 +4884,14 @@ class TestAbstractNode(OsfTestCase):
                 auth=Auth(user=self.user),
                 action='file_added',
                 payload={'metadata': {'path': '123/'},
-                         'provider':'osfstorage'}
+                         'provider': 'osfstorage'}
             )
 
         assert e.value.code == 400
 
     @mock.patch('osf.models.node.get_root_institutional_storage')
     @mock.patch('osf.models.mixins.AddonModelMixin.get_addon')
-    def test_create_waterbutler_log_have_root_folder_id(self,mock_get_addon, mock_root_id):
+    def test_create_waterbutler_log_have_root_folder_id(self, mock_get_addon, mock_root_id):
         mock_get_addon.return_value = None
 
         parent = TestFolder(
