@@ -492,7 +492,6 @@ class TestAddonsBaseView(StorageTestCase):
                         )
                         assert resp.status_code == 404
 
-
     @mock.patch('website.util.timestamp.requests')
     def test_addon_deleted_file(self, mock_requests):
         mock_requests.get.return_value.status_code = 400
@@ -524,45 +523,3 @@ class TestAddonsBaseView(StorageTestCase):
         redirect_two = redirect.follow(auth=self.user.auth)
         redirect_two.follow(auth=self.user.auth)
         assert redirect.status_code == 302
-
-    # @mock.patch('requests.get')
-    # def test_create_waterbutler_log(self, mock_get):
-    #     user = AuthUserFactory()
-    #     mock_get.return_value.status_code = 200
-    #
-    #     node = ProjectFactory(creator=user)
-    #     wb_log_url = node.api_url_for('create_waterbutler_log')
-    #
-    #     foldername = 'nice_folder'
-    #     folderpath = foldername + '/'
-    #     filename = 'file_ver1'
-    #     file_node = create_test_file(node=node, user=user, filename=filename)
-    #     file_node._path = '/' + folderpath + filename
-    #     file_node.save()
-    #
-    #     movedfolderpath = 'trash_bin/{}/'.format(foldername)
-    #     self.app.put_json(wb_log_url, self.build_payload(
-    #         action='move',
-    #         metadata={
-    #             'path': '/' + movedfolderpath,
-    #         },
-    #         source={
-    #             'provider': 'github',
-    #             'name': foldername,
-    #             'materialized': '/' + folderpath,
-    #             'path': '/' + folderpath,
-    #             'node': {'_id': self.node._id},
-    #             'kind': 'folder',
-    #             'nid': self.node._id,
-    #         },
-    #         destination={
-    #             'provider': 'github',
-    #             'name': foldername,
-    #             'materialized': '/' + movedfolderpath,
-    #             'path': '/' + movedfolderpath,
-    #             'node': {'_id': self.node._id},
-    #             'kind': 'folder',
-    #             'nid': self.node._id,
-    #         },
-    #     ), headers={'Content-Type': 'application/json'})
-    #     assert 1 == 302

@@ -541,6 +541,8 @@ class AddonModelMixin(models.Model):
             return False
         if not settings_model:
             return False
+        if is_deleted:
+            return bool(settings_model.objects.filter(owner=self))
         return bool(settings_model.objects.filter(owner=self, is_deleted=is_deleted))
 
     def get_addon_names(self):
