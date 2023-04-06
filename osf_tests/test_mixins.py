@@ -63,7 +63,7 @@ class TestAddonModelMixin(OsfTestCase):
             assert res is None
 
     def test_get_addon_settings_multiple_objects_returned(self):
-        res = self.new_component.get_addon('osfstorage')
+        self.new_component.get_addon('osfstorage')
 
     def test_get_first_addon(self):
         res = self.new_component.get_first_addon('osfstorage', is_deleted=False)
