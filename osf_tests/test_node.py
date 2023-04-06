@@ -4493,6 +4493,11 @@ class TestAddonCallbacks:
             # no longer guaranteed to return the same set of objects-in-memory
             return self.patched_addons.get(addon_name, None)
 
+        def mock_get_osfstorage_addons():
+            # Overrides AddonModelMixin.get_osfstorage_addons -- without backrefs,
+            # no longer guaranteed to return the same set of objects-in-memory
+            return [self.patched_addons.get('osfstorage', None)]
+
         self.patches = []
         self.patched_addons = {}
         self.original_get_addon = Node.get_addon
@@ -4517,6 +4522,12 @@ class TestAddonCallbacks:
             mock_get_addon
         )
         n_patch.start()
+        m_patch = mock.patch.object(
+            node,
+            'get_osfstorage_addons',
+            mock_get_osfstorage_addons
+        )
+        m_patch.start()
         self.patches.append(n_patch)
 
     def teardown_method(self, method):
