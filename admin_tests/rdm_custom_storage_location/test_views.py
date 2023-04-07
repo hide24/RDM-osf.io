@@ -717,9 +717,10 @@ class TestChangeAuthenticationAttributeView(AdminTestCase):
         )
         self.view = views.ChangeAuthenticationAttributeView()
         self.view = setup_user_view(self.view, self.request, user=self.user)
-        with nt.assert_raises(HTTPError):
+        with nt.assert_raises(HTTPError) as e:
             self.view.post(self.request)
-
+        res = e.exception
+        assert res.code == 400
 
 class TestAddAttributeFormView(AdminTestCase):
 
@@ -768,7 +769,7 @@ class TestAddAttributeFormView(AdminTestCase):
         nt.assert_equal(attribute_1.index_number + 1, attribute_2.index_number)
         nt.assert_equal(response.status_code, 200)
 
-    def test_add_attribute_restore(self):
+    def test_add_attribute_restore_renew_index(self):
         index = 2
         AuthenticationAttribute.objects.create(
             institution=self.institution,
@@ -855,8 +856,10 @@ class TestDeleteAttributeFormView(AdminTestCase):
         )
         self.view = views.DeleteAttributeFormView()
         self.view = setup_user_view(self.view, self.request, user=self.user)
-        with nt.assert_raises(HTTPError):
+        with nt.assert_raises(HTTPError) as e:
             self.view.post(self.request)
+        res = e.exception
+        assert res.code == 400
 
     def test_delete_attribute_does_not_exist(self):
         self.request = RequestFactory().post(
@@ -866,8 +869,10 @@ class TestDeleteAttributeFormView(AdminTestCase):
         )
         self.view = views.DeleteAttributeFormView()
         self.view = setup_user_view(self.view, self.request, user=self.user)
-        with nt.assert_raises(HTTPError):
+        with nt.assert_raises(HTTPError) as e:
             self.view.post(self.request)
+        res = e.exception
+        assert res.code == 400
 
     def test_delete_attribute_used_in_allow_expression(self):
         self.region.allow_expression = '1&&2'
@@ -914,10 +919,12 @@ class TestSaveAttributeFormView(AdminTestCase):
 
         self.view = views.SaveAttributeFormView()
         self.view = setup_user_view(self.view, self.request, user=self.user)
-        with nt.assert_raises(HTTPError):
+        with nt.assert_raises(HTTPError) as e:
             self.view.post(self.request)
+        res = e.exception
+        assert res.code == 400
 
-    def test_attribute_not_in_defined_list(self):
+    def test_save_attribute_not_in_defined_list(self):
         self.request = RequestFactory().post(
             'custom_storage_location:save_attribute_form',
             json.dumps({'id': 2, 'attribute': 'name', 'attribute_value': 'admin'}),
@@ -929,7 +936,7 @@ class TestSaveAttributeFormView(AdminTestCase):
         response = self.view.post(self.request)
         nt.assert_equal(response.status_code, 400)
 
-    def test_attribute_does_not_exist(self):
+    def test_save_attribute_does_not_exist(self):
         self.request = RequestFactory().post(
             'custom_storage_location:save_attribute_form',
             json.dumps({'id': 2, 'attribute': 'mail', 'attribute_value': 'admin'}),
@@ -938,8 +945,10 @@ class TestSaveAttributeFormView(AdminTestCase):
 
         self.view = views.SaveAttributeFormView()
         self.view = setup_user_view(self.view, self.request, user=self.user)
-        with nt.assert_raises(HTTPError):
+        with nt.assert_raises(HTTPError) as e:
             self.view.post(self.request)
+        res = e.exception
+        assert res.code == 400
 
     def test_save_attribute_is_not_deleted(self):
         attribute = AuthenticationAttributeFactory()
@@ -1005,8 +1014,10 @@ class TestSaveInstitutionalStorageView(AdminTestCase):
 
         self.view = views.SaveInstitutionalStorageView()
         self.view = setup_user_view(self.view, self.request, user=self.user)
-        with nt.assert_raises(HTTPError):
+        with nt.assert_raises(HTTPError) as e:
             self.view.post(self.request)
+        res = e.exception
+        assert res.code == 400
 
     def test_save_institutional_storage_allow_expression_invalid(self):
         self.request = RequestFactory().post(
@@ -1085,8 +1096,10 @@ class TestSaveInstitutionalStorageView(AdminTestCase):
 
         self.view = views.SaveInstitutionalStorageView()
         self.view = setup_user_view(self.view, self.request, user=self.user)
-        with nt.assert_raises(HTTPError):
+        with nt.assert_raises(HTTPError) as e:
             self.view.post(self.request)
+        res = e.exception
+        assert res.code == 400
 
     def test_save_institutional_storage_with_new_storage_name(self):
         storage_name_test = self.region.name + 'test'

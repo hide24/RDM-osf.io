@@ -37,7 +37,7 @@ def test_factory_delete():
 
 @pytest.mark.django_db
 def test_factory_restore():
-    attribute = AuthenticationAttributeFactory(is_deleted=False)
+    attribute = AuthenticationAttributeFactory(is_deleted=True)
     attribute.restore()
     attribute_test = AuthenticationAttribute.objects.get(id=attribute.id)
     assert attribute_test.is_deleted is False

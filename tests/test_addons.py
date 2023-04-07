@@ -233,8 +233,8 @@ class TestAddonAuth(OsfTestCase):
 
     def test_auth_download_with_path_not_found(self):
         url = self.build_url(action='download', provider='osfstorage', path=None, version=1)
-        with pytest.raises(Exception):
-            self.app.get(url, auth=self.user.auth)
+        res = self.app.get(url, expect_errors=True, auth=self.user.auth)
+        assert_equal(res.status_code, 400)
 
     def test_auth_download_with_path_root(self):
         user = AuthUserFactory()
@@ -245,8 +245,8 @@ class TestAddonAuth(OsfTestCase):
         user.save()
         region.save()
         url = self.build_url(action='download', provider='osfstorage', path='/', version=1)
-        with pytest.raises(Exception):
-            self.app.get(url, auth=user.auth)
+        res = self.app.get(url, expect_errors=True, auth=self.user.auth)
+        assert_equal(res.status_code, 200)
 
     def test_auth_download_not_allowed(self):
         node = ProjectFactory(is_public=True)
@@ -255,8 +255,8 @@ class TestAddonAuth(OsfTestCase):
         addon.region.save()
         test_file = create_test_file(node, self.user)
         url = self.build_url(nid=node._id, action='download', provider='osfstorage', path=test_file.path, version=1)
-        with pytest.raises(Exception):
-            self.app.get(url, auth=self.user.auth)
+        res = self.app.get(url, expect_errors=True, auth=self.user.auth)
+        assert_equal(res.status_code, 403)
 
     def test_auth_not_provider_settings(self):
         new_region = RegionFactory(is_readonly=True)
@@ -266,11 +266,11 @@ class TestAddonAuth(OsfTestCase):
         test_file = create_test_file(node, self.user)
         url = self.build_url(nid=node._id, action='render', provider='osfstorage', path=test_file.path, version=1)
         with mock.patch('osf.models.mixins.AddonModelMixin._settings_model', return_value=None):
-            with pytest.raises(Exception):
-                self.app.get(url, auth=self.user.auth)
+            res = self.app.get(url, expect_errors=True, auth=self.user.auth)
+            assert_equal(res.status_code, 400)
 
     @mock.patch('addons.base.views.check_authentication_attribute')
-    def test_auth_raise_httperror(self, mock_get_addon):
+    def test_auth_is_readonly_is_true_and_action_not_match(self, mock_get_addon):
         new_region = RegionFactory(is_readonly=True)
         new_region.save()
         node = ProjectFactory(is_public=True)
@@ -278,8 +278,8 @@ class TestAddonAuth(OsfTestCase):
         mock_get_addon.return_value = True
         test_file = create_test_file(node, self.user)
         url = self.build_url(nid=node._id, action='render', provider='osfstorage', path=test_file.path, version=1)
-        with pytest.raises(Exception):
-            self.app.get(url, auth=self.user.auth)
+        res = self.app.get(url, expect_errors=True, auth=self.user.auth)
+        assert_equal(res.status_code, 403)
 
     def test_auth_download_preprint(self):
         preprint = PreprintFactory()

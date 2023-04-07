@@ -708,7 +708,7 @@ class TestUtils(AdminTestCase):
         res = utils.check_index_number_exists(region.allow_expression, '2')
         nt.assert_true(res)
 
-    def test_validate_index_number_not_found(self):
+    def test_validate_index_number_not_found_return_true(self):
         region = RegionFactory(allow_expression='(1&&2)||3')
         index_list = [1, 2, 3, 4, 5]
         res = utils.validate_index_number_not_found(region.allow_expression, index_list)
