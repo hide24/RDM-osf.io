@@ -55,6 +55,7 @@ from osf.models import (
     FileVersion,
     ExportDataLocation,
     ExportData,
+    ExportDataRestore
 )
 from osf.metrics import PreprintView, PreprintDownload
 from osf.utils import permissions
@@ -191,6 +192,18 @@ def check_access(node, auth, action, cas_resp):
     if permission is None:
         raise HTTPError(http_status.HTTP_400_BAD_REQUEST)
 
+    # Check user has task running when executing export/restore
+    if auth.user:
+        user_info = auth.user
+        export_data = ExportData.objects.filter(creator=user_info, status='Running').first()
+        if not export_data:
+            export_data = ExportDataRestore.objects.filter(creator=user_info, status='Running').first()
+
+        if export_data:
+            institution = node.creator.affiliated_institutions.get()
+            if user_info.is_allowed_to_use_institution(institution):
+                return True
+
     if cas_resp:
         if permission == permissions.READ:
             if node.can_view_files(auth=None):
@@ -308,7 +321,6 @@ def get_auth(auth, **kwargs):
         provider_name = data['provider']
         # only has location_id
         location_id = data.get('location_id')
-        is_check_permission = data['is_check_permission']
     except KeyError:
         raise HTTPError(http_status.HTTP_400_BAD_REQUEST)
 
@@ -337,8 +349,7 @@ def get_auth(auth, **kwargs):
         elif not node:
             raise HTTPError(http_status.HTTP_404_NOT_FOUND)
 
-        if is_check_permission:
-            check_access(node, auth, action, cas_resp)
+        check_access(node, auth, action, cas_resp)
         provider_settings = None
         if hasattr(node, 'get_addon'):
             provider_settings = node.get_addon(provider_name)
@@ -377,7 +388,7 @@ def get_auth(auth, **kwargs):
                 if auth.user:
                     # mark fileversion as seen
                     FileVersionUserMetadata.objects.get_or_create(user=auth.user, file_version=fileversion)
-                if not node.is_contributor_or_group_member(auth.user) and is_check_permission:
+                if not node.is_contributor_or_group_member(auth.user):
                     from_mfr = download_is_from_mfr(request, payload=data)
                     # version index is 0 based
                     version_index = version - 1
