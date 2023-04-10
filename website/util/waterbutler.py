@@ -98,11 +98,12 @@ def upload_file(osf_cookie, pid, file_path, file_name, dest_path):
         )
     return response
 
-def get_node_info(osf_cookie, pid, provider, path):
+def get_node_info(osf_cookie, pid, provider, path, task_id=None, upload_datetime=None):
     try:
         response = requests.get(
             waterbutler_api_url_for(
-                pid, provider, path=path, _internal=True, meta=''
+                pid, provider, path=path, _internal=True, meta='',
+                task_id=task_id, upload_datetime=upload_datetime
             ),
             headers={'content-type': 'application/json'},
             cookies={settings.COOKIE_NAME: osf_cookie}

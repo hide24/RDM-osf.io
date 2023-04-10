@@ -322,7 +322,7 @@ def check_file_timestamp(uid, node, data, verify_external_only=False):
     if not userkey_generation_check(user._id):
         userkey_generation(user._id)
 
-    ext_info = ExternalInfo(node, user, file_node, verify_external_only)
+    ext_info = ExternalInfo(node, user, file_node, verify_external_only, None, None)
     if ext_info.hash_value:
         if ext_info.file_exists:
             return TimeStampTokenVerifyCheckHash.timestamp_check(
@@ -524,7 +524,7 @@ def cancel_celery_task(node):
     TimestampTask.objects.filter(node=node).delete()
     return result
 
-def add_token(uid, node, data):
+def add_token(uid, node, data, task_id=None, upload_datetime=None):
     try:
         user = OSFUser.objects.get(id=uid)
         file_node = BaseFileNode.objects.get(_id=data['file_id'])
@@ -535,7 +535,7 @@ def add_token(uid, node, data):
     if not userkey_generation_check(user._id):
         userkey_generation(user._id)
 
-    ext_info = ExternalInfo(node, user, file_node, False)
+    ext_info = ExternalInfo(node, user, file_node, False, task_id, upload_datetime)
     if ext_info.hash_value:
         if ext_info.file_exists:
             return AddTimestampHash.add_timestamp(
@@ -605,7 +605,7 @@ def get_file_info(cookie, file_node, version):
         return file_info
     return None
 
-def file_created_or_updated(node, metadata, user_id, created_flag):
+def file_created_or_updated(node, metadata, user_id, created_flag, task_id=None, upload_datetime=None):
     if not settings.ENABLE_TIMESTAMP:
         return
     if metadata['provider'] != 'osfstorage':
@@ -636,7 +636,7 @@ def file_created_or_updated(node, metadata, user_id, created_flag):
         'version': version,
         'provider': metadata.get('provider')
     }
-    add_token(user_id, node, file_info)
+    add_token(user_id, node, file_info, task_id=task_id, upload_datetime=upload_datetime)
 
     # Update created/modified user in timestamp result
     verify_data = RdmFileTimestamptokenVerifyResult.objects.get(file_id=file_info['file_id'])
@@ -1615,7 +1615,7 @@ def select_timestamp_token(verify_result, ext_info):
     return verify_result.timestamp_token
 
 class ExternalInfo():
-    def __init__(self, node, user, file_node, verify_external_only):
+    def __init__(self, node, user, file_node, verify_external_only, task_id, upload_datetime):
         self.node = node
         self.user = user
         self.file_node = file_node
@@ -1623,6 +1623,8 @@ class ExternalInfo():
         self._init_timestamp()
         self._file_exists = None
         self.verify_external_only = verify_external_only
+        self.task_id = task_id
+        self.upload_datetime = upload_datetime
 
     @property
     def has_timestamp(self):
@@ -1635,7 +1637,8 @@ class ExternalInfo():
             cookie = self.user.get_or_create_cookie().decode()
             file_info = waterbutler.get_node_info(
                 cookie, self.node._id,
-                self.file_node.provider, self.file_node.path)
+                self.file_node.provider, self.file_node.path,
+                self.task_id, self.upload_datetime)
             if file_info is None:
                 self._file_exists = False
             else:
