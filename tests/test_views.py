@@ -109,6 +109,8 @@ from osf_tests.factories import (
 )
 from osf.models.node import set_project_storage_type
 from addons.osfstorage.models import NodeSettings
+from osf.models.project_storage_type import ProjectStorageType
+
 
 @mock_app.route('/errorexc')
 def error_exc():
@@ -4971,7 +4973,9 @@ class TestFileViews(OsfTestCase):
         nodeSettings = NodeSettings.objects.get(owner_id=self.project.id)
         nodeSettings.region = new_region
         nodeSettings.save()
-        set_project_storage_type(self.project)
+        ProjectStorageType.objects.update_or_create(
+            node_id=self.project.id, defaults={'node_id': self.project.id, 'storage_type': ProjectStorageType.NII_STORAGE}
+        )
         url = self.project.api_url_for('grid_data')
         res = self.app.get(url, auth=self.user.auth).maybe_follow()
         assert_equal(res.status_code, http_status.HTTP_200_OK)
