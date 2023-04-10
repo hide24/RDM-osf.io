@@ -206,7 +206,7 @@ def check_access(node, auth, action, cas_resp, task_id=None, upload_datetime=Non
             if user_info.is_allowed_to_use_institution(institution):
                 return export_data.task_id
 
-        if task_id and upload_datetime:
+        if task_id and upload_datetime and type(task_id) is not bool:
             export_data = ExportDataRestore.objects.filter(creator=user_info, task_id=task_id, status=ExportData.STATUS_COMPLETED).first()
             process_start = export_data.process_start.replace(tzinfo=utc)
             process_end = export_data.process_end.replace(tzinfo=utc)
@@ -375,6 +375,8 @@ def get_auth(auth, **kwargs):
 
         current_task_id = check_access(node, auth, action, cas_resp, task_id=request_task_id,
                                upload_datetime=request_upload_datetime)
+        if type(current_task_id) is bool:
+            current_task_id = None
         provider_settings = None
         if hasattr(node, 'get_addon'):
             provider_settings = node.get_addon(provider_name)
